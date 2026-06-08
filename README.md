@@ -9,12 +9,11 @@ Local preview:
 
 Deploy to GitHub Pages:
 
-1. Create a GitHub repo and push this project.
-2. In the repository Settings -> Pages, select the `main` branch and `/ (root)` as the folder.
-3. Optionally replace `CNAME` with your custom domain.
+1. Push this project to `main`.
+2. In the repository Settings -> Pages, set `Source` to `GitHub Actions`.
+3. The deploy workflow publishes the repository root to GitHub Pages.
 
 Notes:
 - Site is built with semantic HTML, responsive CSS, and minimal JS.
 - Social links and email addresses are placeholders; update with real links.
-
 

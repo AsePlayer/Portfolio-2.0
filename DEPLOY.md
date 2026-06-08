@@ -1,27 +1,18 @@
 # Deploying this site to GitHub Pages
 
-Replace `your-username` and `your-repo` in the commands below, then run them locally.
+This repo deploys from GitHub Actions. No custom domain is configured.
 
-Initial push (one-time):
+Site URL after the first successful deploy:
 
-```bash
-git init
-git add .
-git commit -m "chore: initial portfolio for Ryan Scott"
-git branch -M main
-# Using HTTPS remote (you provided):
-git remote add origin https://github.com/AsePlayer/Portfolio-2.0.git
-git push -u origin main
+```text
+https://aseplayer.github.io/Portfolio-2.0/
 ```
 
-Recommended commit messages for updates:
-- `fix: update resume and contact info`
-- `chore: update social links`
-- `feat: add new project to Featured Work`
+Deploy steps:
 
-Notes:
-- The workflow at `.github/workflows/pages.yml` deploys the repository root on pushes to `main`.
-- Replace `CNAME` with your custom domain (or remove it if not used).
-- If you prefer to deploy from `gh-pages` branch, update the workflow/Branches accordingly.
+1. Commit and push changes to `main`.
+2. In GitHub, open the repo's `Settings` -> `Pages`.
+3. Under `Build and deployment`, set `Source` to `GitHub Actions`.
+4. Open the `Actions` tab and run `Deploy to GitHub Pages`, or push a new commit to `main`.
 
-Last deploy trigger: 2026-06-07 (manual trigger by automation agent)
+The workflow at `.github/workflows/pages.yml` uploads the repository root as the Pages artifact. Keep asset links relative, such as `css/styles.css`, `js/script.js`, and `resume.pdf`, so they work under the project URL path.

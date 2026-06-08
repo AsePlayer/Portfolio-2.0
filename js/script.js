@@ -326,6 +326,12 @@ function setupContactSuccess() {
   const sent = new URLSearchParams(window.location.search).get('sent');
   if (status && sent === 'true') {
     status.hidden = false;
+    const contact = document.getElementById('contact');
+    if (contact) {
+      contact.setAttribute('tabindex', '-1');
+      contact.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      contact.focus({ preventScroll: true });
+    }
   }
 }
 

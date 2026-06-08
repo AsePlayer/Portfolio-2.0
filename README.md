@@ -4,8 +4,15 @@ This repository contains a fast, accessible, and recruiter-friendly static portf
 
 Local preview:
 
-1. Open `index.html` in a browser (double-click or use a local static server).
-2. Replace `resume.pdf` with a real resume file.
+1. Run a local static server from the repo root, such as `python -m http.server 8000`.
+2. Open `http://localhost:8000`.
+3. Replace `resume.pdf` with a real resume file.
+
+Editing content:
+
+- Update portfolio copy, links, email, skills, and work examples in `data/site.json`.
+- `index.html` is intentionally a small shell; `js/script.js` renders the page from JSON.
+- The contact form posts to FormSubmit using the email in `data/site.json`.
 
 Deploy to GitHub Pages:
 
@@ -17,3 +24,4 @@ Notes:
 - Site is built with semantic HTML, responsive CSS, and minimal JS.
 - Social links and email addresses are placeholders; update with real links.
 - For a future custom domain, update `CNAME.example`, rename it to `CNAME`, and configure the domain in GitHub Pages.
+- The first FormSubmit message may require approving an activation email sent to the receiving address.

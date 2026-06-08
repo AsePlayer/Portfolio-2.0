@@ -1,0 +1,120 @@
+{
+  "person": {
+    "name": "Ryan Scott",
+    "initials": "RS",
+    "title": "Data Operations & Business Technology Professional",
+    "email": "ryanscottcareer@gmail.com",
+    "resume": "resume.pdf"
+  },
+  "links": {
+    "linkedin": "#",
+    "github": "https://github.com/AsePlayer",
+    "youtube": "#"
+  },
+  "nav": [
+    { "label": "Home", "href": "#home" },
+    { "label": "Work", "href": "#work" },
+    { "label": "Skills", "href": "#skills" },
+    { "label": "About", "href": "#about" },
+    { "label": "Contact", "href": "#contact" }
+  ],
+  "hero": {
+    "eyebrow": "Data operations. Business systems. Actionable insight.",
+    "subheadline": "I help organizations improve data quality, automate workflows, and turn complex information into actionable business insights using SQL, Salesforce, Excel, Power Query, and cross-functional problem solving.",
+    "actions": [
+      { "label": "View Resume", "href": "resume.pdf", "style": "primary", "download": true },
+      { "label": "See Featured Work", "href": "#work", "style": "default" },
+      { "label": "Contact Me", "href": "#contact", "style": "subtle" }
+    ],
+    "panel": {
+      "label": "Core focus",
+      "headline": "Cleaner data. Faster workflows. Better business decisions.",
+      "facts": [
+        { "label": "Tools", "value": "SQL, Salesforce, Excel, Power Query" },
+        { "label": "Strengths", "value": "Automation, validation, reporting, troubleshooting" },
+        { "label": "Business fit", "value": "Marketing, operations, systems, cross-functional teams" }
+      ]
+    }
+  },
+  "whatIDo": {
+    "eyebrow": "What I do",
+    "headline": "Business data work that removes friction.",
+    "items": [
+      {
+        "title": "Data Analysis & Reporting",
+        "text": "Use SQL, Excel, and Power Query to query, clean, transform, and analyze business data for actionable results."
+      },
+      {
+        "title": "Marketing Operations Support",
+        "text": "Collaborate with marketing teams on customer targeting, audience segmentation, email hygiene, exclusions, and campaign data preparation."
+      },
+      {
+        "title": "Automation & Process Improvement",
+        "text": "Build automated workflows and reusable data processes that reduce manual work and improve consistency."
+      },
+      {
+        "title": "Systems & Technical Problem Solving",
+        "text": "Support Salesforce, databases, Microsoft Access, internal tools, and cross-department technical needs."
+      }
+    ]
+  },
+  "work": {
+    "eyebrow": "Featured work",
+    "headline": "Selected outcomes without exposing confidential data.",
+    "intro": "Examples are framed around business impact, repeatable workflows, and data reliability.",
+    "items": [
+      {
+        "tag": "Marketing operations",
+        "title": "Marketing Audience Segmentation",
+        "text": "Used SQL and data validation to help marketing identify correct customer audiences, maintain email hygiene, and apply exclusions for targeted email campaigns."
+      },
+      {
+        "tag": "Reporting workflow",
+        "title": "Power Query Data Transformation Workflow",
+        "text": "Built repeatable Power Query and Excel workflows to transform raw data into usable reports and actionable department insights."
+      },
+      {
+        "tag": "Business analysis",
+        "title": "Cross-Department Data Analysis",
+        "text": "Queried and analyzed operational data for multiple departments, combining SQL, Excel formulas, and Power Query to answer business questions."
+      },
+      {
+        "tag": "Systems support",
+        "title": "Salesforce Migration & Data Support",
+        "text": "Supported the transition from legacy systems to Salesforce by helping validate, clean, troubleshoot, and organize business data."
+      },
+      {
+        "tag": "Troubleshooting",
+        "title": "Access & Internal Tool Troubleshooting",
+        "text": "Fixed issues in Microsoft Access and internal systems to improve reliability and reduce operational friction."
+      }
+    ]
+  },
+  "skills": {
+    "eyebrow": "Skills snapshot",
+    "headline": "Tools and habits built for accurate, usable data.",
+    "groups": [
+      { "title": "Data", "text": "SQL, data querying, data cleaning, validation, reporting, segmentation" },
+      { "title": "Business Tools", "text": "Salesforce, Excel, Power Query, Microsoft Access" },
+      { "title": "Technical", "text": "Automation, software development fundamentals, QA testing, troubleshooting" },
+      { "title": "Cross-Functional", "text": "Marketing support, operations support, documentation, process improvement" }
+    ]
+  },
+  "about": {
+    "eyebrow": "About",
+    "headline": "A bridge between business needs and technical execution.",
+    "text": "Ryan Scott is a Data Operations Coordinator with a background in computer science, software development, QA testing, automotive/SEMA operations, and content creation. He specializes in bridging business needs and technical execution by helping teams clean data, automate workflows, troubleshoot systems, and make better decisions."
+  },
+  "resume": {
+    "eyebrow": "Resume",
+    "headline": "Data operations support with a practical systems mindset.",
+    "text": "Strengths include data validation, reporting workflows, Salesforce support, SQL analysis, QA-style troubleshooting, and clear documentation for cross-functional teams.",
+    "button": "Download Resume"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "headline": "Have a data, operations, or systems problem worth untangling?",
+    "text": "Use the form or reach out directly through the links below.",
+    "formSubject": "New portfolio contact for Ryan Scott"
+  }
+}

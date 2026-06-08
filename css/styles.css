@@ -529,6 +529,19 @@ h3 {
   resize: vertical;
 }
 
+.form-status {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  margin: 18px 0 0;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+
+.honeypot {
+  display: none;
+}
+
 .contact-form button {
   margin-top: 8px;
   cursor: pointer;

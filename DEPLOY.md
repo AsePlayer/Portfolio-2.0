@@ -23,3 +23,5 @@ Notes:
 - The workflow at `.github/workflows/pages.yml` deploys the repository root on pushes to `main`.
 - Replace `CNAME` with your custom domain (or remove it if not used).
 - If you prefer to deploy from `gh-pages` branch, update the workflow/Branches accordingly.
+
+Last deploy trigger: 2026-06-07 (manual trigger by automation agent)

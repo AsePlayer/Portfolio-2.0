@@ -1,40 +1,70 @@
-document.addEventListener('DOMContentLoaded', function(){
-  // Year
-  const y = document.getElementById('year'); if(y) y.textContent = new Date().getFullYear();
+document.addEventListener('DOMContentLoaded', function () {
+  const year = document.getElementById('year');
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
 
-  // Nav toggle for small screens
   const navToggle = document.getElementById('nav-toggle');
   const nav = document.getElementById('primary-nav');
-  if(navToggle && nav){
-    navToggle.addEventListener('click', function(){
-      const expanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', String(!expanded));
-      nav.classList.toggle('open');
+
+  function closeNav() {
+    if (!navToggle || !nav) return;
+    navToggle.setAttribute('aria-expanded', 'false');
+    nav.classList.remove('open');
+    document.body.classList.remove('nav-open');
+  }
+
+  if (navToggle && nav) {
+    navToggle.addEventListener('click', function () {
+      const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', String(!isOpen));
+      nav.classList.toggle('open', !isOpen);
+      document.body.classList.toggle('nav-open', !isOpen);
+    });
+
+    nav.addEventListener('click', function (event) {
+      if (event.target.closest('a')) {
+        closeNav();
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeNav();
+      }
     });
   }
 
-  // Smooth in-page links
-  document.querySelectorAll('a[href^="#"]').forEach(a=>{
-    a.addEventListener('click', function(e){
-      const target = document.querySelector(this.getAttribute('href'));
-      if(target){
-        e.preventDefault();
-        target.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+    anchor.addEventListener('click', function (event) {
+      const selector = anchor.getAttribute('href');
+      if (!selector || selector === '#') return;
+
+      const target = document.querySelector(selector);
+      if (target) {
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.pushState(null, '', selector);
       }
     });
   });
 
-  // Contact form -> mailto
   const form = document.getElementById('contact-form');
-  if(form){
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      const name = encodeURIComponent(form.name.value.trim());
-      const email = encodeURIComponent(form.email.value.trim());
-      const message = encodeURIComponent(form.message.value.trim());
-      const subject = encodeURIComponent('Website contact from ' + (form.name.value || 'Website'));
-      const body = encodeURIComponent('Name: ')+name+encodeURIComponent('\nEmail: ')+email+encodeURIComponent('\n\n')+message;
-      window.location.href = `mailto:ryan@example.com?subject=${subject}&body=${body}`;
+  if (form) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const name = String(formData.get('name') || '').trim();
+      const email = String(formData.get('email') || '').trim();
+      const message = String(formData.get('message') || '').trim();
+      const subject = 'Website contact from ' + (name || 'portfolio visitor');
+      const body = ['Name: ' + name, 'Email: ' + email, '', message].join('\n');
+
+      window.location.href = 'mailto:ryan@example.com?subject=' +
+        encodeURIComponent(subject) +
+        '&body=' +
+        encodeURIComponent(body);
     });
   }
 });

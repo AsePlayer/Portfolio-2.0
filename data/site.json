@@ -19,7 +19,7 @@
     { "label": "Contact", "href": "#contact" }
   ],
   "hero": {
-    "eyebrow": "Data operations. Business systems. Actionable insight.",
+    "eyebrow": "Data operations and business systems",
     "subheadline": "I help organizations improve data quality, automate workflows, and turn complex information into actionable business insights using SQL, Salesforce, Excel, Power Query, and cross-functional problem solving.",
     "actions": [
       { "label": "View Resume", "href": "resume.pdf", "style": "primary", "download": true },
@@ -28,7 +28,7 @@
     ],
     "panel": {
       "label": "Core focus",
-      "headline": "Cleaner data. Faster workflows. Better business decisions.",
+      "headline": "Clean data, reliable workflows, useful reporting.",
       "facts": [
         { "label": "Tools", "value": "SQL, Salesforce, Excel, Power Query" },
         { "label": "Strengths", "value": "Automation, validation, reporting, troubleshooting" },
@@ -38,7 +38,7 @@
   },
   "whatIDo": {
     "eyebrow": "What I do",
-    "headline": "Business data work that removes friction.",
+    "headline": "Data work that helps teams move faster.",
     "items": [
       {
         "title": "Data Analysis & Reporting",
@@ -60,8 +60,8 @@
   },
   "work": {
     "eyebrow": "Featured work",
-    "headline": "Selected outcomes without exposing confidential data.",
-    "intro": "Examples are framed around business impact, repeatable workflows, and data reliability.",
+    "headline": "Selected work, written without confidential details.",
+    "intro": "A few examples of reporting, cleanup, workflow, and systems support work.",
     "items": [
       {
         "tag": "Marketing operations",
@@ -92,7 +92,7 @@
   },
   "skills": {
     "eyebrow": "Skills snapshot",
-    "headline": "Tools and habits built for accurate, usable data.",
+    "headline": "A practical toolkit for day-to-day data operations.",
     "groups": [
       { "title": "Data", "text": "SQL, data querying, data cleaning, validation, reporting, segmentation" },
       { "title": "Business Tools", "text": "Salesforce, Excel, Power Query, Microsoft Access" },
@@ -102,7 +102,7 @@
   },
   "about": {
     "eyebrow": "About",
-    "headline": "A bridge between business needs and technical execution.",
+    "headline": "Comfortable between business questions and technical details.",
     "text": "Ryan Scott is a Data Operations Coordinator with a background in computer science, software development, QA testing, automotive/SEMA operations, and content creation. He specializes in bridging business needs and technical execution by helping teams clean data, automate workflows, troubleshoot systems, and make better decisions."
   },
   "resume": {
@@ -113,7 +113,7 @@
   },
   "contact": {
     "eyebrow": "Contact",
-    "headline": "Have a data, operations, or systems problem worth untangling?",
+    "headline": "Have a data, reporting, or systems question?",
     "text": "Use the form or reach out directly through the links below.",
     "formSubject": "New portfolio contact for Ryan Scott"
   }

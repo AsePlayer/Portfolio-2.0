@@ -197,7 +197,7 @@ h1 {
 }
 
 h2 {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   color: var(--navy);
   font-size: clamp(2rem, 4vw, 3.25rem);
   line-height: 1.05;
@@ -205,6 +205,7 @@ h2 {
 }
 
 h3 {
+  margin-bottom: 10px;
   color: var(--navy);
   font-size: 1.05rem;
   line-height: 1.25;
@@ -350,7 +351,7 @@ h3 {
 }
 
 .section {
-  padding: 88px 0;
+  padding: 76px 0;
 }
 
 .muted-section {
@@ -361,19 +362,19 @@ h3 {
 
 .section-heading {
   max-width: 760px;
-  margin-bottom: 32px;
+  margin-bottom: 22px;
 }
 
 .section-heading.split {
   max-width: none;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 0.44fr);
-  gap: 40px;
+  gap: 28px;
   align-items: end;
 }
 
 .section-heading.split > p {
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   color: var(--muted);
 }
 
@@ -407,7 +408,7 @@ h3 {
 
 .card-number {
   display: inline-flex;
-  margin-bottom: 38px;
+  margin-bottom: 24px;
   color: var(--accent);
   font-weight: 820;
 }
@@ -461,7 +462,7 @@ h3 {
 }
 
 .resume-section {
-  padding: 72px 0;
+  padding: 64px 0;
 }
 
 .resume-panel {
@@ -588,8 +589,14 @@ textarea:focus-visible {
 
   .hero-grid {
     min-height: auto;
-    gap: 32px;
-    padding-top: 56px;
+    gap: 28px;
+    padding-top: 48px;
+  }
+
+  .about-grid,
+  .contact-grid,
+  .section-heading.split {
+    gap: 22px;
   }
 
   .card-grid.four,
@@ -632,12 +639,20 @@ textarea:focus-visible {
   }
 
   .section {
-    padding: 64px 0;
+    padding: 52px 0;
   }
 
   .hero-grid {
-    padding-top: 42px;
-    padding-bottom: 56px;
+    padding-top: 36px;
+    padding-bottom: 48px;
+  }
+
+  .section-heading {
+    margin-bottom: 18px;
+  }
+
+  h2 {
+    margin-bottom: 8px;
   }
 
   h1 {
@@ -659,7 +674,7 @@ textarea:focus-visible {
   }
 
   .card-number {
-    margin-bottom: 22px;
+    margin-bottom: 14px;
   }
 
   .resume-panel,

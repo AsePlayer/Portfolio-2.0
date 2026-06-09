@@ -15,12 +15,13 @@
     { "label": "Home", "href": "#home" },
     { "label": "Work", "href": "#work" },
     { "label": "Skills", "href": "#skills" },
+    { "label": "Background", "href": "#background" },
     { "label": "About", "href": "#about" },
     { "label": "Contact", "href": "#contact" }
   ],
   "hero": {
     "eyebrow": "Data operations and business systems",
-    "subheadline": "I help organizations improve data quality, automate workflows, and turn complex information into actionable business insights using SQL, Salesforce, Excel, Power Query, and cross-functional problem solving.",
+    "subheadline": "I help teams clean up messy data, modernize recurring workflows, and build reliable reporting processes using SQL, Salesforce, Excel, Power Query, VBA, and practical automation.",
     "actions": [
       { "label": "View Resume", "href": "resume.pdf", "style": "primary", "download": true },
       { "label": "See Featured Work", "href": "#work", "style": "default" },
@@ -30,9 +31,9 @@
       "label": "Core focus",
       "headline": "Clean data, reliable workflows, useful reporting.",
       "facts": [
-        { "label": "Tools", "value": "SQL, Salesforce, Excel, Power Query" },
-        { "label": "Strengths", "value": "Automation, validation, reporting, troubleshooting" },
-        { "label": "Business fit", "value": "Marketing, operations, systems, cross-functional teams" }
+        { "label": "Tools", "value": "SQL, Salesforce, Excel, Power Query, VBA, Access" },
+        { "label": "Strengths", "value": "Reporting automation, data validation, workflow modernization" },
+        { "label": "Business fit", "value": "Marketing, membership, sales, accounting, leadership" }
       ]
     }
   },
@@ -42,19 +43,19 @@
     "items": [
       {
         "title": "Data Analysis & Reporting",
-        "text": "Use SQL, Excel, and Power Query to query, clean, transform, and analyze business data for actionable results."
+        "text": "Build SQL queries, Salesforce reports, and repeatable reporting processes that help teams understand operational, marketing, membership, and leadership data."
       },
       {
         "title": "Marketing Operations Support",
-        "text": "Collaborate with marketing teams on customer targeting, audience segmentation, email hygiene, exclusions, and campaign data preparation."
+        "text": "Work with confidential email marketing data in iPost Enterprise to cleanse, segment, validate, and prepare audience data for marketing and membership teams."
       },
       {
-        "title": "Automation & Process Improvement",
-        "text": "Build automated workflows and reusable data processes that reduce manual work and improve consistency."
+        "title": "Workflow Automation & Modernization",
+        "text": "Automate recurring reporting and manual workflows with Excel, Power Query, VBA, SQL, and lightweight tools built around real business needs."
       },
       {
-        "title": "Systems & Technical Problem Solving",
-        "text": "Support Salesforce, databases, Microsoft Access, internal tools, and cross-department technical needs."
+        "title": "Data Quality & Systems Support",
+        "text": "Clean, validate, reconcile, and explain data across CRMs, spreadsheets, Access systems, email platforms, and legacy workflows."
       }
     ]
   },
@@ -64,29 +65,29 @@
     "intro": "A few examples of reporting, cleanup, workflow, and systems support work.",
     "items": [
       {
-        "tag": "Marketing operations",
-        "title": "Marketing Audience Segmentation",
-        "text": "Used SQL and data validation to help marketing identify correct customer audiences, maintain email hygiene, and apply exclusions for targeted email campaigns."
+        "tag": "Email marketing data",
+        "title": "iPost Audience Segmentation & Data Prep",
+        "text": "Use SQL and iPost Enterprise to cleanse confidential audience data, maintain email hygiene, apply exclusions, and prepare reliable segments for marketing and membership campaigns."
+      },
+      {
+        "tag": "Salesforce reporting",
+        "title": "Salesforce Reports for Business Teams",
+        "text": "Generate Salesforce reporting for sales, accounting, and leadership so teams can review operational data without digging through source systems."
       },
       {
         "tag": "Reporting workflow",
-        "title": "Power Query Data Transformation Workflow",
-        "text": "Built repeatable Power Query and Excel workflows to transform raw data into usable reports and actionable department insights."
+        "title": "Excel, Power Query & VBA Automation",
+        "text": "Built automated Excel/VBA and Power Query workflows that reduce manual reporting steps and make recurring processes easier to maintain."
       },
       {
-        "tag": "Business analysis",
-        "title": "Cross-Department Data Analysis",
-        "text": "Queried and analyzed operational data for multiple departments, combining SQL, Excel formulas, and Power Query to answer business questions."
+        "tag": "Legacy systems",
+        "title": "Legacy Workflow Modernization",
+        "text": "Rebuilt and improved undocumented reporting processes, reconstructed inconsistent historical datasets, and added structure to legacy workflows."
       },
       {
-        "tag": "Systems support",
-        "title": "Salesforce Migration & Data Support",
-        "text": "Supported the transition from legacy systems to Salesforce by helping validate, clean, troubleshoot, and organize business data."
-      },
-      {
-        "tag": "Troubleshooting",
-        "title": "Access & Internal Tool Troubleshooting",
-        "text": "Fixed issues in Microsoft Access and internal systems to improve reliability and reduce operational friction."
+        "tag": "Data integrity",
+        "title": "Migration & Data Trust Support",
+        "text": "Resolved data inconsistencies across CRM, Excel, Access, and legacy systems while helping stakeholders understand discrepancies and trust reporting outputs."
       }
     ]
   },
@@ -94,21 +95,47 @@
     "eyebrow": "Skills snapshot",
     "headline": "A practical toolkit for day-to-day data operations.",
     "groups": [
-      { "title": "Data", "text": "SQL, data querying, data cleaning, validation, reporting, segmentation" },
-      { "title": "Business Tools", "text": "Salesforce, Excel, Power Query, Microsoft Access" },
-      { "title": "Technical", "text": "Automation, software development fundamentals, QA testing, troubleshooting" },
-      { "title": "Cross-Functional", "text": "Marketing support, operations support, documentation, process improvement" }
+      { "title": "Data", "text": "SQL queries, views, reporting, data cleansing, validation, ETL logic, segmentation, migration support" },
+      { "title": "Automation", "text": "Excel automation, VBA, Power Query, Microsoft Office workflows, Python scripts, Google Sheets API" },
+      { "title": "Business Tools", "text": "Salesforce, iPost Enterprise, Excel, Access, Word, Power BI, Google Sheets, Jira, Trello" },
+      { "title": "Cross-Functional", "text": "Marketing support, membership operations, stakeholder communication, SOPs, non-technical user support" }
+    ]
+  },
+  "background": {
+    "eyebrow": "Background",
+    "headline": "A technical foundation with hands-on operations experience.",
+    "items": [
+      {
+        "label": "Data Operations",
+        "title": "SEMA, 2025-present",
+        "text": "Supports marketing, membership, sales, accounting, and leadership with SQL reporting, iPost Enterprise audience data, Salesforce reports, data cleanup, and recurring workflows."
+      },
+      {
+        "label": "Software Development",
+        "title": "Knights of Creation, 2020-2025",
+        "text": "Built SQL/Python systems, ETL logic, internal automation, data transfer processes, and user-facing tools for structured workflows."
+      },
+      {
+        "label": "QA & Data Integrity",
+        "title": "MaxGames Studios, 2015-2022",
+        "text": "Tested workflows, validated data consistency, reproduced logic issues, and documented defects clearly for development teams."
+      },
+      {
+        "label": "Education",
+        "title": "B.S. Computer Science, Cum Laude",
+        "text": "Computer science foundation with additional Certified ScrumMaster training."
+      }
     ]
   },
   "about": {
     "eyebrow": "About",
     "headline": "Comfortable between business questions and technical details.",
-    "text": "Ryan Scott is a Data Operations Coordinator with a background in computer science, software development, QA testing, automotive/SEMA operations, and content creation. He specializes in bridging business needs and technical execution by helping teams clean data, automate workflows, troubleshoot systems, and make better decisions."
+    "text": "Ryan Scott is a Data Operations Coordinator with a computer science background and experience across SQL reporting, Microsoft Office automation, workflow modernization, QA testing, and software development. He specializes in making messy business data easier to trust and use by building practical tools, improving recurring workflows, supporting migrations, and helping technical and non-technical teams work from the same source of truth."
   },
   "resume": {
     "eyebrow": "Resume",
-    "headline": "Data operations support with a practical systems mindset.",
-    "text": "Strengths include data validation, reporting workflows, Salesforce support, SQL analysis, QA-style troubleshooting, and clear documentation for cross-functional teams.",
+    "headline": "Practical data operations support with software engineering roots.",
+    "text": "Ryan brings experience in SQL reporting, Excel/VBA automation, Power Query workflows, iPost Enterprise data prep, Salesforce reporting, migration support, QA-style troubleshooting, and documentation for non-technical handoff.",
     "button": "Download Resume"
   },
   "contact": {

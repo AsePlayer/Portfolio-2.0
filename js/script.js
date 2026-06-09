@@ -58,6 +58,7 @@ function renderPage(data) {
     whatIDoSection(data.whatIDo),
     workSection(data.work),
     skillsSection(data.skills),
+    backgroundSection(data.background),
     aboutSection(data.about),
     resumeSection(data),
     contactSection(data)
@@ -193,9 +194,30 @@ function skillsSection(section) {
   `;
 }
 
+function backgroundSection(section) {
+  return `
+    <section id="background" class="section muted-section">
+      <div class="container">
+        ${sectionHeading(section.eyebrow, section.headline)}
+        <div class="background-list">
+          ${section.items.map(function (item) {
+            return `
+              <article class="background-item">
+                <p class="work-tag">${item.label}</p>
+                <h3>${item.title}</h3>
+                <p>${item.text}</p>
+              </article>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 function aboutSection(section) {
   return `
-    <section id="about" class="section muted-section">
+    <section id="about" class="section">
       <div class="container about-grid">
         ${sectionHeading(section.eyebrow, section.headline)}
         <div class="about-copy">

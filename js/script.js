@@ -55,10 +55,11 @@ function renderPage(data) {
 
   page.innerHTML = [
     heroSection(data),
+    supportsSection(data.supports),
     whatIDoSection(data.whatIDo),
     workSection(data.work),
     skillsSection(data.skills),
-    backgroundSection(data.background),
+    experienceSection(data.experience),
     aboutSection(data.about),
     resumeSection(data),
     contactSection(data)
@@ -123,12 +124,35 @@ function socialLink(link) {
   `;
 }
 
+function supportsSection(section) {
+  return `
+    <section id="supports" class="section supports-section">
+      <div class="container supports-panel">
+        <div class="section-heading">
+          <p class="eyebrow">${section.eyebrow}</p>
+          <h2>${section.headline}</h2>
+        </div>
+        <ul class="support-list" aria-label="Business areas supported">
+          ${section.items.map(function (item) {
+            return `<li>${item}</li>`;
+          }).join('')}
+        </ul>
+        <ol class="workflow-strip" aria-label="Typical workflow">
+          ${section.workflow.map(function (item) {
+            return `<li>${item}</li>`;
+          }).join('')}
+        </ol>
+      </div>
+    </section>
+  `;
+}
+
 function whatIDoSection(section) {
   return `
     <section id="what" class="section">
       <div class="container">
         ${sectionHeading(section.eyebrow, section.headline)}
-        <div class="card-grid four">
+        <div class="card-grid services-grid">
           ${section.items.map(function (item, index) {
             return `
               <article class="service-card">
@@ -194,15 +218,15 @@ function skillsSection(section) {
   `;
 }
 
-function backgroundSection(section) {
+function experienceSection(section) {
   return `
-    <section id="background" class="section muted-section">
+    <section id="experience" class="section muted-section">
       <div class="container">
         ${sectionHeading(section.eyebrow, section.headline)}
-        <div class="background-list">
+        <div class="experience-list">
           ${section.items.map(function (item) {
             return `
-              <article class="background-item">
+              <article class="experience-item">
                 <p class="work-tag">${item.label}</p>
                 <h3>${item.title}</h3>
                 <p>${item.text}</p>

@@ -383,6 +383,10 @@ h3 {
   gap: 16px;
 }
 
+.services-grid {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
 .card-grid.four {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -390,7 +394,7 @@ h3 {
 .service-card,
 .skill-group,
 .work-card,
-.background-item,
+.experience-item,
 .contact-form,
 .resume-panel {
   border: 1px solid rgba(20, 33, 61, 0.12);
@@ -440,21 +444,76 @@ h3 {
   margin-bottom: 0;
 }
 
-.background-list {
+.supports-section {
+  padding: 56px 0;
+}
+
+.supports-panel {
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+.supports-panel .section-heading {
+  margin-bottom: 18px;
+}
+
+.support-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.support-list li {
+  border: 1px solid var(--soft);
+  border-radius: var(--radius);
+  color: var(--navy);
+  font-weight: 700;
+  padding: 10px 12px;
+}
+
+.workflow-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workflow-strip li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.workflow-strip li:not(:last-child)::after {
+  content: "->";
+  color: var(--accent);
+}
+
+.experience-list {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 }
 
-.background-item {
+.experience-item {
   padding: 22px;
 }
 
-.background-item h3 {
+.experience-item h3 {
   margin-bottom: 12px;
 }
 
-.background-item p:last-child {
+.experience-item p:last-child {
   color: var(--muted);
   margin-bottom: 0;
 }
@@ -620,8 +679,12 @@ textarea:focus-visible {
   }
 
   .card-grid.four,
-  .background-list,
+  .experience-list,
   .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .support-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -685,10 +748,18 @@ textarea:focus-visible {
   }
 
   .card-grid.four,
-  .background-list,
+  .experience-list,
   .skills-grid,
   .work-card {
     grid-template-columns: 1fr;
+  }
+
+  .support-list {
+    grid-template-columns: 1fr;
+  }
+
+  .supports-panel {
+    padding: 22px;
   }
 
   .service-card {

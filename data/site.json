@@ -2,7 +2,7 @@
   "person": {
     "name": "Ryan Scott",
     "initials": "RS",
-    "title": "Data Operations & Business Technology Professional",
+    "title": "Data Operations & Business Systems Analyst",
     "email": "ryanscottcareer@gmail.com",
     "resume": "resume.pdf"
   },
@@ -15,13 +15,13 @@
     { "label": "Home", "href": "#home" },
     { "label": "Work", "href": "#work" },
     { "label": "Skills", "href": "#skills" },
-    { "label": "Background", "href": "#background" },
+    { "label": "Experience", "href": "#experience" },
     { "label": "About", "href": "#about" },
     { "label": "Contact", "href": "#contact" }
   ],
   "hero": {
     "eyebrow": "Data operations and business systems",
-    "subheadline": "I help teams clean up messy data, modernize recurring workflows, and build reliable reporting processes using SQL, Salesforce, Excel, Power Query, VBA, and practical automation.",
+    "subheadline": "I work with SQL, Salesforce, Excel, and Power Query to help marketing, membership, sales, accounting, and leadership teams get reliable information from complex data.",
     "actions": [
       { "label": "View Resume", "href": "resume.pdf", "style": "primary", "download": true },
       { "label": "See Featured Work", "href": "#work", "style": "default" },
@@ -31,11 +31,32 @@
       "label": "Core focus",
       "headline": "Clean data, reliable workflows, useful reporting.",
       "facts": [
-        { "label": "Tools", "value": "SQL, Salesforce, Excel, Power Query, VBA, Access" },
-        { "label": "Strengths", "value": "Reporting automation, data validation, workflow modernization" },
-        { "label": "Business fit", "value": "Marketing, membership, sales, accounting, leadership" }
+        { "label": "Systems", "value": "SQL, Salesforce, iPost Enterprise, Excel, Power Query" },
+        { "label": "Strengths", "value": "Data quality, reporting automation, business rules, field mapping" },
+        { "label": "Teams", "value": "Marketing, membership, sales, accounting, leadership" }
       ]
     }
+  },
+  "supports": {
+    "eyebrow": "What my work supports",
+    "headline": "Reliable data for the teams that run the business.",
+    "items": [
+      "Marketing campaigns",
+      "Membership operations",
+      "Sales reporting",
+      "Accounting requests",
+      "Executive reporting",
+      "Data quality initiatives",
+      "Process improvement",
+      "System migrations"
+    ],
+    "workflow": [
+      "SQL queries",
+      "Data validation",
+      "Reporting",
+      "Automation",
+      "Documentation"
+    ]
   },
   "whatIDo": {
     "eyebrow": "What I do",
@@ -56,6 +77,10 @@
       {
         "title": "Data Quality & Systems Support",
         "text": "Clean, validate, reconcile, and explain data across CRMs, spreadsheets, Access systems, email platforms, and legacy workflows."
+      },
+      {
+        "title": "Data Governance & Quality",
+        "text": "Improve business rules, validate imports, document processes, and identify issues before they affect reporting, segmentation, or downstream teams."
       }
     ]
   },
@@ -88,6 +113,11 @@
         "tag": "Data integrity",
         "title": "Migration & Data Trust Support",
         "text": "Resolved data inconsistencies across CRM, Excel, Access, and legacy systems while helping stakeholders understand discrepancies and trust reporting outputs."
+      },
+      {
+        "tag": "Imports & mapping",
+        "title": "Data Imports & Field Mapping",
+        "text": "Test and validate online forms, imports, and source mappings so information flows correctly between systems and remains usable for reporting and marketing."
       }
     ]
   },
@@ -95,14 +125,14 @@
     "eyebrow": "Skills snapshot",
     "headline": "A practical toolkit for day-to-day data operations.",
     "groups": [
-      { "title": "Data", "text": "SQL queries, views, reporting, data cleansing, validation, ETL logic, segmentation, migration support" },
-      { "title": "Automation", "text": "Excel automation, VBA, Power Query, Microsoft Office workflows, Python scripts, Google Sheets API" },
-      { "title": "Business Tools", "text": "Salesforce, iPost Enterprise, Excel, Access, Word, Power BI, Google Sheets, Jira, Trello" },
-      { "title": "Cross-Functional", "text": "Marketing support, membership operations, stakeholder communication, SOPs, non-technical user support" }
+      { "title": "Data Operations", "text": "SQL, data validation, data cleansing, data profiling, ETL processes, data governance, audience segmentation" },
+      { "title": "Reporting & Analytics", "text": "Excel, Power Query, Power BI, Google Looker Studio, pivot tables, advanced formulas, ad hoc analysis" },
+      { "title": "Business Systems", "text": "Salesforce, iPost Enterprise, Microsoft Access, CRM/AMS platforms, Google Analytics, source-system workflows" },
+      { "title": "Automation & Development", "text": "VBA, Python, SQL automation, workflow design, documentation, QA-style troubleshooting" }
     ]
   },
-  "background": {
-    "eyebrow": "Background",
+  "experience": {
+    "eyebrow": "Experience",
     "headline": "A technical foundation with hands-on operations experience.",
     "items": [
       {
@@ -130,7 +160,7 @@
   "about": {
     "eyebrow": "About",
     "headline": "Comfortable between business questions and technical details.",
-    "text": "Ryan Scott is a Data Operations Coordinator with a computer science background and experience across SQL reporting, Microsoft Office automation, workflow modernization, QA testing, and software development. He specializes in making messy business data easier to trust and use by building practical tools, improving recurring workflows, supporting migrations, and helping technical and non-technical teams work from the same source of truth."
+    "text": "I'm a Data Operations Coordinator with a background in computer science, software development, and quality assurance. My work centers around helping different parts of an organization get accurate, reliable information from their data. On any given day that might mean writing SQL queries, building reports, preparing marketing audiences, validating imports, troubleshooting inconsistencies between systems, or improving recurring workflows with Excel and Power Query. I enjoy taking processes that are manual, confusing, or difficult to maintain and making them simpler, more reliable, and easier for other teams to use. One of the parts of the job I enjoy most is translating technical details into information that other departments can actually use."
   },
   "resume": {
     "eyebrow": "Resume",

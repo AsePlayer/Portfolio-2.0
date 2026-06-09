@@ -22,6 +22,13 @@
   "hero": {
     "eyebrow": "Data operations and business systems",
     "subheadline": "I work with SQL, Salesforce, Excel, and Power Query to help marketing, membership, sales, accounting, and leadership teams get reliable information from complex data.",
+    "capabilities": [
+      "SQL Reporting",
+      "ETL & Data Quality",
+      "Salesforce Reporting & Configuration",
+      "Marketing Data Operations",
+      "Process Automation"
+    ],
     "actions": [
       { "label": "View Resume", "href": "resume.pdf", "style": "primary", "download": true },
       { "label": "See Featured Work", "href": "#work", "style": "default" },
@@ -96,13 +103,13 @@
       },
       {
         "tag": "Salesforce reporting",
-        "title": "Salesforce Reports for Business Teams",
-        "text": "Generate Salesforce reporting for sales, accounting, and leadership so teams can review operational data without digging through source systems."
+        "title": "Salesforce Reporting & Migration Support",
+        "text": "Build reporting solutions, support custom fields, formula fields, and roll-up summaries, and help maintain reporting continuity during CRM migration work."
       },
       {
         "tag": "Reporting workflow",
-        "title": "Excel, Power Query & VBA Automation",
-        "text": "Built automated Excel/VBA and Power Query workflows that reduce manual reporting steps and make recurring processes easier to maintain."
+        "title": "Reporting & Workflow Automation",
+        "text": "Reduce manual reporting effort by automating recurring business processes using SQL, Power Query, VBA, and scheduled workflows."
       },
       {
         "tag": "Legacy systems",
@@ -111,8 +118,8 @@
       },
       {
         "tag": "Data integrity",
-        "title": "Migration & Data Trust Support",
-        "text": "Resolved data inconsistencies across CRM, Excel, Access, and legacy systems while helping stakeholders understand discrepancies and trust reporting outputs."
+        "title": "Data Quality & System Migration",
+        "text": "Validate data, resolve inconsistencies, and support reporting continuity during business system transitions."
       },
       {
         "tag": "Imports & mapping",

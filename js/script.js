@@ -82,6 +82,11 @@ function heroSection(data) {
           <h1>${data.person.name}</h1>
           <p class="headline">${data.person.title}</p>
           <p class="subheadline">${data.hero.subheadline}</p>
+          <ul class="capability-list" aria-label="Core capabilities">
+            ${data.hero.capabilities.map(function (item) {
+              return `<li>${item}</li>`;
+            }).join('')}
+          </ul>
           <div class="hero-ctas" aria-label="Primary actions">
             ${data.hero.actions.map(actionLink).join('')}
           </div>

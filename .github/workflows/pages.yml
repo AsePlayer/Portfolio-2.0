@@ -19,7 +19,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://aseplayer.github.io/Portfolio-2.0/
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

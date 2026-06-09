@@ -23,5 +23,5 @@ Deploy to GitHub Pages:
 Notes:
 - Site is built with semantic HTML, responsive CSS, and minimal JS.
 - Social links and email addresses are placeholders; update with real links.
-- For a future custom domain, update `CNAME.example`, rename it to `CNAME`, and configure the domain in GitHub Pages.
+- For a future custom domain, add a root-level `CNAME` file containing the real domain and configure the same domain in GitHub Pages.
 - The first FormSubmit message may require approving an activation email sent to the receiving address.

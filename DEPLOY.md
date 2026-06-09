@@ -1,6 +1,6 @@
 # Deploying this site to GitHub Pages
 
-This repo deploys from GitHub Actions. It works without a custom domain today and includes a `CNAME.example` file for when a real custom domain is ready.
+This repo deploys from GitHub Actions. No custom domain is configured right now.
 
 Site URL after the first successful deploy:
 
@@ -24,10 +24,11 @@ Content and contact form:
 - The first real form submission may require clicking an activation link sent by FormSubmit to that inbox.
 - For local preview, run a static server. Opening `index.html` directly may block `data/site.json` because browsers restrict local file fetches.
 
-Custom domain setup, when ready:
+Custom domain setup, later:
 
-1. Replace `example.com` in `CNAME.example` with the real domain.
-2. Rename `CNAME.example` to `CNAME`.
-3. In GitHub, open `Settings` -> `Pages` and enter the same custom domain.
-4. Add the DNS records GitHub recommends for that domain.
-5. Wait for DNS verification, then enable `Enforce HTTPS`.
+1. Create a root-level `CNAME` file containing only the real domain, such as `ryanscott.com`.
+2. In GitHub, open `Settings` -> `Pages` and enter the same custom domain.
+3. Add the DNS records GitHub recommends for that domain.
+4. Wait for DNS verification, then enable `Enforce HTTPS`.
+
+If GitHub shows an unwanted custom domain now, clear it in `Settings` -> `Pages` -> `Custom domain`, then save. The default site URL should remain `https://aseplayer.github.io/Portfolio-2.0/`.

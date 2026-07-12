@@ -60,6 +60,7 @@ if (data) {
     'work.items': data.work?.items,
     'capabilities.items': data.capabilities?.items,
     'experience.items': data.experience?.items,
+    'experience.development.items': data.experience?.development?.items,
     'skills.groups': data.skills?.groups,
     'about.text': data.about?.text
   };
@@ -73,8 +74,8 @@ if (data) {
   requireTextFields(data.work, 'work', ['eyebrow', 'headline', 'intro']);
   requireTextFields(data.capabilities, 'capabilities', ['eyebrow', 'headline']);
   requireTextFields(data.experience, 'experience', ['eyebrow', 'headline']);
+  requireTextFields(data.experience?.development, 'experience.development', ['eyebrow', 'headline']);
   requireTextFields(data.skills, 'skills', ['eyebrow', 'headline']);
-  requireTextFields(data.skills?.learning, 'skills.learning', ['label', 'headline', 'text']);
   requireTextFields(data.about, 'about', ['eyebrow', 'headline']);
   requireTextFields(data.contact, 'contact', ['eyebrow', 'headline', 'text', 'formIntro', 'formSubject']);
 
@@ -103,6 +104,9 @@ if (data) {
     } else {
       requireTextFields(item, `experience.items[${index}]`, ['role', 'text']);
     }
+  });
+  (data.experience?.development?.items || []).forEach((item, index) => {
+    requireTextFields(item, `experience.development.items[${index}]`, ['label', 'title', 'text']);
   });
   (data.skills?.groups || []).forEach((item, index) => {
     requireText(item?.title, `skills.groups[${index}].title`);

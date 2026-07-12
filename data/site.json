@@ -61,30 +61,30 @@
     "items": [
       {
         "tag": "Data quality",
-        "title": "Historical Data Reconciliation",
-        "text": "Reconciled decades of historical participation records across a legacy CRM and archived spreadsheets, resolving incomplete, conflicting, and ambiguous entries.",
-        "result": "Produced a cleaner, more reliable dataset for reporting and migration.",
-        "tools": ["Excel", "Data reconciliation", "Legacy systems"]
+        "title": "Historical Data Reconstruction",
+        "text": "Reconstructed first-time-exhibitor history dating to 1965 by reconciling NetForum records against archived spreadsheets and resolving incomplete, conflicting, and ambiguous entries.",
+        "result": "Established a defensible historical record for reporting and migration instead of carrying legacy inconsistencies into the new system.",
+        "tools": ["Excel", "NetForum", "Record validation"]
       },
       {
         "tag": "Systems migration",
-        "title": "CRM Migration & Reporting Continuity",
-        "text": "Supported a migration from a legacy association management system to a Salesforce-based platform by validating records, recreating report logic, identifying invalid transactions and test data, and updating reporting rules.",
-        "result": "Helped preserve reporting continuity while improving the quality of data entering the new system.",
-        "tools": ["Salesforce", "Nimble AMS", "Migration QA"]
+        "title": "Migration Reporting & Data Quality Controls",
+        "text": "Rebuilt reporting logic during the move from NetForum to Nimble AMS on Salesforce, identifying invalid orders and test records, updating commission reporting, and defining exclusion rules.",
+        "result": "Preserved continuity for business reporting while preventing known data issues from distorting production outputs.",
+        "tools": ["Salesforce", "Nimble AMS", "Reporting QA"]
       },
       {
-        "tag": "Process analysis",
-        "title": "Legacy Workflow Analysis",
-        "text": "Investigated an unfamiliar Microsoft Access workflow, identified its data structure and business rules, resolved reporting issues, and documented the current process.",
-        "result": "Documented the data structure, business rules, and known issues needed to rebuild the process in a modern platform.",
-        "tools": ["Microsoft Access", "Workflow analysis", "Process documentation"]
+        "tag": "Systems integration",
+        "title": "Legacy Workflow Integration",
+        "text": "Used Power Query to map exhibitor booth-space reports from Nimble AMS into the legacy format required by a Microsoft Access workflow that generated booth-selection PDFs for event operations. Traced the Access logic, resolved compatibility issues, and documented its business rules.",
+        "result": "Kept a business-critical event workflow operational during the system transition while creating the mapping and documentation needed for future modernization.",
+        "tools": ["Power Query", "Microsoft Access", "Schema mapping", "Process documentation"]
       },
       {
         "tag": "Reporting operations",
-        "title": "Reporting & Audience Segmentation",
-        "text": "Own recurring and ad hoc reporting processes used by sales, marketing, operations, and leadership, translating business questions into queries, audience segments, and usable outputs.",
-        "result": "Provided teams with dependable reports, audience segments, and analysis for ongoing business needs.",
+        "title": "Cross-Functional Reporting & Audience Operations",
+        "text": "Own recurring and ad hoc reporting for sales, marketing, operations, and leadership, and build SQL-driven audience segments in iPost Enterprise. Translate requests into query logic, validate exclusions, and deliver outputs teams can use.",
+        "result": "Support ongoing decisions and campaigns with repeatable reporting, cleaner targeting, and clearly communicated results.",
         "tools": ["Excel", "SQL", "iPost Enterprise", "Automation"]
       }
     ]
@@ -112,49 +112,62 @@
     "headline": "Experience across data, software, and quality assurance.",
     "items": [
       {
-        "date": "2025—Present",
+        "date": "2025 — Present",
         "role": "Data Operations Coordinator",
-        "organization": "SEMA",
+        "organization": "SEMA <i>(Specialty Equipment Market Association)</i>",
         "text": "Own recurring and ad hoc reporting for sales, marketing, operations, and leadership. Support the transition from a legacy business system to Salesforce through data validation, report development, migration testing, audience segmentation, troubleshooting, field configuration, formulas, and process documentation."
       },
       {
-        "date": "2023—2025",
+        "date": "2023 — 2025",
         "role": "Software Developer",
         "organization": "Knights of Creation",
-        "text": "Developed SQL and Python tools, ETL workflows, internal automation, data-transfer processes, and user-facing applications."
+        "text": "Built SQL and Python tools, ETL workflows, internal automation, data-transfer processes, and user-facing applications for structured operational workflows. Designed the supporting data logic and interfaces to make those processes more repeatable, usable, and easier to maintain."
       },
       {
-        "date": "2015—2022",
+        "date": "2015 — 2022",
         "organization": "MaxGames Studios",
         "roles": [
           {
-            "date": "2017—2022",
+            "date": "2017 — 2022",
             "role": "Quality Assurance & Live Operations Support",
             "text": "Moved into paid development support after beginning as a volunteer contributor. Participated in internal development boards and tested live-service updates before public beta release. Performed regression testing, reproduced defects, validated workflows and data, and documented findings for developers."
           },
           {
-            "date": "2015—2017",
+            "date": "2015 — 2017",
             "role": "Volunteer QA Contributor",
             "text": "Tested game systems, reproduced technical issues, validated data consistency, and documented defects. Earned additional access and responsibility through consistent and reliable contributions."
           }
         ]
-      },
-      {
-        "date": "Education",
-        "role": "B.S. Computer Science, Cum Laude",
-        "organization": "Grand Canyon University",
-        "text": "Academic foundation in software development, databases, systems design, and technical problem-solving. Certified ScrumMaster."
       }
-    ]
+    ],
+    "development": {
+      "eyebrow": "Education & professional development",
+      "headline": "Technical education backed by continued platform learning.",
+      "items": [
+        {
+          "label": "Education",
+          "title": "B.S. Computer Science, Cum Laude",
+          "organization": "Grand Canyon University",
+          "text": "Academic foundation in software development, databases, systems design, and technical problem-solving."
+        },
+        {
+          "label": "Certification",
+          "title": "Certified ScrumMaster (CSM)",
+          "organization": "Scrum Alliance",
+          "text": "Professional certification in Scrum roles, team collaboration, iterative delivery, and continuous improvement."
+        },
+        {
+          "label": "Salesforce education",
+          "title": "Trailhead Professional Development",
+          "organization": "Salesforce",
+          "text": "Earned 140+ Trailhead badges and 70K+ points through self-directed study across reporting, configuration, data management, automation, and platform fundamentals."
+        }
+      ]
+    }
   },
   "skills": {
     "eyebrow": "Skills & development",
     "headline": "A practical technical toolkit that continues to grow.",
-    "learning": {
-      "label": "Salesforce & business systems",
-      "headline": "Hands-on platform experience",
-      "text": "Work includes Salesforce-based reporting, field configuration, formulas, data validation, migration support, issue investigation, and process development. I continue to expand my platform knowledge through self-directed Trailhead learning and formal training opportunities."
-    },
     "groups": [
       {
         "title": "Data & Reporting",
@@ -178,15 +191,15 @@
     "eyebrow": "About",
     "headline": "I bridge business needs, data, and technical systems.",
     "text": [
-      "My background includes software development, quality assurance, data operations, and business systems. That experience helps me learn unfamiliar tools quickly and understand both how systems work and why the business uses them.",
-      "I enjoy solving problems where the data is incomplete, the process is unclear, or the system is changing. My goal is to leave behind something accurate, understandable, and easier for others to maintain.",
-      "My current focus is expanding my ownership of Salesforce-based reporting, data processes, automation, and marketing audience architecture."
+      "My background spans quality assurance, software development, and data operations. QA taught me to investigate issues methodically and document what I found; software development added experience with databases, automation, and system logic. I now apply that foundation to reporting, data quality, and business processes.",
+      "I do my best work when data is inconsistent, a workflow is unclear, or a system is changing. I like turning those situations into reliable outputs, documented rules, and processes other people can maintain.",
+      "I am continuing to deepen my ownership of Salesforce-based reporting, automation, and marketing audience architecture."
     ]
   },
   "contact": {
     "eyebrow": "Contact",
     "headline": "Let’s make complex data easier to use.",
-    "text": "I am interested in data operations, reporting, CRM, and business systems roles where I can improve data quality, workflows, and decision-making.",
+    "text": "I am interested in Data Operations Analyst, Reporting Analyst, CRM, and Business Systems Analyst roles where I can improve data quality, workflows, and decision-making.",
     "formIntro": "Send a message here.",
     "formSubject": "New portfolio contact for Ryan Scott"
   }

@@ -37,7 +37,7 @@ function validateSiteData(data) {
     return !data[key] || typeof data[key] !== 'object';
   });
 
-  const requiredArrays = [data.nav, data.hero.capabilities, data.hero.actions, data.hero.panel?.facts, data.work.items, data.capabilities.items, data.experience.items, data.skills.groups, data.about.text];
+  const requiredArrays = [data.nav, data.hero.capabilities, data.hero.actions, data.hero.panel?.facts, data.work.items, data.capabilities.items, data.experience.items, data.experience.development?.items, data.skills.groups, data.about.text];
   const invalidExperience = Array.isArray(data.experience?.items) && data.experience.items.some(function (item) {
     if (Array.isArray(item.roles)) return !item.organization || item.roles.length === 0;
     return !item.role || !item.text;
@@ -224,6 +224,7 @@ function experienceSection(section) {
         <div class="experience-list">
           ${section.items.map(experienceItem).join('')}
         </div>
+        ${developmentSection(section.development)}
       </div>
     </section>
   `;
@@ -236,7 +237,6 @@ function experienceItem(item) {
         <p class="experience-date">${item.date}</p>
         <div>
           <h3>${item.organization}</h3>
-          <p class="experience-progression-label">Role progression</p>
           <div class="role-progression">
             ${item.roles.map(function (role) {
               return `
@@ -267,21 +267,36 @@ function experienceItem(item) {
   `;
 }
 
+function developmentSection(section) {
+  if (!section || !Array.isArray(section.items) || !section.items.length) return '';
+
+  return `
+    <section class="development-block" aria-labelledby="development-heading">
+      <div class="development-heading">
+        <p class="eyebrow">${section.eyebrow}</p>
+        <h3 id="development-heading">${section.headline}</h3>
+      </div>
+      <div class="development-grid">
+        ${section.items.map(function (item) {
+          return `
+            <article class="development-card">
+              <p class="work-tag">${item.label}</p>
+              <h4>${item.title}</h4>
+              ${item.organization ? `<p class="development-organization">${item.organization}</p>` : ''}
+              <p>${item.text}</p>
+            </article>
+          `;
+        }).join('')}
+      </div>
+    </section>
+  `;
+}
+
 function skillsSection(section) {
   return `
     <section id="skills" class="section muted-section">
       <div class="container">
-        <div class="section-heading split">
-          <div>
-            <p class="eyebrow">${section.eyebrow}</p>
-            <h2>${section.headline}</h2>
-          </div>
-          <div class="learning-summary">
-            <p class="work-tag">${section.learning.label}</p>
-            <h3>${section.learning.headline}</h3>
-            <p>${section.learning.text}</p>
-          </div>
-        </div>
+        ${sectionHeading(section.eyebrow, section.headline)}
         <div class="skills-grid">
           ${section.groups.map(function (group, index) {
             const id = `skill-group-${index}`;

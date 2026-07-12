@@ -1,34 +1,43 @@
-# Deploying this site to GitHub Pages
+# Deploying to GitHub Pages
 
-This repo deploys from GitHub Actions. No custom domain is configured right now.
-
-Site URL after the first successful deploy:
+The portfolio deploys from GitHub Actions to:
 
 ```text
 https://aseplayer.github.io/Portfolio-2.0/
 ```
 
-Deploy steps:
+## Publish
 
-1. Commit and push changes to `main`.
-2. In GitHub, open the repo's `Settings` -> `Pages`.
-3. Under `Build and deployment`, set `Source` to `GitHub Actions`.
-4. Open the `Actions` tab and run `Deploy to GitHub Pages`, or push a new commit to `main`.
+1. Run `node scripts/validate-site.mjs` locally.
+2. Commit and push the changes to `main`.
+3. In the repository's `Settings` → `Pages`, set the source to `GitHub Actions` if it is not already selected.
+4. Confirm that the `Deploy to GitHub Pages` workflow passes.
 
-The workflow at `.github/workflows/pages.yml` uploads the repository root as the Pages artifact. Keep asset links relative, such as `css/styles.css`, `js/script.js`, and `resume.pdf`, so they work under the project URL path.
+The workflow validates the portfolio before uploading the repository root. Keep internal asset links relative so they continue to work below the project URL.
 
-Content and contact form:
+## Pre-launch checks
+
+- Open the deployed site on desktop and mobile.
+- Test keyboard navigation, the mobile menu, and direct links such as `#work` and `#contact`.
+- Confirm LinkedIn, GitHub, email, and every call to action point to the intended destination.
+- If a résumé is configured, open it from the deployed site and confirm that it is the current version.
+- Submit the production contact form and confirm delivery, FormSubmit activation, the success message, and spam handling.
+- Confirm the page title and description in a search/share preview tool.
+
+## Content and résumé
 
 - Edit portfolio content in `data/site.json`.
-- The contact form posts to FormSubmit using `ryanscottcareer@gmail.com`.
-- The first real form submission may require clicking an activation link sent by FormSubmit to that inbox.
-- For local preview, run a static server. Opening `index.html` directly may block `data/site.json` because browsers restrict local file fetches.
+- The résumé section stays hidden while `person.resume` is empty.
+- To publish a résumé, add a real PDF, set its path in `person.resume`, and rerun validation.
 
-Custom domain setup, later:
+## Custom domain
 
-1. Create a root-level `CNAME` file containing only the real domain, such as `ryanscott.com`.
-2. In GitHub, open `Settings` -> `Pages` and enter the same custom domain.
-3. Add the DNS records GitHub recommends for that domain.
-4. Wait for DNS verification, then enable `Enforce HTTPS`.
+No custom domain is configured in this repository. To use one later:
 
-If GitHub shows an unwanted custom domain now, clear it in `Settings` -> `Pages` -> `Custom domain`, then save. The default site URL should remain `https://aseplayer.github.io/Portfolio-2.0/`.
+1. Add a root-level `CNAME` file containing the domain.
+2. Enter the same domain under `Settings` → `Pages` → `Custom domain`.
+3. Add the DNS records GitHub recommends.
+4. After DNS verification, enable `Enforce HTTPS`.
+5. Update the canonical and Open Graph URLs in `index.html` and the structured-data URL to match the custom domain.
+
+If an older portfolio already uses the domain, redirect or replace it so recruiters do not encounter conflicting professional positioning.

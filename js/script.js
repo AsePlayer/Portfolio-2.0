@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   try {
     const data = await loadSiteData();
     renderSite(data);
+    setupActiveNavigation();
+    handleInitialHash();
     setupContactSuccess();
   } catch (error) {
     renderError(error);
@@ -19,12 +21,31 @@ document.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function loadSiteData() {
-  const response = await fetch('data/site.json', { cache: 'no-cache' });
+  const response = await fetch('data/site.json');
   if (!response.ok) {
     throw new Error('Unable to load site content.');
   }
 
-  return response.json();
+  const data = await response.json();
+  validateSiteData(data);
+  return data;
+}
+
+function validateSiteData(data) {
+  const requiredObjects = ['person', 'links', 'hero', 'work', 'capabilities', 'experience', 'skills', 'about', 'contact'];
+  const missingObject = requiredObjects.find(function (key) {
+    return !data[key] || typeof data[key] !== 'object';
+  });
+
+  const requiredArrays = [data.nav, data.hero.capabilities, data.hero.actions, data.hero.panel?.facts, data.work.items, data.capabilities.items, data.experience.items, data.skills.groups, data.about.text];
+  const invalidExperience = Array.isArray(data.experience?.items) && data.experience.items.some(function (item) {
+    if (Array.isArray(item.roles)) return !item.organization || item.roles.length === 0;
+    return !item.role || !item.text;
+  });
+
+  if (missingObject || invalidExperience || requiredArrays.some(function (value) { return !Array.isArray(value); })) {
+    throw new Error('Site content is incomplete or incorrectly formatted.');
+  }
 }
 
 function renderSite(data) {
@@ -55,15 +76,14 @@ function renderPage(data) {
 
   page.innerHTML = [
     heroSection(data),
-    supportsSection(data.supports),
-    whatIDoSection(data.whatIDo),
     workSection(data.work),
-    skillsSection(data.skills),
+    capabilitiesSection(data.capabilities),
     experienceSection(data.experience),
+    skillsSection(data.skills),
     aboutSection(data.about),
     resumeSection(data),
     contactSection(data)
-  ].join('');
+  ].filter(Boolean).join('');
 }
 
 function heroSection(data) {
@@ -71,8 +91,10 @@ function heroSection(data) {
     { key: 'linkedin', label: 'LinkedIn profile', href: data.links.linkedin },
     { key: 'github', label: 'GitHub profile', href: data.links.github },
     { key: 'youtube', label: 'YouTube channel', href: data.links.youtube },
-    { key: 'email', label: 'Email Ryan Scott', href: `mailto:${data.person.email}` }
-  ];
+    { key: 'email', label: `Email ${data.person.name}`, href: `mailto:${data.person.email}` }
+  ].filter(function (link) {
+    return isUsableLink(link.href);
+  });
 
   return `
     <section id="home" class="hero">
@@ -90,18 +112,27 @@ function heroSection(data) {
           <div class="hero-ctas" aria-label="Primary actions">
             ${data.hero.actions.map(actionLink).join('')}
           </div>
-          <ul class="social-list" aria-label="Social links">
-            ${socialLinks.map(socialLink).join('')}
-          </ul>
+          ${socialLinks.length ? `
+            <ul class="social-list" aria-label="Professional links">
+              ${socialLinks.map(socialLink).join('')}
+            </ul>
+          ` : ''}
         </div>
-        <aside class="hero-panel" aria-label="Professional focus">
-          <div class="profile-card">
-            <div class="profile-initials" aria-hidden="true">${data.person.initials}</div>
+        <aside class="hero-panel" aria-label="Selected professional proof">
+          <div class="proof-card">
             <p class="profile-label">${data.hero.panel.label}</p>
             <h2>${data.hero.panel.headline}</h2>
-            <dl class="quick-facts">
+            <dl class="proof-facts">
               ${data.hero.panel.facts.map(function (fact) {
-                return `<div><dt>${fact.label}</dt><dd>${fact.value}</dd></div>`;
+                return `
+                  <div class="proof-stat">
+                    <dt>${fact.value}</dt>
+                    <dd>
+                      <span class="proof-stat-label">${fact.label}</span>
+                      <span class="proof-stat-detail">${fact.detail}</span>
+                    </dd>
+                  </div>
+                `;
               }).join('')}
             </dl>
           </div>
@@ -122,60 +153,16 @@ function actionLink(action) {
 function socialLink(link) {
   return `
     <li>
-      <a href="${link.href}" aria-label="${link.label}" title="${titleCase(link.key)}">
+      <a href="${link.href}" aria-label="${link.label}" title="${titleCase(link.key)}"${link.href.startsWith('http') ? ' rel="me"' : ''}>
         ${icons[link.key]}
       </a>
     </li>
   `;
 }
 
-function supportsSection(section) {
-  return `
-    <section id="supports" class="section supports-section">
-      <div class="container supports-panel">
-        <div class="section-heading">
-          <p class="eyebrow">${section.eyebrow}</p>
-          <h2>${section.headline}</h2>
-        </div>
-        <ul class="support-list" aria-label="Business areas supported">
-          ${section.items.map(function (item) {
-            return `<li>${item}</li>`;
-          }).join('')}
-        </ul>
-        <ol class="workflow-strip" aria-label="Typical workflow">
-          ${section.workflow.map(function (item) {
-            return `<li>${item}</li>`;
-          }).join('')}
-        </ol>
-      </div>
-    </section>
-  `;
-}
-
-function whatIDoSection(section) {
-  return `
-    <section id="what" class="section">
-      <div class="container">
-        ${sectionHeading(section.eyebrow, section.headline)}
-        <div class="card-grid services-grid">
-          ${section.items.map(function (item, index) {
-            return `
-              <article class="service-card">
-                <span class="card-number">${String(index + 1).padStart(2, '0')}</span>
-                <h3>${item.title}</h3>
-                <p>${item.text}</p>
-              </article>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    </section>
-  `;
-}
-
 function workSection(section) {
   return `
-    <section id="work" class="section muted-section">
+    <section id="work" class="section work-section">
       <div class="container">
         <div class="section-heading split">
           <div>
@@ -188,11 +175,17 @@ function workSection(section) {
           ${section.items.map(function (item) {
             return `
               <article class="work-card">
-                <div>
+                <div class="work-card-heading">
                   <p class="work-tag">${item.tag}</p>
                   <h3>${item.title}</h3>
                 </div>
-                <p>${item.text}</p>
+                <div class="work-card-copy">
+                  <p>${item.text}</p>
+                  <p class="work-result"><span>Outcome</span>${item.result}</p>
+                  <ul class="tool-list" aria-label="Methods and tools used">
+                    ${item.tools.map(function (tool) { return `<li>${tool}</li>`; }).join('')}
+                  </ul>
+                </div>
               </article>
             `;
           }).join('')}
@@ -202,19 +195,19 @@ function workSection(section) {
   `;
 }
 
-function skillsSection(section) {
+function capabilitiesSection(section) {
   return `
-    <section id="skills" class="section">
+    <section id="capabilities" class="section muted-section">
       <div class="container">
         ${sectionHeading(section.eyebrow, section.headline)}
-        <div class="skills-grid">
-          ${section.groups.map(function (group, index) {
-            const id = `skill-group-${index}`;
+        <div class="card-grid services-grid">
+          ${section.items.map(function (item, index) {
             return `
-              <section class="skill-group" aria-labelledby="${id}">
-                <h3 id="${id}">${group.title}</h3>
-                <p>${group.text}</p>
-              </section>
+              <article class="service-card">
+                <span class="card-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
+                <h3>${item.title}</h3>
+                <p>${item.text}</p>
+              </article>
             `;
           }).join('')}
         </div>
@@ -225,17 +218,80 @@ function skillsSection(section) {
 
 function experienceSection(section) {
   return `
-    <section id="experience" class="section muted-section">
+    <section id="experience" class="section">
       <div class="container">
         ${sectionHeading(section.eyebrow, section.headline)}
         <div class="experience-list">
-          ${section.items.map(function (item) {
+          ${section.items.map(experienceItem).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function experienceItem(item) {
+  if (Array.isArray(item.roles) && item.roles.length) {
+    return `
+      <article class="experience-item experience-item-grouped">
+        <p class="experience-date">${item.date}</p>
+        <div>
+          <h3>${item.organization}</h3>
+          <p class="experience-progression-label">Role progression</p>
+          <div class="role-progression">
+            ${item.roles.map(function (role) {
+              return `
+                <section class="role-item">
+                  <div class="role-heading">
+                    <h4>${role.role}</h4>
+                    <p class="role-date">${role.date}</p>
+                  </div>
+                  <p>${role.text}</p>
+                </section>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  return `
+    <article class="experience-item">
+      <p class="experience-date">${item.date}</p>
+      <div>
+        <h3>${item.organization || item.role}</h3>
+        ${item.organization ? `<h4 class="experience-role-title">${item.role}</h4>` : ''}
+        <p>${item.text}</p>
+      </div>
+    </article>
+  `;
+}
+
+function skillsSection(section) {
+  return `
+    <section id="skills" class="section muted-section">
+      <div class="container">
+        <div class="section-heading split">
+          <div>
+            <p class="eyebrow">${section.eyebrow}</p>
+            <h2>${section.headline}</h2>
+          </div>
+          <div class="learning-summary">
+            <p class="work-tag">${section.learning.label}</p>
+            <h3>${section.learning.headline}</h3>
+            <p>${section.learning.text}</p>
+          </div>
+        </div>
+        <div class="skills-grid">
+          ${section.groups.map(function (group, index) {
+            const id = `skill-group-${index}`;
             return `
-              <article class="experience-item">
-                <p class="work-tag">${item.label}</p>
-                <h3>${item.title}</h3>
-                <p>${item.text}</p>
-              </article>
+              <section class="skill-group" aria-labelledby="${id}">
+                <h3 id="${id}">${group.title}</h3>
+                <ul class="skill-list">
+                  ${group.items.map(function (item) { return `<li>${item}</li>`; }).join('')}
+                </ul>
+              </section>
             `;
           }).join('')}
         </div>
@@ -250,7 +306,7 @@ function aboutSection(section) {
       <div class="container about-grid">
         ${sectionHeading(section.eyebrow, section.headline)}
         <div class="about-copy">
-          <p>${section.text}</p>
+          ${section.text.map(function (paragraph) { return `<p>${paragraph}</p>`; }).join('')}
         </div>
       </div>
     </section>
@@ -258,15 +314,24 @@ function aboutSection(section) {
 }
 
 function resumeSection(data) {
+  if (!data.person.resume) return '';
+
+  const section = data.resume || {
+    eyebrow: 'Resume',
+    headline: 'A closer look at my experience.',
+    text: 'View a concise summary of my experience, technical background, and qualifications.',
+    button: 'View Resume'
+  };
+
   return `
     <section id="resume" class="section resume-section">
       <div class="container resume-panel">
         <div>
-          <p class="eyebrow">${data.resume.eyebrow}</p>
-          <h2>${data.resume.headline}</h2>
-          <p>${data.resume.text}</p>
+          <p class="eyebrow">${section.eyebrow}</p>
+          <h2>${section.headline}</h2>
+          <p>${section.text}</p>
         </div>
-        <a class="btn primary" href="${data.person.resume}" download>${data.resume.button}</a>
+        <a class="btn primary" href="${data.person.resume}">${section.button}</a>
       </div>
     </section>
   `;
@@ -275,6 +340,13 @@ function resumeSection(data) {
 function contactSection(data) {
   const email = data.person.email;
   const action = `https://formsubmit.co/${email}`;
+  const professionalLinks = [
+    { label: 'LinkedIn', href: data.links.linkedin },
+    { label: 'GitHub', href: data.links.github },
+    { label: 'YouTube', href: data.links.youtube }
+  ].filter(function (link) {
+    return isUsableLink(link.href);
+  });
 
   return `
     <section id="contact" class="section contact-section">
@@ -283,15 +355,18 @@ function contactSection(data) {
           <p class="eyebrow">${data.contact.eyebrow}</p>
           <h2>${data.contact.headline}</h2>
           <p>${data.contact.text}</p>
-          <p class="form-status" data-form-status hidden>Your message was sent. Thanks for reaching out.</p>
-          <div class="contact-links" aria-label="Contact links">
-            <a href="mailto:${email}">Email</a>
-            <a href="${data.links.linkedin}">LinkedIn</a>
-            <a href="${data.links.github}">GitHub</a>
-            <a href="${data.links.youtube}">YouTube</a>
-          </div>
+          <a class="btn primary contact-email" href="mailto:${email}">${email}</a>
+          ${professionalLinks.length ? `
+            <div class="contact-links" aria-label="Professional links">
+              ${professionalLinks.map(function (link) {
+                return `<a href="${link.href}" rel="me">${link.label}</a>`;
+              }).join('')}
+            </div>
+          ` : ''}
+          <p class="form-status" data-form-status role="status" aria-live="polite" tabindex="-1" hidden>Your message was sent. Thanks for reaching out.</p>
         </div>
-        <form id="contact-form" class="contact-form" action="${action}" method="POST" aria-label="Contact form">
+        <form id="contact-form" class="contact-form" action="${action}" method="POST" aria-label="Contact Ryan Scott" aria-describedby="contact-form-intro">
+          <p id="contact-form-intro" class="form-intro">${data.contact.formIntro}</p>
           <input type="hidden" name="_subject" value="${data.contact.formSubject}">
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_next" data-next-url>
@@ -328,7 +403,7 @@ function bindPageInteractions() {
     nextUrl.value = `${window.location.origin}${window.location.pathname}?sent=true#contact`;
   }
 
-  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+  document.querySelectorAll('a[href^="#"]:not(.skip-link)').forEach(function (anchor) {
     anchor.addEventListener('click', function (event) {
       const selector = anchor.getAttribute('href');
       if (!selector || selector === '#') return;
@@ -336,8 +411,9 @@ function bindPageInteractions() {
       const target = document.querySelector(selector);
       if (target) {
         event.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.pushState(null, '', selector);
+        target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+        if (window.location.hash !== selector) history.pushState(null, '', selector);
+        focusDestination(target);
       }
     });
   });
@@ -347,28 +423,104 @@ function setupNavigation() {
   const navToggle = document.getElementById('nav-toggle');
   const nav = document.getElementById('primary-nav');
 
-  function closeNav() {
+  function closeNav(returnFocus) {
     if (!navToggle || !nav) return;
+    const wasOpen = navToggle.getAttribute('aria-expanded') === 'true';
     navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', 'Open navigation');
     nav.classList.remove('open');
     document.body.classList.remove('nav-open');
+    if (returnFocus && wasOpen) navToggle.focus();
   }
 
   if (navToggle && nav) {
     navToggle.addEventListener('click', function () {
       const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
       navToggle.setAttribute('aria-expanded', String(!isOpen));
+      navToggle.setAttribute('aria-label', isOpen ? 'Open navigation' : 'Close navigation');
       nav.classList.toggle('open', !isOpen);
       document.body.classList.toggle('nav-open', !isOpen);
     });
 
     nav.addEventListener('click', function (event) {
-      if (event.target.closest('a')) closeNav();
+      if (event.target.closest('a')) closeNav(false);
+    });
+
+    nav.addEventListener('focusout', function () {
+      window.requestAnimationFrame(function () {
+        const focusStayedInHeader = document.querySelector('.site-header')?.contains(document.activeElement);
+        if (navToggle.getAttribute('aria-expanded') === 'true' && !focusStayedInHeader) closeNav(false);
+      });
+    });
+
+    document.addEventListener('click', function (event) {
+      if (navToggle.getAttribute('aria-expanded') === 'true' && !event.target.closest('.site-header')) {
+        closeNav(false);
+      }
     });
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') closeNav();
+      if (event.key === 'Escape') closeNav(true);
     });
+
+    const desktopQuery = window.matchMedia('(min-width: 721px)');
+    desktopQuery.addEventListener('change', function (event) {
+      if (event.matches) closeNav(false);
+    });
+  }
+}
+
+function setupActiveNavigation() {
+  if (!('IntersectionObserver' in window)) return;
+
+  const links = Array.from(document.querySelectorAll('[data-nav] a[href^="#"]'));
+  const sections = links.map(function (link) {
+    return document.querySelector(link.getAttribute('href'));
+  }).filter(Boolean);
+
+  const observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      links.forEach(function (link) {
+        const isCurrent = link.getAttribute('href') === `#${entry.target.id}`;
+        if (isCurrent) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    });
+  }, { rootMargin: '-30% 0px -60%', threshold: 0 });
+
+  sections.forEach(function (section) { observer.observe(section); });
+}
+
+function handleInitialHash() {
+  if (!window.location.hash || new URLSearchParams(window.location.search).get('sent') === 'true') return;
+  let target;
+
+  try {
+    target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+  } catch {
+    return;
+  }
+
+  if (target) {
+    window.requestAnimationFrame(function () {
+      target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      focusDestination(target);
+    });
+  }
+}
+
+function focusDestination(section) {
+  const destination = section.matches('h1, h2') ? section : section.querySelector('h1, h2') || section;
+  const hadTabindex = destination.hasAttribute('tabindex');
+
+  if (!hadTabindex) destination.setAttribute('tabindex', '-1');
+  destination.focus({ preventScroll: true });
+
+  if (!hadTabindex) {
+    destination.addEventListener('blur', function () {
+      destination.removeAttribute('tabindex');
+    }, { once: true });
   }
 }
 
@@ -377,20 +529,23 @@ function setupContactSuccess() {
   const sent = new URLSearchParams(window.location.search).get('sent');
   if (status && sent === 'true') {
     status.hidden = false;
-    const contact = document.getElementById('contact');
-    if (contact) {
-      contact.setAttribute('tabindex', '-1');
-      contact.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      contact.focus({ preventScroll: true });
-    }
+    status.focus({ preventScroll: true });
+    status.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
+
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete('sent');
+    cleanUrl.hash = 'contact';
+    history.replaceState(null, '', cleanUrl);
   }
+}
+
+function scrollBehavior() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 }
 
 function setYear() {
   const year = document.getElementById('year');
-  if (year) {
-    year.textContent = new Date().getFullYear();
-  }
+  if (year) year.textContent = new Date().getFullYear();
 }
 
 function renderError(error) {
@@ -400,12 +555,17 @@ function renderError(error) {
   page.innerHTML = `
     <section class="section loading-section">
       <div class="container">
-        <p class="eyebrow">Content unavailable</p>
+        <p class="eyebrow">Data operations · reporting · business systems</p>
         <h1>Ryan Scott</h1>
-        <p>${error.message} Try opening this site through a local server or GitHub Pages.</p>
+        <p class="headline">Data Operations | Reporting | Business Systems</p>
+        <p>${error.message} You can still reach me at <a href="mailto:ryanscottcareer@gmail.com">ryanscottcareer@gmail.com</a>.</p>
       </div>
     </section>
   `;
+}
+
+function isUsableLink(value) {
+  return typeof value === 'string' && value.trim() !== '' && value.trim() !== '#';
 }
 
 function titleCase(value) {

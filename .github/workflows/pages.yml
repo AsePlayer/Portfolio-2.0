@@ -19,7 +19,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: https://aseplayer.github.io/Portfolio-2.0/
+      url: https://ryanscott.org/
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

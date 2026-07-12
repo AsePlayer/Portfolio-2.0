@@ -7,6 +7,7 @@ const icons = {
 
 document.addEventListener('DOMContentLoaded', async function () {
   setYear();
+  setupThemeToggle();
   setupNavigation();
 
   try {
@@ -284,6 +285,7 @@ function developmentSection(section) {
               <h4>${item.title}</h4>
               ${item.organization ? `<p class="development-organization">${item.organization}</p>` : ''}
               <p>${item.text}</p>
+              ${item.link && isUsableLink(item.link.href) ? `<a class="development-link" href="${item.link.href}" target="_blank" rel="noopener noreferrer">${item.link.label}<span aria-hidden="true">↗</span></a>` : ''}
             </article>
           `;
         }).join('')}
@@ -431,6 +433,51 @@ function bindPageInteractions() {
         focusDestination(target);
       }
     });
+  });
+}
+
+function setupThemeToggle() {
+  const toggle = document.getElementById('theme-toggle');
+  if (!toggle) return;
+
+  const root = document.documentElement;
+  const themeColor = document.getElementById('theme-color');
+  const systemPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let hasSavedPreference = false;
+
+  try {
+    hasSavedPreference = Boolean(localStorage.getItem('portfolio-theme'));
+  } catch (error) {
+    hasSavedPreference = false;
+  }
+
+  function applyTheme(theme) {
+    const isDark = theme === 'dark';
+    const nextThemeLabel = isDark ? 'light' : 'dark';
+
+    root.dataset.theme = isDark ? 'dark' : 'light';
+    toggle.setAttribute('aria-pressed', String(isDark));
+    toggle.setAttribute('aria-label', `Switch to ${nextThemeLabel} mode`);
+    toggle.setAttribute('title', `Switch to ${nextThemeLabel} mode`);
+    if (themeColor) themeColor.setAttribute('content', isDark ? '#0b1220' : '#14213d');
+  }
+
+  applyTheme(root.dataset.theme || (systemPreference.matches ? 'dark' : 'light'));
+
+  toggle.addEventListener('click', function () {
+    const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+    hasSavedPreference = true;
+
+    try {
+      localStorage.setItem('portfolio-theme', nextTheme);
+    } catch (error) {
+      // The selected theme still applies for the current page if storage is unavailable.
+    }
+  });
+
+  systemPreference.addEventListener('change', function (event) {
+    if (!hasSavedPreference) applyTheme(event.matches ? 'dark' : 'light');
   });
 }
 

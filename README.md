@@ -2,6 +2,8 @@
 
 A lightweight, recruiter-focused portfolio built with semantic HTML, responsive CSS, and plain JavaScript. The content emphasizes cross-functional reporting, data validation, CRM/AMS migration support, Salesforce development, and process documentation.
 
+Live site: [ryanscott.org](https://ryanscott.org/)
+
 ## Local preview
 
 The page loads its content from JSON, so preview it through a local server rather than opening `index.html` directly:
@@ -14,6 +16,7 @@ The page loads its content from JSON, so preview it through a local server rathe
 - Update copy, case studies, experience, skills, contact details, and links in `data/site.json`.
 - Leave an unavailable social URL as an empty string. Empty links are omitted automatically; `#` placeholders fail validation.
 - Layout and interactions live in `js/script.js`; presentation lives in `css/styles.css`.
+- The light/dark theme defaults to the visitor's system preference and saves manual selections in local storage.
 - Run `node scripts/validate-site.mjs` after content changes.
 
 ### Multiple roles at one company

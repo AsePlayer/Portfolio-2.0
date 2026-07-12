@@ -47,7 +47,7 @@
           "detail": "SQL-based validation, reconciliation, segmentation, and issue investigation"
         },
         {
-          "value": "Business Systems",
+          "value": "Business Operations",
           "label": "Reporting, configuration, and migration",
           "detail": "Hands-on work with Salesforce, CRM and AMS platforms, automation, and process improvement"
         }
@@ -160,7 +160,11 @@
           "label": "Salesforce education",
           "title": "Trailhead Professional Development",
           "organization": "Salesforce",
-          "text": "Earned 140+ Trailhead badges and 70K+ points through self-directed study across reporting, configuration, data management, automation, and platform fundamentals."
+          "text": "Earned 140+ Trailhead badges and 70K+ points through self-directed study across reporting, configuration, data management, automation, and platform fundamentals.",
+          "link": {
+            "label": "View Trailhead profile",
+            "href": "https://www.salesforce.com/trailblazer/ryandscott"
+          }
         }
       ]
     }

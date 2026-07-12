@@ -38,6 +38,7 @@ function requireStringArray(value, label) {
 const data = readJson('data/site.json');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const styles = fs.readFileSync(path.join(root, 'css/styles.css'), 'utf8');
+const customDomain = fs.readFileSync(path.join(root, 'CNAME'), 'utf8').trim();
 
 if (data) {
   requireText(data.person?.name, 'person.name');
@@ -107,6 +108,14 @@ if (data) {
   });
   (data.experience?.development?.items || []).forEach((item, index) => {
     requireTextFields(item, `experience.development.items[${index}]`, ['label', 'title', 'text']);
+    if (item?.link) {
+      requireText(item.link.label, `experience.development.items[${index}].link.label`);
+      if (typeof item.link.href !== 'string') {
+        fail(`experience.development.items[${index}].link.href must be a string.`);
+      } else if (item.link.href && !/^https:\/\//.test(item.link.href)) {
+        fail(`experience.development.items[${index}].link.href must use an https URL.`);
+      }
+    }
   });
   (data.skills?.groups || []).forEach((item, index) => {
     requireText(item?.title, `skills.groups[${index}].title`);
@@ -137,19 +146,23 @@ if (data) {
   }
 }
 
-['css/styles.css', 'js/script.js', 'data/site.json', 'favicon.svg'].forEach((relativePath) => {
+['css/styles.css', 'js/script.js', 'data/site.json', 'favicon.svg', 'CNAME'].forEach((relativePath) => {
   if (!fs.existsSync(path.join(root, relativePath))) fail(`Required asset is missing: ${relativePath}`);
 });
 
 [
   'rel="canonical"',
+  'https://ryanscott.org/',
   'property="og:title"',
   'application/ld+json',
   'class="skip-link"',
+  'id="theme-toggle"',
   'id="main"'
 ].forEach((marker) => {
   if (!index.includes(marker)) fail(`index.html is missing required marker: ${marker}`);
 });
+
+if (customDomain !== 'ryanscott.org') fail('CNAME must contain only ryanscott.org.');
 
 const structuredData = index.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
 if (!structuredData) {

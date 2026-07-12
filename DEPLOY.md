@@ -3,7 +3,7 @@
 The portfolio deploys from GitHub Actions to:
 
 ```text
-https://aseplayer.github.io/Portfolio-2.0/
+https://ryanscott.org/
 ```
 
 ## Publish
@@ -32,12 +32,9 @@ The workflow validates the portfolio before uploading the repository root. Keep 
 
 ## Custom domain
 
-No custom domain is configured in this repository. To use one later:
+The repository is configured for `ryanscott.org` through the root-level `CNAME` file.
 
-1. Add a root-level `CNAME` file containing the domain.
-2. Enter the same domain under `Settings` → `Pages` → `Custom domain`.
-3. Add the DNS records GitHub recommends.
-4. After DNS verification, enable `Enforce HTTPS`.
-5. Update the canonical and Open Graph URLs in `index.html` and the structured-data URL to match the custom domain.
-
-If an older portfolio already uses the domain, redirect or replace it so recruiters do not encounter conflicting professional positioning.
+1. Confirm `ryanscott.org` under `Settings` → `Pages` → `Custom domain`.
+2. Keep the domain's DNS records pointed to GitHub Pages.
+3. After DNS verification, enable `Enforce HTTPS`.
+4. If the domain changes later, update `CNAME`, the workflow URL, and the canonical, Open Graph, and structured-data URLs in `index.html`.

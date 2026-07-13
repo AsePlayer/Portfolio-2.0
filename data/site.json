@@ -5,7 +5,7 @@
     "title": "Data Operations | Reporting | Business Systems",
     "currentRole": "Data Operations Coordinator",
     "email": "ryanscottcareer@gmail.com",
-    "resume": ""
+    "resume": "data/Ryan Scott Resume.pdf"
   },
   "links": {
     "linkedin": "https://www.linkedin.com/in/ryan-scott-95aa651b0/",
@@ -17,6 +17,7 @@
     { "label": "Experience", "href": "#experience" },
     { "label": "Skills", "href": "#skills" },
     { "label": "About", "href": "#about" },
+    { "label": "Resume", "href": "#resume" },
     { "label": "Contact", "href": "#contact" }
   ],
   "hero": {

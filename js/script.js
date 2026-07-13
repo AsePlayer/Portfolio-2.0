@@ -148,13 +148,13 @@ function actionLink(action) {
   if (action.style === 'primary') classes.push('primary');
   if (action.style === 'subtle') classes.push('subtle');
 
-  return `<a class="${classes.join(' ')}" href="${action.href}"${action.download ? ' download' : ''}>${action.label}</a>`;
+  return `<a class="${classes.join(' ')}" href="${action.href}"${action.download ? ' download' : newTabAttributes(action.href)}>${action.label}</a>`;
 }
 
 function socialLink(link) {
   return `
     <li>
-      <a href="${link.href}" aria-label="${link.label}" title="${titleCase(link.key)}"${link.href.startsWith('http') ? ' rel="me"' : ''}>
+      <a href="${link.href}" aria-label="${link.label}" title="${titleCase(link.key)}"${newTabAttributes(link.href, link.href.startsWith('http') ? 'me' : '')}>
         ${icons[link.key]}
       </a>
     </li>
@@ -348,7 +348,7 @@ function resumeSection(data) {
           <h2>${section.headline}</h2>
           <p>${section.text}</p>
         </div>
-        <a class="btn primary" href="${data.person.resume}">${section.button}</a>
+        <a class="btn primary" href="${data.person.resume}"${newTabAttributes(data.person.resume)}>${section.button}</a>
       </div>
     </section>
   `;
@@ -376,7 +376,7 @@ function contactSection(data) {
           ${professionalLinks.length ? `
             <div class="contact-links" aria-label="Professional links">
               ${professionalLinks.map(function (link) {
-                return `<a href="${link.href}" rel="me">${link.label}</a>`;
+                return `<a href="${link.href}"${newTabAttributes(link.href, 'me')}>${link.label}</a>`;
               }).join('')}
             </div>
           ` : ''}
@@ -567,9 +567,15 @@ function handleInitialHash() {
   if (target) {
     window.requestAnimationFrame(function () {
       target.scrollIntoView({ behavior: 'auto', block: 'start' });
-      focusDestination(target);
     });
   }
+}
+
+function newTabAttributes(href, relationship = '') {
+  const opensInNewTab = /^https?:\/\//i.test(href) || /\.pdf(?:[?#]|$)/i.test(href);
+  const rel = [relationship, opensInNewTab ? 'noopener noreferrer' : ''].filter(Boolean).join(' ');
+
+  return `${opensInNewTab ? ' target="_blank"' : ''}${rel ? ` rel="${rel}"` : ''}`;
 }
 
 function focusDestination(section) {

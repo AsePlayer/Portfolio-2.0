@@ -208,7 +208,7 @@ function developmentSection(section) {
   if (!section || !Array.isArray(section.items) || !section.items.length) return '';
 
   return `
-    <section class="development-block" aria-labelledby="development-heading">
+    <section id="education" class="development-block" aria-labelledby="development-heading">
       <div class="development-heading">
         <p class="eyebrow">${section.eyebrow}</p>
         <h3 id="development-heading">${section.headline}</h3>

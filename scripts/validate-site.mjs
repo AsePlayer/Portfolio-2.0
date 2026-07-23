@@ -106,7 +106,7 @@ if (data) {
     requireStringArray(item?.items, `skills.groups[${index}].items`);
   });
 
-  const pageTargets = new Set(['#home', '#experience', '#skills', '#contact']);
+  const pageTargets = new Set(['#home', '#experience', '#education', '#skills', '#contact']);
   if (data.person?.resume) pageTargets.add('#resume');
 
   (data.nav || []).forEach((item) => {

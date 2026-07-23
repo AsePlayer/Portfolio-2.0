@@ -21,7 +21,7 @@
   ],
   "hero": {
     "eyebrow": "Salesforce · SQL · Excel · Automation",
-    "subheadline": "I turn complex business requirements into reliable data systems, automated workflows, and reporting teams can trust using Salesforce, SQL, Excel, and iPost Enterprise.",
+    "subheadline": "I turn complex business requirements into reliable data systems, automated workflows, and reporting teams can trust using Salesforce, SQL, and Excel.",
     "actions": [
       { "label": "View Experience", "href": "#experience", "style": "primary" },
       { "label": "View Resume", "href": "data/Ryan Scott Resume.pdf", "style": "default" }

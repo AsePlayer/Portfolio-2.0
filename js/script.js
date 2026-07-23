@@ -33,12 +33,12 @@ async function loadSiteData() {
 }
 
 function validateSiteData(data) {
-  const requiredObjects = ['person', 'links', 'hero', 'work', 'capabilities', 'experience', 'skills', 'about', 'contact'];
+  const requiredObjects = ['person', 'links', 'hero', 'experience', 'skills', 'contact'];
   const missingObject = requiredObjects.find(function (key) {
     return !data[key] || typeof data[key] !== 'object';
   });
 
-  const requiredArrays = [data.nav, data.hero.capabilities, data.hero.actions, data.hero.panel?.facts, data.work.items, data.capabilities.items, data.experience.items, data.experience.development?.items, data.skills.groups, data.about.text];
+  const requiredArrays = [data.nav, data.hero.actions, data.hero.panel?.facts, data.experience.items, data.experience.development?.items, data.skills.groups];
   const invalidExperience = Array.isArray(data.experience?.items) && data.experience.items.some(function (item) {
     if (Array.isArray(item.roles)) return !item.organization || item.roles.length === 0;
     return !item.role || !item.text;
@@ -77,11 +77,8 @@ function renderPage(data) {
 
   page.innerHTML = [
     heroSection(data),
-    workSection(data.work),
-    capabilitiesSection(data.capabilities),
     experienceSection(data.experience),
     skillsSection(data.skills),
-    aboutSection(data.about),
     resumeSection(data),
     contactSection(data)
   ].filter(Boolean).join('');
@@ -105,11 +102,6 @@ function heroSection(data) {
           <h1>${data.person.name}</h1>
           <p class="headline">${data.person.title}</p>
           <p class="subheadline">${data.hero.subheadline}</p>
-          <ul class="capability-list" aria-label="Core capabilities">
-            ${data.hero.capabilities.map(function (item) {
-              return `<li>${item}</li>`;
-            }).join('')}
-          </ul>
           <div class="hero-ctas" aria-label="Primary actions">
             ${data.hero.actions.map(actionLink).join('')}
           </div>
@@ -158,62 +150,6 @@ function socialLink(link) {
         ${icons[link.key]}
       </a>
     </li>
-  `;
-}
-
-function workSection(section) {
-  return `
-    <section id="work" class="section work-section">
-      <div class="container">
-        <div class="section-heading split">
-          <div>
-            <p class="eyebrow">${section.eyebrow}</p>
-            <h2>${section.headline}</h2>
-          </div>
-          <p>${section.intro}</p>
-        </div>
-        <div class="work-list">
-          ${section.items.map(function (item) {
-            return `
-              <article class="work-card">
-                <div class="work-card-heading">
-                  <p class="work-tag">${item.tag}</p>
-                  <h3>${item.title}</h3>
-                </div>
-                <div class="work-card-copy">
-                  <p>${item.text}</p>
-                  <p class="work-result"><span>Outcome</span>${item.result}</p>
-                  <ul class="tool-list" aria-label="Methods and tools used">
-                    ${item.tools.map(function (tool) { return `<li>${tool}</li>`; }).join('')}
-                  </ul>
-                </div>
-              </article>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function capabilitiesSection(section) {
-  return `
-    <section id="capabilities" class="section muted-section">
-      <div class="container">
-        ${sectionHeading(section.eyebrow, section.headline)}
-        <div class="card-grid services-grid">
-          ${section.items.map(function (item, index) {
-            return `
-              <article class="service-card">
-                <span class="card-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
-                <h3>${item.title}</h3>
-                <p>${item.text}</p>
-              </article>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    </section>
   `;
 }
 
@@ -311,19 +247,6 @@ function skillsSection(section) {
               </section>
             `;
           }).join('')}
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function aboutSection(section) {
-  return `
-    <section id="about" class="section">
-      <div class="container about-grid">
-        ${sectionHeading(section.eyebrow, section.headline)}
-        <div class="about-copy">
-          ${section.text.map(function (paragraph) { return `<p>${paragraph}</p>`; }).join('')}
         </div>
       </div>
     </section>

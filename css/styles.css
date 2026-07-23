@@ -363,16 +363,6 @@ h3 {
   gap: 12px;
 }
 
-.capability-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 24px;
-  padding: 0;
-  list-style: none;
-}
-
-.capability-list li,
 .tool-list li {
   border: 1px solid var(--soft);
   border-radius: 999px;
@@ -863,7 +853,7 @@ h3 {
 
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 

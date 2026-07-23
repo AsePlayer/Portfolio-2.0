@@ -55,15 +55,11 @@ if (data) {
 
   const requiredArrays = {
     nav: data.nav,
-    'hero.capabilities': data.hero?.capabilities,
     'hero.actions': data.hero?.actions,
     'hero.panel.facts': data.hero?.panel?.facts,
-    'work.items': data.work?.items,
-    'capabilities.items': data.capabilities?.items,
     'experience.items': data.experience?.items,
     'experience.development.items': data.experience?.development?.items,
-    'skills.groups': data.skills?.groups,
-    'about.text': data.about?.text
+    'skills.groups': data.skills?.groups
   };
 
   Object.entries(requiredArrays).forEach(([label, value]) => {
@@ -72,27 +68,15 @@ if (data) {
 
   requireTextFields(data.hero, 'hero', ['eyebrow', 'subheadline']);
   requireTextFields(data.hero?.panel, 'hero.panel', ['label', 'headline']);
-  requireTextFields(data.work, 'work', ['eyebrow', 'headline', 'intro']);
-  requireTextFields(data.capabilities, 'capabilities', ['eyebrow', 'headline']);
   requireTextFields(data.experience, 'experience', ['eyebrow', 'headline']);
   requireTextFields(data.experience?.development, 'experience.development', ['eyebrow', 'headline']);
   requireTextFields(data.skills, 'skills', ['eyebrow', 'headline']);
-  requireTextFields(data.about, 'about', ['eyebrow', 'headline']);
   requireTextFields(data.contact, 'contact', ['eyebrow', 'headline', 'text', 'formIntro', 'formSubject']);
-
-  requireStringArray(data.hero?.capabilities, 'hero.capabilities');
-  requireStringArray(data.about?.text, 'about.text');
 
   (data.nav || []).forEach((item, index) => requireTextFields(item, `nav[${index}]`, ['label', 'href']));
   (data.hero?.actions || []).forEach((item, index) => requireTextFields(item, `hero.actions[${index}]`, ['label', 'href', 'style']));
   (data.hero?.panel?.facts || []).forEach((item, index) => requireTextFields(item, `hero.panel.facts[${index}]`, ['value', 'label', 'detail']));
 
-  (data.work?.items || []).forEach((item, index) => {
-    requireTextFields(item, `work.items[${index}]`, ['tag', 'title', 'text', 'result']);
-    requireStringArray(item?.tools, `work.items[${index}].tools`);
-  });
-
-  (data.capabilities?.items || []).forEach((item, index) => requireTextFields(item, `capabilities.items[${index}]`, ['title', 'text']));
   (data.experience?.items || []).forEach((item, index) => {
     requireText(item?.date, `experience.items[${index}].date`);
 
@@ -122,7 +106,7 @@ if (data) {
     requireStringArray(item?.items, `skills.groups[${index}].items`);
   });
 
-  const pageTargets = new Set(['#home', '#work', '#capabilities', '#experience', '#skills', '#about', '#contact']);
+  const pageTargets = new Set(['#home', '#experience', '#skills', '#contact']);
   if (data.person?.resume) pageTargets.add('#resume');
 
   (data.nav || []).forEach((item) => {

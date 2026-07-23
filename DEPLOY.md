@@ -18,7 +18,7 @@ The workflow validates the portfolio before uploading the repository root. Keep 
 ## Pre-launch checks
 
 - Open the deployed site on desktop and mobile.
-- Test keyboard navigation, the mobile menu, and direct links such as `#work` and `#contact`.
+- Test keyboard navigation, the mobile menu, and direct links such as `#experience` and `#contact`.
 - Confirm LinkedIn, GitHub, email, and every call to action point to the intended destination.
 - If a résumé is configured, open it from the deployed site and confirm that it is the current version.
 - Submit the production contact form and confirm delivery, FormSubmit activation, the success message, and spam handling.

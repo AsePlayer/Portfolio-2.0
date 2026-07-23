@@ -1,4 +1,4 @@
-# Ryan Scott — Data Operations Portfolio
+# Ryan Scott | Data Operations Portfolio
 
 A lightweight, recruiter-focused portfolio built with semantic HTML, responsive CSS, and plain JavaScript. The content emphasizes cross-functional reporting, data validation, CRM/AMS migration support, Salesforce development, and process documentation.
 
@@ -13,7 +13,7 @@ The page loads its content from JSON, so preview it through a local server rathe
 
 ## Editing content
 
-- Update copy, case studies, experience, skills, contact details, and links in `data/site.json`.
+- Update copy, experience, skills, contact details, and links in `data/site.json`.
 - Leave an unavailable social URL as an empty string. Empty links are omitted automatically; `#` placeholders fail validation.
 - Layout and interactions live in `js/script.js`; presentation lives in `css/styles.css`.
 - The light/dark theme defaults to the visitor's system preference and saves manual selections in local storage.
@@ -25,16 +25,16 @@ Use one experience item for the company, put the overall tenure in `date`, and a
 
 ```json
 {
-  "date": "2015—2022",
+  "date": "2015 to 2022",
   "organization": "Company Name",
   "roles": [
     {
-      "date": "2017—2022",
+      "date": "2017 to 2022",
       "role": "Later Role",
       "text": "Responsibilities and impact."
     },
     {
-      "date": "2015—2017",
+      "date": "2015 to 2017",
       "role": "Earlier Role",
       "text": "Responsibilities and impact."
     }

@@ -68,6 +68,8 @@ The optional `impact` section contains an `eyebrow` and `items` array. It appear
 
 Approximate metrics display an explicit qualifier. `enabled: false` on a metric hides it in both the band and case cards. `impact.enabled: false` hides only the band. Empty `items` or an omitted `impact` section are supported; remove case-study metric references if their definitions are removed. **JSON is a public asset:** hiding a metric does not remove its value from JSON. To keep a number private, delete its metric entry and references before publishing.
 
+Headline metrics are ordered as approximately 8,000 historical exhibitors, approximately 4,000 CRM affiliation records, and 473 organizations surfaced. The `exhibitor-history` metric ID is ready for a future Historical Exhibitor / Customer Tenure Analysis case: add that case to `selectedWork.items`, then set the metric's `caseStudyId` to its ID. Until the case exists, the metric has no case-study link.
+
 ### Share images
 
 `seo.image` is optional. When a real image is available, set it to `{"path":"assets/share.png","alt":"Description of the image"}`. Use a relative PNG, JPEG, or WebP file inside the repository. Validation checks the asset; the build copies it into `dist/` and emits absolute Open Graph/Twitter image URLs and alt text. Without an image, image tags are omitted and Twitter uses the summary card.
@@ -100,7 +102,7 @@ The build publishes only the configured résumé, so other variants are not bund
 
 **Accuracy note:** The revised résumé and portfolio both use “Software Developer” with the confirmed Knights of Creation dates of 2022–2025, and both include the Salesforce Certified Data 360 Consultant credential. SEMA’s June 2025 start and the paid QA role title match the revised résumé. The volunteer QA dates remain supported by the earlier résumé and repositioning brief.
 
-The public website's headline and structured job title follow the current positioning. The supplied résumé is intentionally unchanged; its headline and summary will be revised separately by the owner. Public case studies use the supplied 473-organization audit result, approximately 4,000 CRM affiliation records, and 30+ segmentation categories. No financial or time-saving estimates are added. Potential membership remediation stays an investigation, and Data 360 stays certification knowledge.
+The public website's headline and structured job title follow the current positioning. The supplied résumé is intentionally unchanged; its headline and summary will be revised separately by the owner. Headline metrics use the supplied approximately 8,000 historical exhibitors, approximately 4,000 CRM affiliation records, and 473-organization audit result. Organization-type segmentation remains supporting experience and skill evidence. No financial or time-saving estimates are added. Potential membership remediation stays an investigation, and Data 360 stays certification knowledge.
 
 ## Contact form
 

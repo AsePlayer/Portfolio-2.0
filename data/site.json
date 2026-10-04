@@ -83,7 +83,7 @@
         "date": "June 2025 - Present",
         "role": "Data Operations Coordinator",
         "organization": "SEMA <i>(Specialty Equipment Market Association)</i>",
-        "text": "Investigates data and business-process anomalies across Salesforce/Nimble and connected systems using SQL/SOQL and record-level analysis. Designs repeatable CRM migration and reconciliation processes, validates audience and campaign data, and develops operational monitoring and automation. Builds reporting used by Membership, Marketing, Sales, Finance, and Operations, identifying risks before inaccurate data reaches communications or decisions."
+        "text": "Investigates data and business-process anomalies across Salesforce/Nimble and connected systems using SQL/SOQL and record-level analysis. Designs repeatable CRM migration and reconciliation processes, validates audience and campaign data, operationalizes organization-type segmentation, and develops operational monitoring and automation. Builds reporting used by Membership, Marketing, Sales, Finance, and Operations, identifying risks before inaccurate data reaches communications or decisions."
       },
       {
         "date": "2022 - 2025",
@@ -364,6 +364,13 @@
     "eyebrow": "Selected impact",
     "items": [
       {
+        "id": "exhibitor-history",
+        "value": "8,000",
+        "approximate": true,
+        "label": "Historical exhibitors",
+        "context": "Analyzed exhibit history to identify when businesses first exhibited and distinguish new from returning exhibitors."
+      },
+      {
         "id": "crm-affiliations",
         "value": "4,000",
         "label": "CRM affiliation records",
@@ -378,13 +385,6 @@
         "context": "Without an assigned primary contact in one reachability audit.",
         "approximate": false,
         "caseStudyId": "operational-monitoring"
-      },
-      {
-        "id": "segmentation",
-        "value": "30+",
-        "label": "Organization-type categories",
-        "context": "Implemented and operationalized for segmentation.",
-        "approximate": false
       }
     ]
   }

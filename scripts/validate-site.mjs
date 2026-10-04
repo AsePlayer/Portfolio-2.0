@@ -37,6 +37,9 @@ try {
   const schema = JSON.parse(schemaMatch?.[1]);
   if (schema.jobTitle !== data?.seo?.jobTitle || schema.url !== data?.seo?.url) fail('JSON-LD identity or canonical URL differs from content.');
   if (JSON.stringify(schema.knowsAbout) !== JSON.stringify(data?.seo?.knowsAbout)) fail('JSON-LD knowsAbout differs from content.');
+  const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]));
+  const work = blocks.find((block) => block['@type'] === 'ItemList');
+  if (work?.itemListElement?.length !== data?.selectedWork?.items?.length) fail('Case-study structured data differs from content.');
 } catch { fail('JSON-LD metadata could not be parsed.'); }
 if (data?.seo) {
   for (const marker of [
@@ -48,6 +51,10 @@ if (data?.seo) {
     `name="twitter:title" content="${escapeHtml(data.seo.title)}"`,
     `name="twitter:description" content="${escapeHtml(data.seo.socialDescription)}"`
   ]) if (!html.includes(marker)) fail(`SEO metadata is missing or stale: ${marker}`);
+  if (data.seo.image) {
+    const imageUrl = escapeHtml(new URL(data.seo.image.path, data.seo.url).href);
+    if (!html.includes(`property="og:image" content="${imageUrl}"`) || !html.includes(`name="twitter:image" content="${imageUrl}"`)) fail('Configured social image metadata is missing.');
+  } else if (/\b(?:property="og:image"|name="twitter:image")/.test(html)) fail('Share image metadata must be omitted until an asset is configured.');
 }
 if (data?.person) {
   if (!html.includes(`action="https://formsubmit.co/${escapeHtml(data.person.email)}" method="POST"`)) fail('Contact form action or method differs from configuration.');
@@ -55,6 +62,8 @@ if (data?.person) {
   if (data.person.resume && !html.includes(`href="${escapeHtml(data.person.resume)}"`)) fail('Configured résumé is not linked in HTML.');
 }
 if (/tel:|(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/i.test(html)) fail('Public HTML contains a phone number.');
+if (/\bdata\s+(?:(?:and|&amp;)\s+operations\s+)?analyst\b/i.test(html)) fail('Public HTML contains the direct Data Analyst identity.');
+if (html.indexOf('id="work"') > html.indexOf('id="experience"')) fail('Selected Work must appear before Experience.');
 if (/<noscript>|loading-section|Salesforce\s*(?:&amp;|&)\s*Data Operations Analyst/.test(html)) fail('Old JavaScript fallback content or Salesforce-first identity remains.');
 if (/\bfetch\(/.test(read('js/script.js'))) fail('Browser content must not depend on fetching JSON.');
 if (read('CNAME').trim() !== 'ryanscott.org') fail('CNAME must contain only ryanscott.org.');
@@ -62,6 +71,7 @@ const styles = read('css/styles.css').replace(/\/\*[\s\S]*?\*\//g, '');
 if ((styles.match(/{/g) || []).length !== (styles.match(/}/g) || []).length) fail('CSS has unbalanced braces.');
 const publicFiles = ['index.html', 'css/styles.css', 'js/script.js', 'data/site.json', 'favicon.svg', 'CNAME', '.nojekyll'];
 if (data?.person?.resume) publicFiles.push(data.person.resume);
+if (data?.seo?.image) publicFiles.push(data.seo.image.path);
 for (const file of publicFiles) {
   const artifact = path.join(root, 'dist', file);
   if (!fs.existsSync(artifact)) fail(`Build artifact is missing ${file}. Run node scripts/build.mjs.`);

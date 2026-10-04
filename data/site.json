@@ -2,7 +2,7 @@
   "person": {
     "name": "Ryan Scott",
     "initials": "RS",
-    "title": "Data Analyst | Operations Analytics | SQL",
+    "title": "Data Operations & Business Systems",
     "currentRole": "Data Operations Coordinator",
     "email": "ryanscottcareer@gmail.com",
     "resume": "data/Ryan Scott Resume.pdf"
@@ -14,12 +14,12 @@
   },
   "nav": [
     {
-      "label": "Experience",
-      "href": "#experience"
-    },
-    {
       "label": "Work",
       "href": "#work"
+    },
+    {
+      "label": "Experience",
+      "href": "#experience"
     },
     {
       "label": "Credentials",
@@ -39,12 +39,12 @@
     }
   ],
   "hero": {
-    "eyebrow": "SQL · Operations Analytics · Automation · Data Quality",
-    "subheadline": "I use SQL, operational data, and cross-system analysis to investigate problems, uncover root causes, automate recurring work, and build reporting teams can trust.",
+    "eyebrow": "SQL · Salesforce · Automation · Data Quality",
+    "subheadline": "I investigate how data and business processes behave across systems, find where they break, and build reporting, validation, and automation that makes those processes more reliable.",
     "actions": [
       {
-        "label": "View Experience",
-        "href": "#experience",
+        "label": "Explore Selected Work",
+        "href": "#work",
         "style": "primary"
       },
       {
@@ -54,36 +54,36 @@
       }
     ],
     "panel": {
-      "label": "Selected strengths",
-      "headline": "Investigate the problem. Improve the process.",
+      "label": "How I work",
+      "headline": "Trace the cause. Build a reliable process.",
       "facts": [
         {
-          "value": "Operational Investigation",
-          "label": "Root-cause analysis",
-          "detail": "Diagnose discrepancies across systems, trace issues to underlying data or business logic, and support corrective action with verified findings."
+          "value": "Investigate",
+          "label": "Find the root cause",
+          "detail": "Use SQL, SOQL, and record-level analysis to trace discrepancies across CRM systems, data, and business rules."
         },
         {
-          "value": "Proactive Monitoring",
-          "label": "Data quality & operational health",
-          "detail": "Build SQL-based audit processes with historical logging and severity thresholds to surface issues before they become larger operational problems."
+          "value": "Reconcile",
+          "label": "Bridge systems",
+          "detail": "Compare records, resolve matching exceptions, and validate migration and audience data before downstream use."
         },
         {
-          "value": "Automation & Reliability",
-          "label": "Repeatable workflows",
-          "detail": "Replace recurring manual data work with monitored, maintainable processes that improve consistency and reduce operational risk."
+          "value": "Monitor",
+          "label": "Prevent recurrence",
+          "detail": "Build repeatable validation, historical logging, and automation so emerging operational risks can be reviewed."
         }
       ]
     }
   },
   "experience": {
     "eyebrow": "Experience",
-    "headline": "Data analysis backed by software and QA experience.",
+    "headline": "A software and QA foundation for reliable operations.",
     "items": [
       {
         "date": "June 2025 - Present",
         "role": "Data Operations Coordinator",
         "organization": "SEMA <i>(Specialty Equipment Market Association)</i>",
-        "text": "Investigates data and operational anomalies across Salesforce and connected systems using SQL and record-level analysis to identify root causes and support corrective action. Builds and maintains recurring reporting, automation, audience, and data-quality processes while supporting cross-system migration and reconciliation work. Developed proactive SQL-based audit and monitoring processes to surface operational risks, improve data reliability, and reduce manual review."
+        "text": "Investigates data and business-process anomalies across Salesforce/Nimble and connected systems using SQL/SOQL and record-level analysis. Designs repeatable CRM migration and reconciliation processes, validates audience and campaign data, and develops operational monitoring and automation. Builds reporting used by Membership, Marketing, Sales, Finance, and Operations, identifying risks before inaccurate data reaches communications or decisions."
       },
       {
         "date": "2022 - 2025",
@@ -113,10 +113,10 @@
       "headline": "Credentials with a strong technical foundation.",
       "items": [
         {
-          "label": "Certification · Issued 2026",
+          "label": "Certification · September 2026",
           "title": "Salesforce Certified Data 360 Consultant",
           "organization": "Salesforce",
-          "text": "Credential focused on customer data strategy, identity resolution, unified profiles, segmentation, activation, governance, and Data 360 implementation concepts."
+          "text": "Credential covering data ingestion, harmonization, identity resolution, segmentation, activation, governance, and Data 360 implementation concepts."
         },
         {
           "label": "Hands-on learning",
@@ -156,10 +156,47 @@
           "Excel",
           "Power Query",
           "Data Analysis",
-          "Data Validation",
-          "Data Quality",
+          "Data Reconciliation",
+          "Data Validation"
+        ]
+      },
+      {
+        "title": "CRM & Business Systems",
+        "items": [
+          "Salesforce",
+          "Nimble AMS",
+          "Data 360 (certification)",
+          "NetForum",
+          "iPost Enterprise",
+          "Microsoft Access",
+          "CRM Data Migration",
+          "Audience Segmentation",
+          "Data Loader"
+        ]
+      },
+      {
+        "title": "Automation & Integration",
+        "items": [
+          "Python",
+          "VBA",
+          "APIs",
           "ETL",
-          "Data Reconciliation"
+          "Git",
+          "GitHub",
+          "Workflow Automation",
+          "AI-assisted SQL development & validation"
+        ]
+      },
+      {
+        "title": "Data Quality & Operations",
+        "items": [
+          "Root-Cause Analysis",
+          "Operational Monitoring",
+          "Business Rules Analysis",
+          "Record Matching",
+          "Data Quality",
+          "Migration QA",
+          "Process Improvement"
         ]
       },
       {
@@ -168,27 +205,6 @@
           "Power BI",
           "Looker Studio",
           "PowerPoint"
-        ]
-      },
-      {
-        "title": "Platforms",
-        "items": [
-          "Salesforce",
-          "iPost Enterprise",
-          "Microsoft Access",
-          "Nimble AMS",
-          "NetForum"
-        ]
-      },
-      {
-        "title": "Development & Automation",
-        "items": [
-          "Python",
-          "VBA",
-          "APIs",
-          "Git",
-          "GitHub",
-          "AI-assisted SQL development & validation"
         ]
       }
     ],
@@ -203,90 +219,173 @@
   "contact": {
     "eyebrow": "Let’s talk",
     "headline": "Let’s work together.",
-    "text": "I’m interested in data analytics, operations analytics, data operations, and business systems roles where SQL, investigation, automation, and data quality help drive better decisions.",
+    "text": "I’m interested in data operations, business systems, CRM, and data-quality roles where SQL, investigation, automation, and cross-system reconciliation help teams make reliable decisions.",
     "formIntro": "Send me a message.",
     "formSubject": "New portfolio contact for Ryan Scott"
   },
   "selectedWork": {
     "eyebrow": "Selected Work",
-    "headline": "Operational problems solved with data.",
-    "intro": "A few examples of how I use data, investigation, and automation to solve operational problems.",
+    "headline": "Investigations that improve how systems work.",
+    "intro": "Selected examples of CRM data integrity, process investigation, reconciliation, and operational monitoring.",
     "items": [
       {
-        "title": "Operational Audit & Monitoring Framework",
-        "text": "Designed reusable SQL-based monitoring for automated data workflows with historical logging and severity thresholds. The framework was built to surface data-quality issues, automation failures, contactability risks, and other operational problems in a consistent and reviewable way.",
+        "id": "membership-flowdown",
+        "title": "Membership Flowdown Integrity",
+        "summary": "Investigated recurring membership-flowdown discrepancies across Salesforce/Nimble and built repeatable tracking for new failures.",
+        "challenge": "Membership relationships repeatedly failed to flow down as expected, creating CRM data-integrity concerns.",
+        "investigation": "Used SQL/SOQL and record-level comparisons to isolate affected patterns, monitor failures over time, and investigate potential automated remediation. Some failures traced to underlying membership configuration.",
+        "solution": "Created a repeatable tracking and monitoring process for newly occurring failures and documented verified findings for root-cause correction.",
+        "impact": "Helped shift the response from isolated tickets toward configuration correction and recurrence prevention.",
         "evidence": [
-          "Historical audit logging and severity-based issue classification",
-          "Reusable SQL for data quality and process-health monitoring",
-          "Reduced manual review; foundation for proactive alerting and dashboarding"
-        ],
-        "outcome": "One company-level reachability analysis identified 473 organizations without an assigned primary contact.",
-        "skills": [
-          "SQL",
-          "Data Analysis",
-          "Data Validation",
-          "Monitoring",
-          "Root-Cause Analysis",
-          "Automation",
-          "Data Quality"
-        ]
-      },
-      {
-        "title": "Payment Reminder Data Quality Investigation",
-        "text": "Proactively identified data-quality problems in a customer payment-reminder audience before deployment. Investigated the reporting logic and manual workarounds used to build the audience, partnered with stakeholders to clarify business rules, and helped validate the corrected dataset.",
-        "outcome": "The campaign was paused and the audience rebuilt before inaccurate communications were sent.",
-        "skills": [
-          "Data Quality",
-          "Anomaly Detection",
-          "Business Rules Analysis",
-          "Cross-Functional Investigation",
-          "Validation",
-          "Risk Prevention"
-        ]
-      },
-      {
-        "title": "Cross-System Migration & Data Validation",
-        "text": "Investigated discrepancies during migration from legacy systems to Salesforce/Nimble by analyzing conversion failures, comparing record counts and business logic across systems, reconciling identifiers, and documenting verified issues for corrective action.",
-        "evidence": [
-          "Error-log analysis and cross-system record comparison",
-          "Identifier reconciliation and migration validation",
-          "Vendor follow-up with verified examples to prevent downstream reporting and operational discrepancies"
+          "SQL/SOQL and record-level analysis",
+          "Tracking of newly occurring failures over time"
         ],
         "skills": [
           "SQL",
           "SOQL",
           "Salesforce",
-          "Data Reconciliation",
-          "Migration QA",
+          "Nimble AMS",
+          "Data Quality",
           "Root-Cause Analysis",
-          "Data Validation"
+          "Monitoring",
+          "Business Rules",
+          "CRM Data Integrity"
+        ],
+        "featured": true
+      },
+      {
+        "id": "payment-reminders",
+        "title": "Payment Reminder Process & Data Quality",
+        "summary": "Reverse-engineered the audience-building process and helped prevent inaccurate payment communications before deployment.",
+        "challenge": "The audience depended on manually combined reports and spreadsheet lookups, with different invoice categories requiring different handling.",
+        "investigation": "Traced reporting and filtering limitations, clarified business rules with Finance, Sales/Operations, and related stakeholders, and identified questionable recipient and payment data.",
+        "solution": "Helped pause and rebuild the audience, validate checkout/payment links, and refresh data near deployment to account for recent payments.",
+        "impact": "The campaign was paused and rebuilt before inaccurate communications were sent, reducing the risk of stale reminders reaching recently paid customers.",
+        "skills": [
+          "Data Quality",
+          "Business Rules Analysis",
+          "Process Analysis",
+          "Cross-Functional Investigation",
+          "Validation",
+          "Risk Prevention"
+        ],
+        "featured": false
+      },
+      {
+        "id": "council-affiliations",
+        "title": "Council Assignment & CRM Reconciliation",
+        "summary": "Designed matching and reconciliation logic while migrating and correcting CRM council relationships.",
+        "challenge": "Historical affiliations, merged-record exceptions, and inconsistent relationships complicated accurate record matching.",
+        "investigation": "Compared records across systems, developed unique lookup keys, and worked through historical affiliation conflicts and merged-record exceptions.",
+        "solution": "Created repeatable matching and reconciliation logic, tested imports iteratively, and resolved import errors with verified examples.",
+        "impact": "Reconciled and imported council-affiliation records through a repeatable process that supported migration quality and relationship accuracy.",
+        "evidence": [
+          "Unique lookup keys and matching methodology",
+          "Iterative import testing and exception resolution"
+        ],
+        "skills": [
+          "SQL",
+          "Salesforce",
+          "Data Loader",
+          "Data Reconciliation",
+          "Record Matching",
+          "Migration QA",
+          "Data Validation",
+          "Process Design"
+        ],
+        "featured": false,
+        "metric": "crm-affiliations"
+      },
+      {
+        "id": "operational-monitoring",
+        "title": "Operational Audit & Monitoring Framework",
+        "summary": "Designed reusable SQL-based audits with severity thresholds and historical logging to make operational risks consistently reviewable.",
+        "challenge": "Recurring workflows needed a consistent way to surface data-quality issues, automation failures, and contactability risks.",
+        "investigation": "Defined reusable checks against source data and process health, with severity classification and historical findings for review.",
+        "solution": "Built reusable SQL validation and audit logging to reduce manual review and provide a foundation for proactive alerting and dashboarding.",
+        "impact": "A company-level reachability audit surfaced organizations without an assigned primary contact, turning a data gap into a reviewable finding.",
+        "evidence": [
+          "Reusable SQL validation structure",
+          "Severity-based classification and historical logging"
+        ],
+        "skills": [
+          "SQL",
+          "Data Validation",
+          "Monitoring",
+          "Root-Cause Analysis",
+          "Automation",
+          "Data Quality"
+        ],
+        "featured": true,
+        "metric": "reachability",
+        "process": [
+          "Source / process",
+          "Validation rule",
+          "Severity",
+          "Historical log",
+          "Review / alert"
         ]
       }
     ]
   },
   "seo": {
-    "title": "Ryan Scott | Data Analyst & Operations Analytics",
-    "description": "Ryan Scott is a data and operations analyst specializing in SQL, operational analysis, root-cause investigation, automation, data quality, Salesforce, and cross-system reporting.",
-    "socialDescription": "SQL, operations analytics, data quality, automation, root-cause investigation, and cross-system reporting.",
+    "title": "Ryan Scott | Data Operations & Business Systems",
+    "description": "Ryan Scott works across data operations and business systems, using SQL, Salesforce, operations analytics, automation, and root-cause investigation to improve CRM data quality and cross-system reconciliation.",
+    "socialDescription": "CRM data integrity, operational investigation, SQL, Salesforce, automation, and reliable cross-system processes.",
     "url": "https://ryanscott.org/",
-    "jobTitle": "Data and Operations Analyst",
+    "jobTitle": "Data Operations Coordinator",
     "knowsAbout": [
       "SQL",
+      "SOQL",
+      "Salesforce",
+      "Nimble AMS",
+      "Data operations",
+      "Business systems",
+      "CRM data integrity",
       "Operations analytics",
-      "Data analysis",
       "Root-cause analysis",
+      "Cross-system reconciliation",
       "Data quality",
       "Data validation",
+      "Record matching",
+      "CRM migration",
+      "Audience segmentation",
+      "Operational monitoring",
+      "Automation",
       "Excel",
       "Power Query",
-      "Salesforce",
-      "Automation",
       "ETL",
-      "Cross-system reconciliation",
-      "Reporting",
       "Python",
       "Quality assurance"
     ]
   },
-  "footer": "Data & Operations Analytics."
+  "footer": "Data Operations & Business Systems.",
+  "impact": {
+    "eyebrow": "Selected impact",
+    "items": [
+      {
+        "id": "crm-affiliations",
+        "value": "4,000",
+        "label": "CRM affiliation records",
+        "context": "Matching and reconciliation during council-assignment migration.",
+        "approximate": true,
+        "caseStudyId": "council-affiliations"
+      },
+      {
+        "id": "reachability",
+        "value": "473",
+        "label": "Organizations surfaced",
+        "context": "Without an assigned primary contact in one reachability audit.",
+        "approximate": false,
+        "caseStudyId": "operational-monitoring"
+      },
+      {
+        "id": "segmentation",
+        "value": "30+",
+        "label": "Organization-type categories",
+        "context": "Implemented and operationalized for segmentation.",
+        "approximate": false
+      }
+    ]
+  }
 }

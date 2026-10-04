@@ -22,15 +22,30 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   const safe = escapeContent(data);
   const schema = {
     '@context': 'https://schema.org', '@type': 'Person',
+    '@id': `${data.seo.url}#person`,
     name: data.person.name, url: data.seo.url, email: `mailto:${data.person.email}`,
     jobTitle: data.seo.jobTitle,
     sameAs: Object.values(data.links).filter(isUsableLink),
     knowsAbout: data.seo.knowsAbout
   };
+  const workSchema = {
+    '@context': 'https://schema.org', '@type': 'ItemList',
+    name: data.selectedWork.eyebrow,
+    itemListElement: data.selectedWork.items.map((item, index) => ({
+      '@type': 'ListItem', position: index + 1,
+      item: {
+        '@type': 'CreativeWork', name: item.title, abstract: item.summary,
+        url: `${data.seo.url}#work-${item.id}`,
+        author: {'@id': `${data.seo.url}#person`}, keywords: item.skills.join(', ')
+      }
+    }))
+  };
+  const jsonLd = (value) => `<script type="application/ld+json">${JSON.stringify(value, null, 2).replaceAll('<', '\\u003c')}</script>`;
+  const shareImage = data.seo.image ? escapeHtml(new URL(data.seo.image.path, data.seo.url).href) : '';
   const values = {
     name: safe.person.name, initials: safe.person.initials, year, footer: safe.footer,
     navigation: safe.nav.map((item) => `<li><a href="${item.href}">${item.label}</a></li>`).join(''),
-    content: [heroSection(safe), experienceSection(safe.experience), selectedWorkSection(safe.selectedWork),
+    content: [heroSection(safe), impactSection(safe.impact), selectedWorkSection(safe.selectedWork, safe.impact), experienceSection(safe.experience),
       `<section class="section"><div class="container">${developmentSection(safe.experience.development)}</div></section>`,
       skillsSection(safe.skills), resumeSection(safe), contactSection(safe)].join(''),
     metadata: `<title>${safe.seo.title}</title>
@@ -42,10 +57,15 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   <meta property="og:title" content="${safe.seo.title}">
   <meta property="og:description" content="${safe.seo.socialDescription}">
   <meta property="og:url" content="${safe.seo.url}">
-  <meta name="twitter:card" content="summary">
+  ${shareImage ? `<meta property="og:image" content="${shareImage}">
+  <meta property="og:image:alt" content="${safe.seo.image.alt}">` : ''}
+  <meta name="twitter:card" content="${shareImage ? 'summary_large_image' : 'summary'}">
   <meta name="twitter:title" content="${safe.seo.title}">
   <meta name="twitter:description" content="${safe.seo.socialDescription}">
-  <script type="application/ld+json">${JSON.stringify(schema, null, 2).replaceAll('<', '\\u003c')}</script>`
+  ${shareImage ? `<meta name="twitter:image" content="${shareImage}">
+  <meta name="twitter:image:alt" content="${safe.seo.image.alt}">` : ''}
+  ${jsonLd(schema)}
+  ${jsonLd(workSchema)}`
   };
   return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
     if (!(key in values)) throw new Error(`Unknown template placeholder: ${key}`);
@@ -53,18 +73,47 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   }).replace(/\r\n/g, '\n').replace(/[\t ]+$/gm, '');
 }
 
-function selectedWorkSection(section) {
+function metricMarkup(metric) {
+  if (!metric || metric.enabled === false) return '';
+  return `<p class="work-metric">${metric.approximate ? '<span class="metric-qualifier">Approximately</span>' : ''}<strong>${metric.value}</strong><span>${metric.label}</span></p>`;
+}
+
+function impactSection(section) {
+  const items = section?.enabled === false ? [] : section?.items.filter((item) => item.enabled !== false) || [];
+  if (!items.length) return '';
+  return `<section id="impact" class="impact-section" aria-labelledby="impact-heading">
+    <div class="container">
+      <h2 id="impact-heading" class="eyebrow">${section.eyebrow}</h2>
+      <ul class="impact-grid">
+        ${items.map((item) => `<li class="impact-item">
+          ${metricMarkup(item)}
+          <p>${item.context}</p>
+          ${item.caseStudyId ? `<a class="impact-link" href="#work-${item.caseStudyId}">Explore the work<span class="visually-hidden">: ${item.label}</span><span aria-hidden="true"> ↗</span></a>` : ''}
+        </li>`).join('')}
+      </ul>
+    </div>
+  </section>`;
+}
+
+function selectedWorkSection(section, impact) {
   return `<section id="work" class="section work-section">
     <div class="container">
       ${sectionHeading(section.eyebrow, section.headline)}
       <p class="section-intro">${section.intro}</p>
       <div class="work-list">
-        ${section.items.map((item) => `<article class="work-card">
-          <div class="work-card-heading"><h3>${item.title}</h3></div>
+        ${section.items.map((item) => `<article id="work-${item.id}" class="work-card${item.featured ? ' work-card-featured' : ''}">
+          <div class="work-card-heading">
+            ${item.featured ? '<p class="work-tag">Featured work</p>' : ''}
+            <h3>${item.title}</h3>
+            <p class="work-summary">${item.summary}</p>
+            ${metricMarkup(impact?.items.find((metric) => metric.id === item.metric))}
+          </div>
           <div class="work-card-copy">
-            <p>${item.text}</p>
+            <dl class="case-details">
+              ${[['challenge', 'Problem'], ['investigation', 'Investigation'], ['solution', 'Solution'], ['impact', 'Impact']].filter(([key]) => item[key]).map(([key, label]) => `<div class="case-stage${key === 'impact' ? ' case-impact' : ''}"><dt>${label}</dt><dd>${item[key]}</dd></div>`).join('')}
+            </dl>
+            ${item.process?.length ? `<ol class="audit-process" aria-label="Audit process">${item.process.map((step, index) => `<li><span>${step}</span>${index < item.process.length - 1 ? '<span class="process-arrow" aria-hidden="true">→</span>' : ''}</li>`).join('')}</ol>` : ''}
             ${item.evidence?.length ? `<ul class="work-evidence">${item.evidence.map((point) => `<li>${point}</li>`).join('')}</ul>` : ''}
-            ${item.outcome ? `<p class="work-result"><span>Outcome</span>${item.outcome}</p>` : ''}
             <ul class="tool-list" aria-label="Skills demonstrated">${item.skills.map((skill) => `<li>${skill}</li>`).join('')}</ul>
           </div>
         </article>`).join('')}

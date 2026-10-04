@@ -22,6 +22,7 @@ export function buildSite() {
   // Publish only public assets and the configured general résumé, never other variants.
   const assets = ['css/styles.css', 'js/script.js', 'data/site.json', 'favicon.svg', 'CNAME', '.nojekyll'];
   if (data.person.resume) assets.push(data.person.resume);
+  if (data.seo.image) assets.push(data.seo.image.path);
   for (const asset of new Set(assets)) {
     const destination = path.join(output, asset);
     fs.mkdirSync(path.dirname(destination), { recursive: true });

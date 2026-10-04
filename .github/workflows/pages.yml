@@ -25,11 +25,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
       - name: Validate portfolio content and assets
         run: |
           node --check js/script.js
           node --check scripts/serve.mjs
           node --check scripts/validate-site.mjs
+          node --check scripts/build.mjs
+          node --check scripts/render-site.mjs
+          node --check scripts/validate-content.mjs
+          node --test scripts/site.test.mjs
+          node scripts/build.mjs
           node scripts/validate-site.mjs
 
       - name: Setup Pages
@@ -38,7 +48,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./
+          path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -2,7 +2,7 @@
   "person": {
     "name": "Ryan Scott",
     "initials": "RS",
-    "title": "Salesforce & Data Operations Analyst",
+    "title": "Data Analyst | Operations Analytics | SQL",
     "currentRole": "Data Operations Coordinator",
     "email": "ryanscottcareer@gmail.com",
     "resume": "data/Ryan Scott Resume.pdf"
@@ -10,76 +10,119 @@
   "links": {
     "linkedin": "https://www.linkedin.com/in/ryan-scott-95aa651b0/",
     "github": "https://github.com/AsePlayer",
-    "youtube": ""
+    "youtube": "https://www.youtube.com/@AsePlayer"
   },
   "nav": [
-    { "label": "Experience", "href": "#experience" },
-    { "label": "Education", "href": "#education" },
-    { "label": "Skills", "href": "#skills" },
-    { "label": "Resume", "href": "#resume" },
-    { "label": "Contact", "href": "#contact" }
+    {
+      "label": "Experience",
+      "href": "#experience"
+    },
+    {
+      "label": "Work",
+      "href": "#work"
+    },
+    {
+      "label": "Credentials",
+      "href": "#education"
+    },
+    {
+      "label": "Skills",
+      "href": "#skills"
+    },
+    {
+      "label": "Resume",
+      "href": "#resume"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
   ],
   "hero": {
-    "eyebrow": "Salesforce · SQL · Excel · Automation",
-    "subheadline": "I turn complex business requirements into reliable data systems, automated workflows, and reporting teams can trust using Salesforce, SQL, and Excel.",
+    "eyebrow": "SQL · Operations Analytics · Automation · Data Quality",
+    "subheadline": "I use SQL, operational data, and cross-system analysis to investigate problems, uncover root causes, automate recurring work, and build reporting teams can trust.",
     "actions": [
-      { "label": "View Experience", "href": "#experience", "style": "primary" },
-      { "label": "View Resume", "href": "data/Ryan Scott Resume.pdf", "style": "default" }
+      {
+        "label": "View Experience",
+        "href": "#experience",
+        "style": "primary"
+      },
+      {
+        "label": "View Resume",
+        "href": "data/Ryan Scott Resume.pdf",
+        "style": "default"
+      }
     ],
     "panel": {
-      "label": "Current focus",
-      "headline": "Reliable data systems for day-to-day business operations.",
+      "label": "Selected strengths",
+      "headline": "Investigate the problem. Improve the process.",
       "facts": [
         {
-          "value": "Salesforce",
-          "label": "Migration and reporting",
-          "detail": "Rebuilding reports and validating business logic as operations move from legacy systems to Salesforce"
+          "value": "Operational Investigation",
+          "label": "Root-cause analysis",
+          "detail": "Diagnose discrepancies across systems, trace issues to underlying data or business logic, and support corrective action with verified findings."
         },
         {
-          "value": "iPost",
-          "label": "Automation rebuild",
-          "detail": "Recreating established SQL audience automations with Salesforce as the new data source"
+          "value": "Proactive Monitoring",
+          "label": "Data quality & operational health",
+          "detail": "Build SQL-based audit processes with historical logging and severity thresholds to surface issues before they become larger operational problems."
         },
         {
-          "value": "Automation",
-          "label": "Manual process replacement",
-          "detail": "Replacing recurring manual work with a reliable, repeatable workflow"
+          "value": "Automation & Reliability",
+          "label": "Repeatable workflows",
+          "detail": "Replace recurring manual data work with monitored, maintainable processes that improve consistency and reduce operational risk."
         }
       ]
     }
   },
   "experience": {
     "eyebrow": "Experience",
-    "headline": "Data operations backed by software and QA experience.",
+    "headline": "Data analysis backed by software and QA experience.",
     "items": [
       {
-        "date": "2025 to Present",
+        "date": "June 2025 - Present",
         "role": "Data Operations Coordinator",
         "organization": "SEMA <i>(Specialty Equipment Market Association)</i>",
-        "text": "Own reporting for sales, marketing, operations, and leadership while supporting a migration from legacy systems to Salesforce. Rebuild SQL-driven audience automations in iPost Enterprise using Salesforce as the new data source, replace recurring manual work with repeatable processes, and handle report development, validation, testing, troubleshooting, configuration, formulas, and documentation."
+        "text": "Investigates data and operational anomalies across Salesforce and connected systems using SQL and record-level analysis to identify root causes and support corrective action. Builds and maintains recurring reporting, automation, audience, and data-quality processes while supporting cross-system migration and reconciliation work. Developed proactive SQL-based audit and monitoring processes to surface operational risks, improve data reliability, and reduce manual review."
       },
       {
-        "date": "2023 to 2025",
+        "date": "2022 - 2025",
         "role": "Software Developer",
         "organization": "Knights of Creation",
-        "text": "Built SQL and Python tools, ETL workflows, internal automation, data-transfer processes, and user-facing applications that made operational work more repeatable and maintainable."
+        "text": "Developed SQL and Python tools, ETL workflows, automation, data-transfer processes, and user-facing applications supporting internal operational workflows. Built repeatable data processes that reduced manual work and improved maintainability."
       },
       {
-        "date": "2015 to 2022",
-        "role": "Quality Assurance & Live Operations Support",
+        "date": "2015 - 2022",
         "organization": "MaxGames Studios",
-        "text": "Advanced from volunteer contributor to paid development support through consistent, reliable work. Tested releases, reproduced defects, validated workflows and data, and documented actionable findings for developers."
+        "roles": [
+          {
+            "date": "2017 - 2022",
+            "role": "Quality Assurance & Live Operations Support",
+            "text": "Advanced from volunteer contributor to paid QA and live-operations support. Performed regression and pre-release testing, reproduced defects, investigated unexpected system behavior, validated fixes, and documented actionable findings for developers. This work established the troubleshooting mindset I now apply to data and operational analysis."
+          },
+          {
+            "date": "2015 - 2017",
+            "role": "Volunteer QA Contributor",
+            "text": "Tested game systems, reproduced technical issues, validated data consistency, and documented defects with clear reproduction steps. Earned additional responsibility through dependable testing, communication, and follow-through."
+          }
+        ]
       }
     ],
     "development": {
       "eyebrow": "Credentials",
-      "headline": "Platform expertise with a strong technical base.",
+      "headline": "Credentials with a strong technical foundation.",
       "items": [
         {
-          "label": "Salesforce",
-          "title": "Platform Training",
-          "organization": "Salesforce Trailhead",
-          "text": "Coursework across reporting, configuration, data management, and automation.",
+          "label": "Certification · Issued 2026",
+          "title": "Salesforce Certified Data 360 Consultant",
+          "organization": "Salesforce",
+          "text": "Credential focused on customer data strategy, identity resolution, unified profiles, segmentation, activation, governance, and Data 360 implementation concepts."
+        },
+        {
+          "label": "Hands-on learning",
+          "title": "Salesforce Trailblazer",
+          "organization": "Double Ranger — 100,000+ Trailhead points",
+          "text": "100,000+ Trailhead points earned through hands-on Salesforce projects and training across data, automation, platform configuration, and related topics.",
           "link": {
             "label": "View Trailhead profile",
             "href": "https://www.salesforce.com/trailblazer/ryandscott"
@@ -89,7 +132,7 @@
           "label": "Education",
           "title": "B.S. Computer Science, Cum Laude",
           "organization": "Grand Canyon University",
-          "text": "Foundation in software development, databases, systems design, and technical problem-solving."
+          "text": "Foundation in software development, databases, systems design, and technical problem solving."
         },
         {
           "label": "Certification",
@@ -98,25 +141,58 @@
           "text": "Training in collaborative, iterative delivery and continuous improvement."
         }
       ]
-    }
+    },
+    "intro": "My background in QA and software development shaped the same approach I now use in data work: reproduce the problem, isolate the cause, validate the fix, and improve the process so it is less likely to happen again."
   },
   "skills": {
     "eyebrow": "Core toolkit",
     "headline": "Tools and working knowledge.",
     "groups": [
       {
-        "title": "Salesforce & Systems",
-        "items": ["Salesforce", "Nimble AMS", "NetForum", "Microsoft Access", "iPost Enterprise"]
+        "title": "Data & Analytics",
+        "items": [
+          "SQL",
+          "SOQL",
+          "Excel",
+          "Power Query",
+          "Data Analysis",
+          "Data Validation",
+          "Data Quality",
+          "ETL",
+          "Data Reconciliation"
+        ]
       },
       {
-        "title": "Data & Reporting",
-        "items": ["SQL", "Excel", "Power Query", "Pivot tables", "Advanced formulas", "Data reconciliation"]
+        "title": "Visualization & Communication",
+        "items": [
+          "Power BI",
+          "Looker Studio",
+          "PowerPoint"
+        ]
       },
       {
-        "title": "Automation & Quality",
-        "items": ["Python", "VBA", "ETL workflows", "Migration QA", "Data mapping", "Process documentation"]
+        "title": "Platforms",
+        "items": [
+          "Salesforce",
+          "iPost Enterprise",
+          "Microsoft Access",
+          "Nimble AMS",
+          "NetForum"
+        ]
+      },
+      {
+        "title": "Development & Automation",
+        "items": [
+          "Python",
+          "VBA",
+          "APIs",
+          "Git",
+          "GitHub",
+          "AI-assisted SQL development & validation"
+        ]
       }
-    ]
+    ],
+    "note": "Developed structured rules and validation guardrails for AI-generated SQL in a restricted production query environment to improve reliability and reproducibility."
   },
   "resume": {
     "eyebrow": "Resume",
@@ -127,8 +203,90 @@
   "contact": {
     "eyebrow": "Let’s talk",
     "headline": "Let’s work together.",
-    "text": "I am interested in data operations, reporting, CRM, and business systems roles where Salesforce, SQL, Excel, automation, and reliable follow-through matter.",
+    "text": "I’m interested in data analytics, operations analytics, data operations, and business systems roles where SQL, investigation, automation, and data quality help drive better decisions.",
     "formIntro": "Send me a message.",
     "formSubject": "New portfolio contact for Ryan Scott"
-  }
+  },
+  "selectedWork": {
+    "eyebrow": "Selected Work",
+    "headline": "Operational problems solved with data.",
+    "intro": "A few examples of how I use data, investigation, and automation to solve operational problems.",
+    "items": [
+      {
+        "title": "Operational Audit & Monitoring Framework",
+        "text": "Designed reusable SQL-based monitoring for automated data workflows with historical logging and severity thresholds. The framework was built to surface data-quality issues, automation failures, contactability risks, and other operational problems in a consistent and reviewable way.",
+        "evidence": [
+          "Historical audit logging and severity-based issue classification",
+          "Reusable SQL for data quality and process-health monitoring",
+          "Reduced manual review; foundation for proactive alerting and dashboarding"
+        ],
+        "outcome": "One company-level reachability analysis identified 473 organizations without an assigned primary contact.",
+        "skills": [
+          "SQL",
+          "Data Analysis",
+          "Data Validation",
+          "Monitoring",
+          "Root-Cause Analysis",
+          "Automation",
+          "Data Quality"
+        ]
+      },
+      {
+        "title": "Payment Reminder Data Quality Investigation",
+        "text": "Proactively identified data-quality problems in a customer payment-reminder audience before deployment. Investigated the reporting logic and manual workarounds used to build the audience, partnered with stakeholders to clarify business rules, and helped validate the corrected dataset.",
+        "outcome": "The campaign was paused and the audience rebuilt before inaccurate communications were sent.",
+        "skills": [
+          "Data Quality",
+          "Anomaly Detection",
+          "Business Rules Analysis",
+          "Cross-Functional Investigation",
+          "Validation",
+          "Risk Prevention"
+        ]
+      },
+      {
+        "title": "Cross-System Migration & Data Validation",
+        "text": "Investigated discrepancies during migration from legacy systems to Salesforce/Nimble by analyzing conversion failures, comparing record counts and business logic across systems, reconciling identifiers, and documenting verified issues for corrective action.",
+        "evidence": [
+          "Error-log analysis and cross-system record comparison",
+          "Identifier reconciliation and migration validation",
+          "Vendor follow-up with verified examples to prevent downstream reporting and operational discrepancies"
+        ],
+        "skills": [
+          "SQL",
+          "SOQL",
+          "Salesforce",
+          "Data Reconciliation",
+          "Migration QA",
+          "Root-Cause Analysis",
+          "Data Validation"
+        ]
+      }
+    ]
+  },
+  "seo": {
+    "title": "Ryan Scott | Data Analyst & Operations Analytics",
+    "description": "Ryan Scott is a data and operations analyst specializing in SQL, operational analysis, root-cause investigation, automation, data quality, Salesforce, and cross-system reporting.",
+    "socialDescription": "SQL, operations analytics, data quality, automation, root-cause investigation, and cross-system reporting.",
+    "url": "https://ryanscott.org/",
+    "jobTitle": "Data and Operations Analyst",
+    "knowsAbout": [
+      "SQL",
+      "Operations analytics",
+      "Data analysis",
+      "Root-cause analysis",
+      "Data quality",
+      "Data validation",
+      "Excel",
+      "Power Query",
+      "Salesforce",
+      "Automation",
+      "ETL",
+      "Cross-system reconciliation",
+      "Reporting",
+      "Python",
+      "Quality assurance"
+    ]
+  },
+  "footer": "Data & Operations Analytics."
 }

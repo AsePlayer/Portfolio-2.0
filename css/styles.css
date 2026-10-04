@@ -512,9 +512,9 @@ h3 {
 
 .proof-stat dt {
   color: #8ce4d8;
-  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  font-size: 1.12rem;
   font-weight: 850;
-  line-height: 1.05;
+  line-height: 1.2;
   letter-spacing: -0.03em;
 }
 
@@ -557,6 +557,22 @@ h3 {
 .section-heading {
   max-width: 780px;
   margin-bottom: 30px;
+}
+
+.section-intro {
+  max-width: 78ch;
+  margin: -8px 0 30px;
+  color: var(--muted);
+}
+
+.skills-note {
+  margin: 24px 0 0;
+}
+
+.work-evidence {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  color: var(--muted);
 }
 
 .section-heading.split {
@@ -786,7 +802,7 @@ h3 {
 .development-block {
   border-top: 0;
   margin-top: 0;
-  padding-top: 50px;
+  padding-top: 0;
 }
 
 .development-heading {
@@ -794,7 +810,7 @@ h3 {
   margin-bottom: 24px;
 }
 
-.development-heading h3 {
+.development-heading h2 {
   max-width: 24ch;
   font-size: clamp(2rem, 4vw, 3.15rem);
   line-height: 1.08;
@@ -803,7 +819,7 @@ h3 {
 
 .development-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -815,7 +831,7 @@ h3 {
   padding: 24px;
 }
 
-.development-card h4 {
+.development-card h3 {
   margin: 0 0 5px;
   color: var(--heading);
   font-size: 1.05rem;
@@ -853,7 +869,7 @@ h3 {
 
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -1113,7 +1129,7 @@ textarea:focus-visible,
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 860px) {
   html {
     scroll-padding-top: 82px;
   }
@@ -1126,7 +1142,7 @@ textarea:focus-visible,
     width: min(100% - 28px, 1140px);
   }
 
-  .nav-toggle {
+  .js .nav-toggle {
     display: inline-flex;
   }
 
@@ -1231,6 +1247,47 @@ textarea:focus-visible,
 
   .resume-panel .btn.primary {
     width: 100%;
+  }
+}
+
+/* Without JavaScript the navigation stays visible and usable at every width. */
+html:not(.js) .theme-toggle,
+html:not(.js) .nav-toggle {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  html:not(.js) .header-inner {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 0;
+  }
+
+  html:not(.js) .header-actions {
+    flex: 1 1 100%;
+  }
+
+  html:not(.js) .primary-nav {
+    position: static;
+    display: block;
+    max-height: none;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  html:not(.js) .primary-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  html:not(.js) .primary-nav a {
+    padding: 8px;
+  }
+
+  html:not(.js) .site-header {
+    position: static;
   }
 }
 

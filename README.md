@@ -1,63 +1,85 @@
-# Ryan Scott | Data Operations Portfolio
+# Ryan Scott | Data & Operations Analytics Portfolio
 
-A lightweight, recruiter-focused portfolio built with semantic HTML, responsive CSS, and plain JavaScript. The content emphasizes cross-functional reporting, data validation, CRM/AMS migration support, Salesforce development, and process documentation.
+A recruiter-focused portfolio built with semantic HTML, responsive CSS, and plain JavaScript. Content emphasizes SQL analysis, operational investigation, root causes, automation, data quality, and a career progression from QA through software development to analytics.
 
 Live site: [ryanscott.org](https://ryanscott.org/)
 
-## Local preview
+## Build and local preview
 
-The page loads its content from JSON, so preview it through a local server rather than opening `index.html` directly:
+Use Node.js 24 (no package installation or runtime dependencies):
 
-1. Run `node scripts/serve.mjs` from the repository root.
-2. Open `http://localhost:8000`.
+```sh
+node scripts/build.mjs
+node scripts/validate-site.mjs
+node scripts/serve.mjs
+```
+
+Open `http://127.0.0.1:8000`. The preview server also builds on startup. After changing content or templates, rerun the build and refresh the page.
+
+The build reads `data/site.json` and `templates/index.html`, renders full content and metadata into the root `index.html`, and creates the public artifact in `dist/`. Commit the generated root HTML along with source changes. Do not edit `index.html` manually; validation detects stale generated HTML. `dist/` is ignored by Git and rebuilt during deployment.
+
+All sections, navigation, professional links, and the contact form are available without JavaScript. Browser JavaScript only enhances navigation, theme preferences, the footer year, and contact-success feedback; it does not fetch or render portfolio content. On small screens without JavaScript, navigation stays visible and the inactive theme/menu controls are hidden.
 
 ## Editing content
 
-- Update copy, experience, skills, contact details, and links in `data/site.json`.
-- Leave an unavailable social URL as an empty string. Empty links are omitted automatically; `#` placeholders fail validation.
-- Layout and interactions live in `js/script.js`; presentation lives in `css/styles.css`.
-- The light/dark theme defaults to the visitor's system preference and saves manual selections in local storage.
-- Run `node scripts/validate-site.mjs` after content changes.
+- Edit copy, experience, credentials, skills, contact settings, and professional links in `data/site.json`.
+- Edit `seo` for the page title, descriptions, canonical URL, JSON-LD job title, and `knowsAbout`. Social metadata and structured data use the same source.
+- Keep unavailable professional URLs as empty strings. Placeholder URLs fail validation.
+- Keep phone numbers out of public JSON and HTML; the downloadable résumé can retain its phone number.
+- `templates/index.html` holds the document shell; `scripts/render-site.mjs` holds section markup. Content is escaped before rendering. The existing `<i>` emphasis in organization names is supported.
+- Presentation lives in `css/styles.css`; interactions live in `js/script.js`.
+- The theme follows system preferences and saves manual selections in local storage.
 
-### Multiple roles at one company
+### Selected Work
 
-Use one experience item for the company, put the overall tenure in `date`, and add a `roles` array. Each nested role has its own date, title, and description:
+`selectedWork` contains `eyebrow`, `headline`, `intro`, and an `items` array. Each case study requires a `title`, `text`, and non-empty `skills` array, plus an `outcome` or non-empty `evidence` array. Both can be supplied:
 
 ```json
 {
-  "date": "2015 to 2022",
-  "organization": "Company Name",
-  "roles": [
-    {
-      "date": "2017 to 2022",
-      "role": "Later Role",
-      "text": "Responsibilities and impact."
-    },
-    {
-      "date": "2015 to 2017",
-      "role": "Earlier Role",
-      "text": "Responsibilities and impact."
-    }
-  ]
+  "title": "Case study title",
+  "text": "What was investigated or built.",
+  "evidence": ["Verified finding or demonstrated capability."],
+  "outcome": "Supported outcome, without invented metrics.",
+  "skills": ["SQL", "Data Validation"]
 }
 ```
 
-Single-role employers continue to use the top-level `date`, `role`, `organization`, and `text` fields.
+### Role progression
 
-## Adding a résumé
+Use one experience item per employer with an overall `date`, `organization`, and either `role`/`text` or a `roles` array. Each nested role has its own `date`, `role`, and `text`. MaxGames preserves the 2015–2017 volunteer and 2017–2022 paid progression documented in the bundled résumé.
 
-The résumé section is intentionally hidden until a real PDF is available:
+## Validation
 
-1. Add the PDF to the repository, for example as `resume.pdf`.
-2. Set `person.resume` in `data/site.json` to that file path.
-3. Run the validation script. It verifies that the configured file exists and has a PDF signature.
+```sh
+node --test scripts/site.test.mjs
+node scripts/build.mjs
+node scripts/validate-site.mjs
+```
+
+Validation checks content schemas (including Selected Work), rendered anchors and local assets, PDF signature/trailer, privacy, canonical URL, SEO/JSON-LD, contact configuration, generated-content freshness, and deployment artifact consistency. Tests cover HTML availability, escaping, invalid case studies, broken links, phone privacy, résumé path safety, grouped roles, and optional résumé behavior.
+
+External URL syntax is checked locally; remote profiles and form delivery require live verification. Before publishing, also check mobile/tablet/desktop layouts, light/dark themes, keyboard navigation, JavaScript-disabled reading, and browser console errors.
+
+## Replacing the résumé
+
+The revised general analytics résumé is bundled at `data/Ryan Scott Resume.pdf`, configured by `person.resume`. For future replacements:
+
+1. Replace that PDF, preserving its phone number, or update `person.resume` to the new relative PDF path.
+2. If the path changes, update the résumé action in `hero.actions` too.
+3. Run the tests, build, and validation; open the PDF locally and again after deployment.
+
+The build publishes only the configured résumé, so other variants are not bundled automatically. Keep job-specific variants separate from the public portfolio. Setting `person.resume` to an empty string hides the résumé section; remove its navigation and hero action at the same time.
+
+**Accuracy note:** The revised résumé and portfolio both use “Software Developer” with the confirmed Knights of Creation dates of 2022–2025, and both include the Salesforce Certified Data 360 Consultant credential. SEMA’s June 2025 start and the paid QA role title match the revised résumé. The volunteer QA dates remain supported by the earlier résumé and repositioning brief.
 
 ## Contact form
 
-The form posts to FormSubmit using the email in `data/site.json`. The direct email address is also presented as the primary contact method. The first FormSubmit message may require approving an activation email; complete a production test before sharing the site widely.
+The form posts to FormSubmit using `person.email`, with the subject from `contact.formSubject`. Direct email is also available. Its static return URL comes from `seo.url`; JavaScript adjusts that URL to the current origin during local previews. Required fields, labels, and the honeypot are rendered in HTML. A `?sent=true#contact` return shows success feedback when JavaScript is enabled.
+
+The first FormSubmit message may require approving an activation email. Configuration validation does not verify mailbox delivery; test activation and delivery in production.
 
 ## Deployment
 
-Pushes to `main` deploy through GitHub Actions. The workflow validates content, links, metadata, navigation targets, and configured assets before publishing to GitHub Pages.
+Pushes to `main` retain the existing GitHub Pages workflow. Actions checks JavaScript syntax, runs tests, builds, validates, and publishes `dist/`. Only public assets are uploaded; scripts, templates, documentation, Git files, and unconfigured PDFs are excluded.
 
-See `DEPLOY.md` for the launch checklist and custom-domain notes.
+See `DEPLOY.md` for the deployment checklist and custom-domain notes.

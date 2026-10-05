@@ -58,17 +58,17 @@ The optional `impact` section contains an `eyebrow` and `items` array. It appear
 ```json
 {
   "id": "crm-affiliations",
-  "value": "4,000",
+  "value": "4,000+",
   "label": "CRM affiliation records",
   "context": "Matching and reconciliation during migration.",
-  "approximate": true,
+  "approximate": false,
   "caseStudyId": "crm-reconciliation"
 }
 ```
 
-Approximate metrics display an explicit qualifier. `enabled: false` on a metric hides it in both the band and case cards. `impact.enabled: false` hides only the band. Empty `items` or an omitted `impact` section are supported; remove case-study metric references if their definitions are removed. **JSON is a public asset:** hiding a metric does not remove its value from JSON. To keep a number private, delete its metric entry and references before publishing.
+Set `value` to a rounded figure with a trailing `+` for the current headline style, and leave `approximate` false to avoid an additional qualifier. Metrics with `approximate: true` display an explicit “Approximately” qualifier. `enabled: false` on a metric hides it in both the band and case cards. `impact.enabled: false` hides only the band. Empty `items` or an omitted `impact` section are supported; remove case-study metric references if their definitions are removed. **JSON is a public asset:** hiding a metric does not remove its value from JSON. To keep a number private, delete its metric entry and references before publishing.
 
-Headline metrics are ordered as approximately 8,000 historical exhibitors, approximately 4,000 CRM affiliation records, and 473 organizations surfaced. The `exhibitor-history` metric ID is ready for a future Historical Exhibitor / Customer Tenure Analysis case: add that case to `selectedWork.items`, then set the metric's `caseStudyId` to its ID. Until the case exists, the metric has no case-study link.
+Headline metrics are ordered as 8,000+ business histories analyzed, 4,000+ CRM affiliation records, and 400+ organizations surfaced. Copy describes customer history, CRM affiliations, and operational audits in general business terms. The existing `exhibitor-history` metric ID is retained for a future Customer History / Customer Tenure Analysis case: add that case to `selectedWork.items`, then set the metric's `caseStudyId` to its ID. Until the case exists, the metric has no case-study link.
 
 ### Share images
 
@@ -102,7 +102,7 @@ The build publishes only the configured résumé, so other variants are not bund
 
 **Accuracy note:** The revised résumé and portfolio both use “Software Developer” with the confirmed Knights of Creation dates of 2022–2025, and both include the Salesforce Certified Data 360 Consultant credential. SEMA’s June 2025 start and the paid QA role title match the revised résumé. The volunteer QA dates remain supported by the earlier résumé and repositioning brief.
 
-The public website's headline and structured job title follow the current positioning. The supplied résumé is intentionally unchanged; its headline and summary will be revised separately by the owner. Headline metrics use the supplied approximately 8,000 historical exhibitors, approximately 4,000 CRM affiliation records, and 473-organization audit result. Organization-type segmentation remains supporting experience and skill evidence. No financial or time-saving estimates are added. Potential membership remediation stays an investigation, and Data 360 stays certification knowledge.
+The public website's headline and structured job title follow the current positioning. Headline metrics use rounded figures with a trailing `+`, based on the supplied roughly 8,000 business histories, roughly 4,000 CRM affiliation records, and 473-organization audit result. Organization-type segmentation remains supporting experience and skill evidence. No financial or time-saving estimates are added. Potential relationship remediation stays an investigation, and Data 360 stays certification knowledge.
 
 ## Contact form
 

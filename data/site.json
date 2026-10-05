@@ -230,10 +230,10 @@
     "items": [
       {
         "id": "membership-flowdown",
-        "title": "Membership Flowdown Integrity",
-        "summary": "Investigated recurring membership-flowdown discrepancies across Salesforce/Nimble and built repeatable tracking for new failures.",
-        "challenge": "Membership relationships repeatedly failed to flow down as expected, creating CRM data-integrity concerns.",
-        "investigation": "Used SQL/SOQL and record-level comparisons to isolate affected patterns, monitor failures over time, and investigate potential automated remediation. Some failures traced to underlying membership configuration.",
+        "title": "CRM Relationship & Business Rule Integrity",
+        "summary": "Investigated recurring CRM relationship discrepancies across connected systems and built repeatable tracking for new failures.",
+        "challenge": "Related CRM records repeatedly failed to inherit account status as expected, creating data-integrity concerns.",
+        "investigation": "Used SQL/SOQL and record-level comparisons to isolate affected patterns, monitor failures over time, and investigate potential automated remediation. Some failures traced to underlying relationship configuration.",
         "solution": "Created a repeatable tracking and monitoring process for newly occurring failures and documented verified findings for root-cause correction.",
         "impact": "Helped shift the response from isolated tickets toward configuration correction and recurrence prevention.",
         "evidence": [
@@ -273,12 +273,12 @@
       },
       {
         "id": "council-affiliations",
-        "title": "Council Assignment & CRM Reconciliation",
-        "summary": "Designed matching and reconciliation logic while migrating and correcting CRM council relationships.",
+        "title": "CRM Affiliation Migration & Reconciliation",
+        "summary": "Designed matching and reconciliation logic while migrating and correcting CRM affiliation records.",
         "challenge": "Historical affiliations, merged-record exceptions, and inconsistent relationships complicated accurate record matching.",
         "investigation": "Compared records across systems, developed unique lookup keys, and worked through historical affiliation conflicts and merged-record exceptions.",
         "solution": "Created repeatable matching and reconciliation logic, tested imports iteratively, and resolved import errors with verified examples.",
-        "impact": "Reconciled and imported council-affiliation records through a repeatable process that supported migration quality and relationship accuracy.",
+        "impact": "Reconciled and imported CRM affiliation records through a repeatable process that supported migration quality and relationship accuracy.",
         "evidence": [
           "Unique lookup keys and matching methodology",
           "Iterative import testing and exception resolution"
@@ -365,24 +365,24 @@
     "items": [
       {
         "id": "exhibitor-history",
-        "value": "8,000",
-        "approximate": true,
-        "label": "Historical exhibitors",
-        "context": "Analyzed exhibit history to identify when businesses first exhibited and distinguish new from returning exhibitors."
+        "value": "8,000+",
+        "approximate": false,
+        "label": "Business histories analyzed",
+        "context": "Analyzed historical activity to identify when organizations first did business with us and distinguish new from returning customers."
       },
       {
         "id": "crm-affiliations",
-        "value": "4,000",
+        "value": "4,000+",
         "label": "CRM affiliation records",
-        "context": "Matching and reconciliation during council-assignment migration.",
-        "approximate": true,
+        "context": "Matched and reconciled affiliation records during CRM migration to improve relationship accuracy.",
+        "approximate": false,
         "caseStudyId": "council-affiliations"
       },
       {
         "id": "reachability",
-        "value": "473",
+        "value": "400+",
         "label": "Organizations surfaced",
-        "context": "Without an assigned primary contact in one reachability audit.",
+        "context": "Identified missing primary contacts through an operational audit, making gaps in customer outreach actionable.",
         "approximate": false,
         "caseStudyId": "operational-monitoring"
       }

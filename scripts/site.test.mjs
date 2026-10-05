@@ -99,6 +99,7 @@ test('metric controls update every rendered reference and identify approximate f
   const copy = structuredClone(data);
   const metric = copy.impact.items.find((item) => item.id === 'reachability');
   metric.value = '472';
+  metric.approximate = true;
   let html = renderDocument(copy, template, 2026);
   assert.equal((html.match(/<strong>472<\/strong>/g) || []).length, 2);
   assert.ok(html.includes('Approximately'));

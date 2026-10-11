@@ -15,7 +15,7 @@ The workflow uses Node.js 24, runs tests, prerenders the full portfolio from JSO
 ## Deployment checks
 
 - Open the deployed site at mobile, tablet, and desktop widths, in light and dark themes.
-- Disable JavaScript and confirm Hero, Impact, Selected Work, Experience, Credentials, Skills, Resume, and Contact remain readable; mobile navigation stays visible.
+- Disable JavaScript and confirm Hero, Impact, all three capability areas and their examples, Experience, Credentials, Skills, Resume, and Contact remain readable; mobile navigation stays visible and both How it worked disclosures still open.
 - Test keyboard navigation, Escape in the mobile menu, the skip link, and direct section links.
 - Confirm LinkedIn, GitHub, YouTube, Trailhead, email, and résumé destinations.
 - Open the deployed résumé and confirm its content and current version. Keep its phone number; public HTML, JSON, and metadata must not include it.
@@ -25,9 +25,9 @@ The workflow uses Node.js 24, runs tests, prerenders the full portfolio from JSO
 
 ## Content and résumé
 
-Edit `data/site.json`, then rebuild before previewing or deploying. The generated page and metadata share that source; do not maintain duplicate copy in HTML. See README.md for case-study and grouped-role schemas.
+Edit `data/site.json`, then rebuild before previewing or deploying. The generated page and metadata share that source; do not maintain duplicate copy in HTML. See README.md for capability, compact-example, and grouped-role schemas.
 
-Metrics live in `impact.items` and can be referenced by case studies. To keep a number private, remove its entry and case-study references; display toggles alone leave values in the public JSON. Review case-study copy for confidential identifiers, internal configuration, stakeholder names, and live payment links before publishing.
+Metrics live in `impact.items` and can be referenced by examples. `approximate: true` identifies rounded figures; the exact reachability count remains 473. To keep a number private, remove its entry and example references; display toggles alone leave values in the public JSON. Review example copy for confidential identifiers, internal configuration, stakeholder names, and live payment links before publishing.
 
 The revised general analytics résumé is bundled at `data/Ryan Scott Resume.pdf`. Keep job-specific versions separate. The build includes only the PDF selected by `person.resume`; if its path changes, update the résumé hero action too.
 

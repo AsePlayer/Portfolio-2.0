@@ -167,7 +167,7 @@ function handleInitialHash() {
 }
 
 function focusDestination(section) {
-  const destination = section.matches('h1, h2') ? section : section.querySelector('h1, h2') || section;
+  const destination = section.matches('h1, h2, h3, h4') ? section : section.querySelector('h1, h2, h3, h4') || section;
   const hadTabindex = destination.hasAttribute('tabindex');
 
   if (!hadTabindex) destination.setAttribute('tabindex', '-1');

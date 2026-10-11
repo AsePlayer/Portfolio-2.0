@@ -43,8 +43,10 @@ export function validateContent(data, root) {
     if (value !== '') https(value, `links.${key}`);
   });
   fields(data.hero, 'hero', ['eyebrow', 'subheadline']);
-  fields(data.hero?.panel, 'hero.panel', ['label', 'headline']);
-  array(data.hero?.panel?.facts, 'hero.panel.facts').forEach((item, i) => fields(item, `hero.panel.facts[${i}]`, ['value', 'label', 'detail']));
+  fields(data.hero?.panel, 'hero.panel', ['label', 'headline', 'intro']);
+  const steps = array(data.hero?.panel?.steps, 'hero.panel.steps');
+  if (steps.length !== 4) fail('hero.panel.steps must contain four How I Work steps.');
+  steps.forEach((item, i) => fields(item, `hero.panel.steps[${i}]`, ['title', 'text']));
   fields(data.experience, 'experience', ['eyebrow', 'headline', 'intro']);
   array(data.experience?.items, 'experience.items').forEach((item, i) => {
     fields(item, `experience.items[${i}]`, ['date', 'organization']);
@@ -52,6 +54,7 @@ export function validateContent(data, root) {
       array(item.roles, `experience.items[${i}].roles`).forEach((role, j) => fields(role, `experience.items[${i}].roles[${j}]`, ['date', 'role', 'text']));
     } else fields(item, `experience.items[${i}]`, ['role', 'text']);
   });
+  if (data.experience?.items?.[0]?.role !== data.person?.currentRole) fail('The current experience role must match person.currentRole.');
   fields(data.experience?.development, 'experience.development', ['eyebrow', 'headline']);
   array(data.experience?.development?.items, 'experience.development.items').forEach((item, i) => {
     fields(item, `experience.development.items[${i}]`, ['label', 'title', 'organization', 'text']);
@@ -60,39 +63,68 @@ export function validateContent(data, root) {
       if (item.link.href !== '') https(item.link.href, `credential[${i}].link.href`);
     }
   });
-  fields(data.selectedWork, 'selectedWork', ['eyebrow', 'headline', 'intro']);
-  const workIds = new Set();
-  array(data.selectedWork?.items, 'selectedWork.items').forEach((item, i) => {
-    fields(item, `selectedWork.items[${i}]`, ['title', 'summary']);
-    identifier(item?.id, `selectedWork.items[${i}].id`);
-    if (workIds.has(item?.id)) fail(`Duplicate case-study identifier: ${item?.id}`);
-    workIds.add(item?.id);
-    strings(item?.skills, `selectedWork.items[${i}].skills`);
-    for (const field of ['challenge', 'investigation', 'solution', 'impact']) {
-      if (item?.[field] !== undefined) text(item[field], `selectedWork.items[${i}].${field}`);
-    }
-    if (item?.evidence !== undefined) strings(item.evidence, `selectedWork.items[${i}].evidence`);
-    if (item?.process !== undefined) strings(item.process, `selectedWork.items[${i}].process`);
-    optionalBoolean(item?.featured, `selectedWork.items[${i}].featured`);
-    if (item?.metric !== undefined) identifier(item.metric, `selectedWork.items[${i}].metric`);
+  if (data.selectedWork !== undefined) fail('selectedWork is retired; use capabilities.categories with compact examples.');
+  fields(data.capabilities, 'capabilities', ['eyebrow', 'headline', 'intro']);
+  const categoryIds = new Set();
+  const exampleIds = new Set();
+  const examples = [];
+  let detailCount = 0;
+  const categories = array(data.capabilities?.categories, 'capabilities.categories');
+  if (categories.length !== 3) fail('capabilities.categories must contain exactly three capability areas.');
+  categories.forEach((category, i) => {
+    const label = `capabilities.categories[${i}]`;
+    fields(category, label, ['title', 'intro']);
+    identifier(category?.id, `${label}.id`);
+    if (categoryIds.has(category?.id)) fail(`Duplicate capability identifier: ${category?.id}`);
+    categoryIds.add(category?.id);
+    const items = array(category?.examples, `${label}.examples`);
+    if (items.length < 2 || items.length > 4) fail(`${label}.examples must contain two to four compact examples.`);
+    items.forEach((item, j) => {
+      const exampleLabel = `${label}.examples[${j}]`;
+      examples.push({item, label: exampleLabel});
+      fields(item, exampleLabel, ['title', 'summary']);
+      identifier(item?.id, `${exampleLabel}.id`);
+      if (exampleIds.has(item?.id)) fail(`Duplicate example identifier: ${item?.id}`);
+      exampleIds.add(item?.id);
+      strings(item?.impact, `${exampleLabel}.impact`);
+      if (Array.isArray(item?.impact) && item.impact.length > 3) fail(`${exampleLabel}.impact must contain at most three bullets.`);
+      strings(item?.technologies, `${exampleLabel}.technologies`);
+      if (Array.isArray(item?.technologies) && item.technologies.length > 6) fail(`${exampleLabel}.technologies must contain at most six concrete tools.`);
+      if (item?.metric !== undefined) identifier(item.metric, `${exampleLabel}.metric`);
+      if (item?.details !== undefined) {
+        detailCount++;
+        strings(item.details?.steps, `${exampleLabel}.details.steps`);
+        if (Array.isArray(item.details?.steps) && item.details.steps.length > 6) fail(`${exampleLabel}.details.steps must contain at most six steps.`);
+      }
+      for (const field of ['challenge', 'investigation', 'solution', 'evidence', 'skills', 'featured', 'process']) {
+        if (item?.[field] !== undefined) fail(`${exampleLabel}.${field} is retired; keep examples compact and use optional details.steps for technical depth.`);
+      }
+    });
   });
+  if (detailCount > 2) fail('At most two examples may include details across the entire portfolio.');
   const metricIds = new Set();
+  const metrics = Array.isArray(data.impact?.items) ? data.impact.items : [];
   if (data.impact !== undefined) {
     text(data.impact?.eyebrow, 'impact.eyebrow');
     optionalBoolean(data.impact?.enabled, 'impact.enabled');
     if (!Array.isArray(data.impact?.items)) fail('impact.items must be an array (it can be empty).');
-    (Array.isArray(data.impact?.items) ? data.impact.items : []).forEach((item, i) => {
+    metrics.forEach((item, i) => {
       fields(item, `impact.items[${i}]`, ['value', 'label', 'context']);
+      if (typeof item?.value === 'string' && !/^\d+(?:,\d{3})*$/.test(item.value)) fail(`impact.items[${i}].value must be a count without + or ~; use approximate for rounded figures.`);
       identifier(item?.id, `impact.items[${i}].id`);
       if (metricIds.has(item?.id)) fail(`Duplicate metric identifier: ${item?.id}`);
       metricIds.add(item?.id);
       if (typeof item?.approximate !== 'boolean') fail(`impact.items[${i}].approximate must be a boolean.`);
       optionalBoolean(item?.enabled, `impact.items[${i}].enabled`);
-      if (item?.caseStudyId !== undefined && !workIds.has(item.caseStudyId)) fail(`Metric ${item.id} links to an unknown case study.`);
+      if (item?.caseStudyId !== undefined) fail(`impact.items[${i}].caseStudyId is retired; use exampleId.`);
+      if (item?.exampleId !== undefined && !exampleIds.has(item.exampleId)) fail(`Metric ${item.id} links to an unknown example.`);
     });
   }
-  (Array.isArray(data.selectedWork?.items) ? data.selectedWork.items : []).forEach((item, i) => {
-    if (item?.metric !== undefined && !metricIds.has(item.metric)) fail(`selectedWork.items[${i}].metric references an unknown metric.`);
+  examples.forEach(({item, label}) => {
+    if (item?.metric === undefined) return;
+    if (!metricIds.has(item.metric)) fail(`${label}.metric references an unknown metric.`);
+    const metric = metrics.find((metric) => metric?.id === item.metric);
+    if (metric?.exampleId !== undefined && metric.exampleId !== item.id) fail(`${label}.metric must link back to the same example.`);
   });
   fields(data.skills, 'skills', ['eyebrow', 'headline']);
   array(data.skills?.groups, 'skills.groups').forEach((item, i) => {
@@ -108,7 +140,8 @@ export function validateContent(data, root) {
   if (data.seo?.image !== undefined) localImage(data.seo.image);
   text(data.footer, 'footer');
   const targets = new Set(['#home', '#experience', '#work', '#education', '#skills', '#contact']);
-  workIds.forEach((id) => targets.add(`#work-${id}`));
+  categoryIds.forEach((id) => targets.add(`#capability-${id}`));
+  exampleIds.forEach((id) => targets.add(`#work-${id}`));
   if (Array.isArray(data.impact?.items) && data.impact.enabled !== false && data.impact.items.some((item) => item?.enabled !== false)) targets.add('#impact');
   if (data.person?.resume) {
     targets.add('#resume');
@@ -136,7 +169,8 @@ export function validateContent(data, root) {
   });
   const publicCopy = JSON.stringify(data);
   if (/tel:|"(?:phone|telephone|mobile)"\s*:|(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/i.test(publicCopy)) fail('Public content must not contain a phone number. Keep it only in the résumé PDF.');
-  if (/\bdata\s+(?:(?:and|&)\s+operations\s+)?analyst\b/i.test(publicCopy)) fail('Public content must avoid the direct Data Analyst identity.');
+  if (/\b(?:data\s+(?:(?:and|&)\s+operations\s+)?analyst|(?:solutions?|data|salesforce)\s+architect|business\s+systems\s+analyst|expert|thought[ -]leader|enterprise\s+leader|owner\s+of\s+enterprise\s+architecture)\b/i.test(publicCopy)) fail('Public content must avoid inflated titles and unsupported seniority claims.');
+  if (data.person?.currentRole !== 'Data Operations Coordinator') fail('person.currentRole must remain Data Operations Coordinator.');
   if (data.seo?.jobTitle !== data.person?.currentRole) fail('seo.jobTitle must match the actual current role.');
   return errors;
 }

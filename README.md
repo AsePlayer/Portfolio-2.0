@@ -1,6 +1,6 @@
 # Ryan Scott | Data Operations & Business Systems Portfolio
 
-A recruiter-focused portfolio built with semantic HTML, responsive CSS, and plain JavaScript. Content emphasizes operational investigation, CRM data integrity, reconciliation, monitoring, and a career progression from QA through software development to data operations. The public headline describes the work; JSON-LD uses the actual current role, Data Operations Coordinator.
+A recruiter-focused portfolio built with semantic HTML, responsive CSS, and plain JavaScript. Three capability areas show how Ryan translates business rules and disconnected data into reliable workflows, improves CRM reliability, and supports decisions through analysis. The hero, experience, and JSON-LD retain his actual current role, Data Operations Coordinator, with a visible foundation in QA and software development.
 
 Live site: [ryanscott.org](https://ryanscott.org/)
 
@@ -30,45 +30,52 @@ All sections, navigation, professional links, and the contact form are available
 - Presentation lives in `css/styles.css`; interactions live in `js/script.js`.
 - The theme follows system preferences and saves manual selections in local storage.
 
-### Selected Work
+### Capability areas and compact examples
 
-`selectedWork` contains `eyebrow`, `headline`, `intro`, and an `items` array. Each case study requires a unique lowercase `id`, `title`, `summary`, and non-empty `skills` array. `challenge`, `investigation`, `solution`, `impact`, `evidence`, `process`, `featured`, and `metric` are optional:
+`capabilities` replaces the retired `selectedWork` schema. It contains `eyebrow`, `headline`, `intro`, and exactly three `categories`:
+
+1. **Business Data Systems & Automation:** Magazine Circulation Automation, Enterprise Email Suppression Governance, Audience Generation & Segmentation, and Event Data Integration.
+2. **CRM Data Quality & Migration:** Legacy CRM to Salesforce Migration, Council Affiliation Reconciliation, Membership Flowdown Integrity, and Data Quality Audit Framework.
+3. **Analytics & Decision Support:** Historical Exhibitor Analysis, Membership Retention & Revenue Forecasting, Reporting Modernization, and Engagement Analytics.
+
+Each category requires a unique lowercase `id`, `title`, `intro`, and two to four `examples`. Each example requires a globally unique `id`, `title`, a one- or two-sentence `summary`, one to three `impact` bullets, and a short `technologies` array of at most six concrete tools. Optional `metric` references a count in `impact.items`. Optional `details.steps` contains up to six plain-text steps:
 
 ```json
 {
-  "id": "crm-reconciliation",
-  "title": "Case study title",
-  "summary": "What was investigated or built.",
-  "challenge": "The operational problem.",
-  "investigation": "How the problem was traced.",
-  "solution": "The verified process or corrective action.",
-  "impact": "Supported outcome, without invented metrics.",
-  "evidence": ["Verified finding or demonstrated capability."],
-  "skills": ["SQL", "Data Validation"],
-  "featured": true
+  "id": "council-affiliations",
+  "title": "Council Affiliation Reconciliation",
+  "summary": "Designed matching and reconciliation logic for council-affiliation migration.",
+  "impact": ["Validated relationships before and after import."],
+  "technologies": ["SQL", "Salesforce", "Data Loader"],
+  "metric": "crm-affiliations",
+  "details": {"steps": ["Compare relationships and create unique lookup keys."]}
 }
 ```
 
-Cases appear in JSON order before Experience, with stable anchors such as `#work-crm-reconciliation`. The four labeled stages render only when their fields are supplied. `process` is an optional array of plain-text steps rendered as an accessible ordered list, including without JavaScript. `featured` adds restrained visual emphasis. Each case also produces a CreativeWork entry linked to the existing Person structured data.
+Categories and examples appear in JSON order before Experience. Category navigation uses anchors such as `#capability-crm-data-quality`; examples retain `#work-` anchors such as `#work-council-affiliations`. Categories are the primary narrative; examples are compact proof in a responsive two-column layout. Payment Reminder Process & Data Quality has been consolidated into Audience Generation & Segmentation. The relationship-integrity and audit examples have been renamed and shortened while retaining their original anchors.
+
+Only two examples across the entire portfolio may include `details`: currently circulation automation and council reconciliation. They render as native, initially collapsed `<details>` disclosures with accessible summary names and ordered steps, including without JavaScript. Repetitive case-study fields (`challenge`, `investigation`, `solution`, `evidence`, `skills`, `featured`, and `process`) fail validation. JSON-LD groups CreativeWork entries beneath three category ItemLists and links every example to Ryan's Person entry.
+
+`hero.panel` holds How I Work copy and a four-step `steps` array; each step has `title` and `text`. The sequence is Understand, Trace, Build, Validate, with the QA/software-development background explained in `intro`.
 
 ### Impact metrics
 
-The optional `impact` section contains an `eyebrow` and `items` array. It appears between the hero and Selected Work. Each item requires unique `id`, `value`, `label`, `context`, and boolean `approximate`; optional `caseStudyId` links to a case study. Case-study `metric` references the metric's ID so a count is edited once:
+The optional `impact` section contains an `eyebrow` and `items` array. It appears between the hero and Capabilities. Each item requires unique `id`, `value`, `label`, `context`, and boolean `approximate`; optional `exampleId` replaces `caseStudyId` and links to an example. Example `metric` references the metric's ID so a count is edited once and displayed consistently in the band and compact proof:
 
 ```json
 {
   "id": "crm-affiliations",
-  "value": "4,000+",
+  "value": "4,000",
   "label": "CRM affiliation records",
   "context": "Matching and reconciliation during migration.",
-  "approximate": false,
-  "caseStudyId": "crm-reconciliation"
+  "approximate": true,
+  "exampleId": "council-affiliations"
 }
 ```
 
-Set `value` to a rounded figure with a trailing `+` for the current headline style, and leave `approximate` false to avoid an additional qualifier. Metrics with `approximate: true` display an explicit “Approximately” qualifier. `enabled: false` on a metric hides it in both the band and case cards. `impact.enabled: false` hides only the band. Empty `items` or an omitted `impact` section are supported; remove case-study metric references if their definitions are removed. **JSON is a public asset:** hiding a metric does not remove its value from JSON. To keep a number private, delete its metric entry and references before publishing.
+Keep `value` as a count without `+` or `~`. Metrics with `approximate: true` display a visible `~` and an accessible “Approximately” qualifier. `enabled: false` on a metric hides it in both the band and examples. `impact.enabled: false` hides only the band. Empty `items` or an omitted `impact` section are supported; remove example metric references if their definitions are removed. **JSON is a public asset:** hiding a metric does not remove its value from JSON. To keep a number private, delete its metric entry and references before publishing.
 
-Headline metrics are ordered as 8,000+ business histories analyzed, 4,000+ CRM affiliation records, and 400+ organizations surfaced. Copy describes customer history, CRM affiliations, and operational audits in general business terms. The existing `exhibitor-history` metric ID is retained for a future Customer History / Customer Tenure Analysis case: add that case to `selectedWork.items`, then set the metric's `caseStudyId` to its ID. Until the case exists, the metric has no case-study link.
+Headline metrics are approximately 8,000 historical exhibitor records, approximately 4,000 CRM affiliation records, and exactly 473 organizations identified without an assigned primary contact. All three now link to their supporting examples. Organization-type categories remain supporting business-rule work rather than a headline metric. Counts describe analyzed or reconciled datasets; they do not imply manual review, migration ownership, or invented time/revenue savings.
 
 ### Share images
 
@@ -86,7 +93,7 @@ node scripts/build.mjs
 node scripts/validate-site.mjs
 ```
 
-Validation checks content schemas (including optional case-study stages, proof metrics, and share images), rendered anchors and local assets, PDF signature/trailer, privacy, canonical URL, SEO/JSON-LD, contact configuration, generated-content freshness, and deployment artifact consistency. Tests cover HTML availability and section order, escaping, invalid schemas, metric references and hiding, approximate figures, identity wording, linked CreativeWork data, optional share images, broken links, phone privacy, résumé path safety, grouped roles, and optional résumé behavior.
+Validation checks exactly three capability areas, two to four examples per area, impact/technology limits, at most two deep dives, metric references, and actual-role wording. It also checks rendered anchors and local assets, PDF signature/trailer, privacy, canonical URL, nested SEO/JSON-LD, contact configuration, generated-content freshness, and deployment artifact consistency. Tests cover HTML availability and hierarchy, escaping, invalid nested schemas, compactness limits, native disclosures, accurate metrics and hiding, the How I Work sequence, inflated-title rejection, linked CreativeWork data, optional share images, broken links, phone privacy, résumé path safety, grouped roles, and optional résumé behavior.
 
 External URL syntax is checked locally; remote profiles and form delivery require live verification. Before publishing, also check mobile/tablet/desktop layouts, light/dark themes, keyboard navigation, JavaScript-disabled reading, and browser console errors.
 
@@ -102,7 +109,7 @@ The build publishes only the configured résumé, so other variants are not bund
 
 **Accuracy note:** The revised résumé and portfolio both use “Software Developer” with the confirmed Knights of Creation dates of 2022–2025, and both include the Salesforce Certified Data 360 Consultant credential. SEMA’s June 2025 start and the paid QA role title match the revised résumé. The volunteer QA dates remain supported by the earlier résumé and repositioning brief.
 
-The public website's headline and structured job title follow the current positioning. Headline metrics use rounded figures with a trailing `+`, based on the supplied roughly 8,000 business histories, roughly 4,000 CRM affiliation records, and 473-organization audit result. Organization-type segmentation remains supporting experience and skill evidence. No financial or time-saving estimates are added. Potential relationship remediation stays an investigation, and Data 360 stays certification knowledge.
+The public website's headline describes the scope of work; the current role remains Data Operations Coordinator. Migration copy describes support, validation, and reconciliation rather than ownership of the full migration. Membership relationship work describes investigation, monitoring, and configuration findings without claiming deployed Apex remediation. Data 360 appears as certification knowledge, research, and future-state exploration, without implying an implemented enterprise CDP. Apex is part of the broader automation toolkit and audience work. No architecture title, management authority, or financial/time-saving estimate is added.
 
 ## Contact form
 

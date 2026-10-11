@@ -14,7 +14,7 @@
   },
   "nav": [
     {
-      "label": "Work",
+      "label": "Capabilities",
       "href": "#work"
     },
     {
@@ -40,10 +40,10 @@
   ],
   "hero": {
     "eyebrow": "SQL · Salesforce · Automation · Data Quality",
-    "subheadline": "I investigate how data and business processes behave across systems, find where they break, and build reporting, validation, and automation that makes those processes more reliable.",
+    "subheadline": "I design and automate business data processes across CRM, marketing, reporting, and operations—turning complex rules and disconnected data into reliable, repeatable systems.",
     "actions": [
       {
-        "label": "Explore Selected Work",
+        "label": "Explore My Work",
         "href": "#work",
         "style": "primary"
       },
@@ -55,22 +55,24 @@
     ],
     "panel": {
       "label": "How I work",
-      "headline": "Trace the cause. Build a reliable process.",
-      "facts": [
+      "headline": "From business rules to reliable processes.",
+      "intro": "My QA and software-development background shapes how I approach data work.",
+      "steps": [
         {
-          "value": "Investigate",
-          "label": "Find the root cause",
-          "detail": "Use SQL, SOQL, and record-level analysis to trace discrepancies across CRM systems, data, and business rules."
+          "title": "Understand",
+          "text": "Learn the process, business rules, and expected behavior."
         },
         {
-          "value": "Reconcile",
-          "label": "Bridge systems",
-          "detail": "Compare records, resolve matching exceptions, and validate migration and audience data before downstream use."
+          "title": "Trace",
+          "text": "Follow data across systems and identify where reality diverges from expectation."
         },
         {
-          "value": "Monitor",
-          "label": "Prevent recurrence",
-          "detail": "Build repeatable validation, historical logging, and automation so emerging operational risks can be reviewed."
+          "title": "Build",
+          "text": "Create repeatable logic, automation, or reporting that improves the process."
+        },
+        {
+          "title": "Validate",
+          "text": "Test outputs, reconcile results, and monitor for recurring issues."
         }
       ]
     }
@@ -83,7 +85,7 @@
         "date": "June 2025 - Present",
         "role": "Data Operations Coordinator",
         "organization": "SEMA <i>(Specialty Equipment Market Association)</i>",
-        "text": "Investigates data and business-process anomalies across Salesforce/Nimble and connected systems using SQL/SOQL and record-level analysis. Designs repeatable CRM migration and reconciliation processes, validates audience and campaign data, operationalizes organization-type segmentation, and develops operational monitoring and automation. Builds reporting used by Membership, Marketing, Sales, Finance, and Operations, identifying risks before inaccurate data reaches communications or decisions."
+        "text": "Designs reusable data processes and automates recurring workflows across Salesforce/Nimble AMS and connected marketing, membership, event, finance, and reporting systems. Translates business rules into SQL/SOQL logic, builds audience-generation and integration workflows, and supports legacy CRM migration through validation, reconciliation, and exception handling. Develops reporting and data-quality monitoring for Marketing, Membership, Sales, Finance, and Operations, taking on increasingly complex technical work from defining rules through testing outputs and monitoring recurring issues."
       },
       {
         "date": "2022 - 2025",
@@ -116,7 +118,7 @@
           "label": "Certification · September 2026",
           "title": "Salesforce Certified Data 360 Consultant",
           "organization": "Salesforce",
-          "text": "Credential covering data ingestion, harmonization, identity resolution, segmentation, activation, governance, and Data 360 implementation concepts."
+          "text": "Credential covering ingestion, harmonization, identity resolution, segmentation, activation, and governance concepts. Ongoing Data 360 exploration focuses on future-state planning, relationship mapping, and customer-profile strategy."
         },
         {
           "label": "Hands-on learning",
@@ -142,14 +144,14 @@
         }
       ]
     },
-    "intro": "My background in QA and software development shaped the same approach I now use in data work: reproduce the problem, isolate the cause, validate the fix, and improve the process so it is less likely to happen again."
+    "intro": "From QA and software development to data operations, I have built on a foundation of testing, technical problem solving, and repeatable process design."
   },
   "skills": {
     "eyebrow": "Core toolkit",
     "headline": "Tools and working knowledge.",
     "groups": [
       {
-        "title": "Data & Analytics",
+        "title": "Data & Analysis",
         "items": [
           "SQL",
           "SOQL",
@@ -157,7 +159,8 @@
           "Power Query",
           "Data Analysis",
           "Data Reconciliation",
-          "Data Validation"
+          "Data Validation",
+          "Forecasting"
         ]
       },
       {
@@ -165,12 +168,10 @@
         "items": [
           "Salesforce",
           "Nimble AMS",
-          "Data 360 (certification)",
+          "Salesforce Data 360 (certification & exploration)",
           "NetForum",
           "iPost Enterprise",
           "Microsoft Access",
-          "CRM Data Migration",
-          "Audience Segmentation",
           "Data Loader"
         ]
       },
@@ -178,37 +179,30 @@
         "title": "Automation & Integration",
         "items": [
           "Python",
+          "Apex",
           "VBA",
           "APIs",
           "ETL",
-          "Git",
-          "GitHub",
-          "Workflow Automation",
-          "AI-assisted SQL development & validation"
+          "FTP",
+          "CSV workflows",
+          "Git / GitHub",
+          "Workflow Automation"
         ]
       },
       {
-        "title": "Data Quality & Operations",
+        "title": "Data Operations",
         "items": [
           "Root-Cause Analysis",
+          "CRM Migration",
           "Operational Monitoring",
           "Business Rules Analysis",
           "Record Matching",
           "Data Quality",
-          "Migration QA",
+          "Audience Segmentation",
           "Process Improvement"
         ]
-      },
-      {
-        "title": "Visualization & Communication",
-        "items": [
-          "Power BI",
-          "Looker Studio",
-          "PowerPoint"
-        ]
       }
-    ],
-    "note": "Developed structured rules and validation guardrails for AI-generated SQL in a restricted production query environment to improve reliability and reproducibility."
+    ]
   },
   "resume": {
     "eyebrow": "Resume",
@@ -219,119 +213,145 @@
   "contact": {
     "eyebrow": "Let’s talk",
     "headline": "Let’s work together.",
-    "text": "I’m interested in data operations, business systems, CRM, and data-quality roles where SQL, investigation, automation, and cross-system reconciliation help teams make reliable decisions.",
+    "text": "I’m interested in opportunities at the intersection of data, business systems, and operations—building reliable processes, automating recurring work, and helping teams make informed decisions.",
     "formIntro": "Send me a message.",
     "formSubject": "New portfolio contact for Ryan Scott"
   },
-  "selectedWork": {
-    "eyebrow": "Selected Work",
-    "headline": "Investigations that improve how systems work.",
-    "intro": "Selected examples of CRM data integrity, process investigation, reconciliation, and operational monitoring.",
-    "items": [
+  "capabilities": {
+    "eyebrow": "Capabilities",
+    "headline": "Reliable data. Repeatable processes. Better decisions.",
+    "intro": "Three kinds of business-data problems I repeatedly solve, with examples of the processes, validation, and analysis behind the work.",
+    "categories": [
       {
-        "id": "membership-flowdown",
-        "title": "CRM Relationship & Business Rule Integrity",
-        "summary": "Investigated recurring CRM relationship discrepancies across connected systems and built repeatable tracking for new failures.",
-        "challenge": "Related CRM records repeatedly failed to inherit account status as expected, creating data-integrity concerns.",
-        "investigation": "Used SQL/SOQL and record-level comparisons to isolate affected patterns, monitor failures over time, and investigate potential automated remediation. Some failures traced to underlying relationship configuration.",
-        "solution": "Created a repeatable tracking and monitoring process for newly occurring failures and documented verified findings for root-cause correction.",
-        "impact": "Helped shift the response from isolated tickets toward configuration correction and recurrence prevention.",
-        "evidence": [
-          "SQL/SOQL and record-level analysis",
-          "Tracking of newly occurring failures over time"
-        ],
-        "skills": [
-          "SQL",
-          "SOQL",
-          "Salesforce",
-          "Nimble AMS",
-          "Data Quality",
-          "Root-Cause Analysis",
-          "Monitoring",
-          "Business Rules",
-          "CRM Data Integrity"
-        ],
-        "featured": true
+        "id": "business-data-systems",
+        "title": "Business Data Systems & Automation",
+        "intro": "Designing repeatable data workflows that translate business rules into automated processes across CRM, marketing, reporting, and operational systems.",
+        "examples": [
+          {
+            "id": "magazine-circulation",
+            "title": "Magazine Circulation Automation",
+            "summary": "Combined membership, affiliation, exhibitor, registration, geographic, request, and exception rules into a recurring audience-generation process.",
+            "impact": ["Reduced manual audience assembly.", "Standardized circulation rules and reduced recipient-error risk.", "Simplified future publication cycles."],
+            "technologies": ["Salesforce", "Power Query", "SQL", "Excel", "CSV workflows"],
+            "details": {
+              "steps": [
+                "Bring membership, affiliation, exhibitor, registration, and request data into a repeatable preparation workflow.",
+                "Translate inclusion, geographic, and exception rules into reusable query and Power Query logic.",
+                "Validate the resulting audience against business rules and reconcile exceptions before preparing the publication file.",
+                "Reuse the workflow for the next publication cycle, updating source inputs and rules as needed."
+              ]
+            }
+          },
+          {
+            "id": "email-suppression",
+            "title": "Enterprise Email Suppression Governance",
+            "summary": "Centralized fragmented suppression and exception processes into a reusable automated framework for email audience eligibility.",
+            "impact": ["Reduced manual exception maintenance.", "Improved consistency across email programs.", "Created scalable governance and monitoring for audience eligibility."],
+            "technologies": ["iPost Enterprise", "MySQL", "SQL automation", "Data-quality monitoring"]
+          },
+          {
+            "id": "audience-segmentation",
+            "title": "Audience Generation & Segmentation",
+            "summary": "Built reusable Salesforce and SQL logic for audiences based on organizational relationships, membership, event participation, geography, and other business criteria. Applied validation to finance audiences, helping pause and rebuild inaccurate payment reminders before sending.",
+            "impact": ["Reduced one-off audience preparation.", "Improved targeting consistency through reusable segmentation rules.", "Reduced the risk of stale reminders reaching recently paid customers."],
+            "technologies": ["Salesforce", "SOQL", "SQL", "Apex", "iPost"]
+          },
+          {
+            "id": "event-data-integration",
+            "title": "Event Data Integration",
+            "summary": "Built ingestion and transformation processes for exhibitor, registration, membership, and related event data used by marketing and operations.",
+            "impact": ["Reduced manual data preparation.", "Improved consistency of event datasets.", "Supported recurring downstream marketing and operational workflows."],
+            "technologies": ["FTP", "CSV", "SQL", "Salesforce"]
+          }
+        ]
       },
       {
-        "id": "payment-reminders",
-        "title": "Payment Reminder Process & Data Quality",
-        "summary": "Reverse-engineered the audience-building process and helped prevent inaccurate payment communications before deployment.",
-        "challenge": "The audience depended on manually combined reports and spreadsheet lookups, with different invoice categories requiring different handling.",
-        "investigation": "Traced reporting and filtering limitations, clarified business rules with Finance, Sales/Operations, and related stakeholders, and identified questionable recipient and payment data.",
-        "solution": "Helped pause and rebuild the audience, validate checkout/payment links, and refresh data near deployment to account for recent payments.",
-        "impact": "The campaign was paused and rebuilt before inaccurate communications were sent, reducing the risk of stale reminders reaching recently paid customers.",
-        "skills": [
-          "Data Quality",
-          "Business Rules Analysis",
-          "Process Analysis",
-          "Cross-Functional Investigation",
-          "Validation",
-          "Risk Prevention"
-        ],
-        "featured": false
+        "id": "crm-data-quality",
+        "title": "CRM Data Quality & Migration",
+        "intro": "Validating and reconciling CRM data across migrations, relationships, and recurring business processes so downstream systems can rely on it.",
+        "examples": [
+          {
+            "id": "legacy-crm-migration",
+            "title": "Legacy CRM to Salesforce Migration",
+            "summary": "Supported migration and validation of business data from the legacy CRM into Salesforce while learning the new platform and associated business processes.",
+            "impact": ["Validated record counts and reconciled relationships across systems.", "Investigated transformation discrepancies and handled exceptions.", "Supported migration QA with repeatable comparisons."],
+            "technologies": ["NetForum", "Salesforce", "SQL", "Data Loader"]
+          },
+          {
+            "id": "council-affiliations",
+            "title": "Council Affiliation Reconciliation",
+            "summary": "Designed matching and reconciliation logic for council-affiliation migration, working through historical relationship conflicts and merged-record exceptions.",
+            "impact": ["Improved record matching with unique lookup keys.", "Resolved relationship and import exceptions through iterative testing.", "Validated affiliations before and after import."],
+            "technologies": ["SQL", "Salesforce", "Data Loader"],
+            "metric": "crm-affiliations",
+            "details": {
+              "steps": [
+                "Compare legacy and Salesforce relationships and build unique lookup keys for matching affiliation records.",
+                "Reconcile historical relationship conflicts and merged-record exceptions against source data.",
+                "Test imports iteratively and use verified examples to investigate and resolve import errors.",
+                "Validate record counts and relationships before and after import to check the reconciliation results."
+              ]
+            }
+          },
+          {
+            "id": "membership-flowdown",
+            "title": "Membership Flowdown Integrity",
+            "summary": "Investigated recurring relationship failures across Salesforce/Nimble AMS using SQL/SOQL analysis and business-rule investigation. Tracked new issues over time and helped identify underlying relationship-configuration problems.",
+            "impact": ["Made recurring failures visible through repeatable monitoring.", "Helped distinguish configuration issues from isolated record errors.", "Documented root-cause findings to support corrective work."],
+            "technologies": ["SQL", "SOQL", "Salesforce", "Nimble AMS"]
+          },
+          {
+            "id": "operational-monitoring",
+            "title": "Data Quality Audit Framework",
+            "summary": "Created recurring validation for missing primary contacts, invalid or unreachable email records, relationship inconsistencies, and duplicate or questionable records. One reachability audit identified organizations without an assigned primary contact.",
+            "impact": ["Turned contactability gaps into actionable review findings.", "Made operational risks consistently reviewable with severity thresholds.", "Tracked findings over time through reusable checks and historical logging."],
+            "technologies": ["SQL", "Salesforce", "Data validation", "Operational monitoring"],
+            "metric": "reachability"
+          }
+        ]
       },
       {
-        "id": "council-affiliations",
-        "title": "CRM Affiliation Migration & Reconciliation",
-        "summary": "Designed matching and reconciliation logic while migrating and correcting CRM affiliation records.",
-        "challenge": "Historical affiliations, merged-record exceptions, and inconsistent relationships complicated accurate record matching.",
-        "investigation": "Compared records across systems, developed unique lookup keys, and worked through historical affiliation conflicts and merged-record exceptions.",
-        "solution": "Created repeatable matching and reconciliation logic, tested imports iteratively, and resolved import errors with verified examples.",
-        "impact": "Reconciled and imported CRM affiliation records through a repeatable process that supported migration quality and relationship accuracy.",
-        "evidence": [
-          "Unique lookup keys and matching methodology",
-          "Iterative import testing and exception resolution"
-        ],
-        "skills": [
-          "SQL",
-          "Salesforce",
-          "Data Loader",
-          "Data Reconciliation",
-          "Record Matching",
-          "Migration QA",
-          "Data Validation",
-          "Process Design"
-        ],
-        "featured": false,
-        "metric": "crm-affiliations"
-      },
-      {
-        "id": "operational-monitoring",
-        "title": "Operational Audit & Monitoring Framework",
-        "summary": "Designed reusable SQL-based audits with severity thresholds and historical logging to make operational risks consistently reviewable.",
-        "challenge": "Recurring workflows needed a consistent way to surface data-quality issues, automation failures, and contactability risks.",
-        "investigation": "Defined reusable checks against source data and process health, with severity classification and historical findings for review.",
-        "solution": "Built reusable SQL validation and audit logging to reduce manual review and provide a foundation for proactive alerting and dashboarding.",
-        "impact": "A company-level reachability audit surfaced organizations without an assigned primary contact, turning a data gap into a reviewable finding.",
-        "evidence": [
-          "Reusable SQL validation structure",
-          "Severity-based classification and historical logging"
-        ],
-        "skills": [
-          "SQL",
-          "Data Validation",
-          "Monitoring",
-          "Root-Cause Analysis",
-          "Automation",
-          "Data Quality"
-        ],
-        "featured": true,
-        "metric": "reachability",
-        "process": [
-          "Source / process",
-          "Validation rule",
-          "Severity",
-          "Historical log",
-          "Review / alert"
+        "id": "analytics-decision-support",
+        "title": "Analytics & Decision Support",
+        "intro": "Turning operational and historical data into analysis that helps teams understand customers, performance, risk, and future outcomes.",
+        "examples": [
+          {
+            "id": "historical-exhibitors",
+            "title": "Historical Exhibitor Analysis",
+            "summary": "Built historical exhibitor analysis to identify first-time and returning organizations by determining when businesses first exhibited.",
+            "impact": ["Provided historical context for sales conversations.", "Supported lifecycle and retention analysis.", "Enabled first-time exhibitor targeting and historical trend analysis."],
+            "technologies": ["SQL", "Historical event data"],
+            "metric": "exhibitor-history"
+          },
+          {
+            "id": "membership-forecasting",
+            "title": "Membership Retention & Revenue Forecasting",
+            "summary": "Built models estimating future revenue impact under different membership renewal and attrition scenarios.",
+            "impact": ["Improved visibility into renewal trends.", "Supported planning discussions with scenario estimates.", "Created repeatable forecasting logic."],
+            "technologies": ["Excel", "Power Query", "Advanced formulas"]
+          },
+          {
+            "id": "reporting-modernization",
+            "title": "Reporting Modernization",
+            "summary": "Automated recurring reports that previously required extraction, reconciliation, and manual preparation.",
+            "impact": ["Reduced recurring manual effort.", "Improved report consistency and reduced error risk.", "Enabled more frequent reporting."],
+            "technologies": ["SQL", "Excel", "Power Query"]
+          },
+          {
+            "id": "engagement-analytics",
+            "title": "Engagement Analytics",
+            "summary": "Developed analysis of council, network, email, and audience engagement to help business teams understand participation and activity.",
+            "impact": ["Made participation and activity patterns easier to understand.", "Provided context for audience and engagement decisions."],
+            "technologies": ["SQL", "CRM data", "Excel", "Email analytics"]
+          }
         ]
       }
     ]
   },
   "seo": {
     "title": "Ryan Scott | Data Operations & Business Systems",
-    "description": "Ryan Scott works across data operations and business systems, using SQL, Salesforce, operations analytics, automation, and root-cause investigation to improve CRM data quality and cross-system reconciliation.",
-    "socialDescription": "CRM data integrity, operational investigation, SQL, Salesforce, automation, and reliable cross-system processes.",
+    "description": "Ryan Scott, Data Operations Coordinator, designs reusable business-data workflows, supports CRM data quality and migration, and builds analytics for business decisions.",
+    "socialDescription": "Business data systems and automation, CRM data quality and migration, and analytics for business decisions. SQL, Salesforce, and reliable recurring processes.",
     "url": "https://ryanscott.org/",
     "jobTitle": "Data Operations Coordinator",
     "knowsAbout": [
@@ -352,6 +372,8 @@
       "Audience segmentation",
       "Operational monitoring",
       "Automation",
+      "Apex",
+      "Forecasting",
       "Excel",
       "Power Query",
       "ETL",
@@ -365,26 +387,27 @@
     "items": [
       {
         "id": "exhibitor-history",
-        "value": "8,000+",
-        "approximate": false,
-        "label": "Business histories analyzed",
-        "context": "Analyzed historical activity to identify when organizations first did business with us and distinguish new from returning customers."
+        "value": "8,000",
+        "approximate": true,
+        "label": "Historical exhibitor records",
+        "context": "Used to identify first-time and returning exhibitors.",
+        "exampleId": "historical-exhibitors"
       },
       {
         "id": "crm-affiliations",
-        "value": "4,000+",
+        "value": "4,000",
         "label": "CRM affiliation records",
-        "context": "Matched and reconciled affiliation records during CRM migration to improve relationship accuracy.",
-        "approximate": false,
-        "caseStudyId": "council-affiliations"
+        "context": "Matched and reconciled during council-assignment migration work.",
+        "approximate": true,
+        "exampleId": "council-affiliations"
       },
       {
         "id": "reachability",
-        "value": "400+",
+        "value": "473",
         "label": "Organizations surfaced",
-        "context": "Identified missing primary contacts through an operational audit, making gaps in customer outreach actionable.",
+        "context": "Identified without an assigned primary contact in a reachability audit.",
         "approximate": false,
-        "caseStudyId": "operational-monitoring"
+        "exampleId": "operational-monitoring"
       }
     ]
   }

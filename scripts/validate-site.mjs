@@ -39,7 +39,17 @@ try {
   if (JSON.stringify(schema.knowsAbout) !== JSON.stringify(data?.seo?.knowsAbout)) fail('JSON-LD knowsAbout differs from content.');
   const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]));
   const work = blocks.find((block) => block['@type'] === 'ItemList');
-  if (work?.itemListElement?.length !== data?.selectedWork?.items?.length) fail('Case-study structured data differs from content.');
+  const categories = data?.capabilities?.categories || [];
+  if (work?.itemListElement?.length !== categories.length) fail('Capability structured data differs from content.');
+  categories.forEach((category, i) => {
+    const list = work?.itemListElement?.[i]?.item;
+    if (list?.name !== category.title || list?.url !== `${data.seo.url}#capability-${category.id}`) fail(`Structured capability ${category.id} is missing or stale.`);
+    if (list?.itemListElement?.length !== category.examples.length) fail(`Structured examples for ${category.id} differ from content.`);
+    category.examples.forEach((example, j) => {
+      const item = list?.itemListElement?.[j]?.item;
+      if (item?.name !== example.title || item?.abstract !== example.summary || item?.url !== `${data.seo.url}#work-${example.id}` || item?.author?.['@id'] !== schema['@id']) fail(`Structured example ${example.id} is missing, stale, or not linked to Ryan.`);
+    });
+  });
 } catch { fail('JSON-LD metadata could not be parsed.'); }
 if (data?.seo) {
   for (const marker of [
@@ -62,8 +72,17 @@ if (data?.person) {
   if (data.person.resume && !html.includes(`href="${escapeHtml(data.person.resume)}"`)) fail('Configured résumé is not linked in HTML.');
 }
 if (/tel:|(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/i.test(html)) fail('Public HTML contains a phone number.');
-if (/\bdata\s+(?:(?:and|&amp;)\s+operations\s+)?analyst\b/i.test(html)) fail('Public HTML contains the direct Data Analyst identity.');
-if (html.indexOf('id="work"') > html.indexOf('id="experience"')) fail('Selected Work must appear before Experience.');
+if (/\b(?:data\s+(?:(?:and|&amp;)\s+operations\s+)?analyst|(?:solutions?|data|salesforce)\s+architect|business\s+systems\s+analyst)\b/i.test(html)) fail('Public HTML contains an inflated role title.');
+if (html.indexOf('id="work"') > html.indexOf('id="experience"')) fail('Capabilities must appear before Experience.');
+if ((html.match(/class="capability-area"/g) || []).length !== 3) fail('Rendered portfolio must have three capability areas.');
+if ((html.match(/<details\b/g) || []).length > 2) fail('Rendered portfolio may contain at most two deep dives.');
+if (/class="(?:work-card|case-details|audit-process)|<dt>(?:Problem|Investigation|Solution)<\/dt>/.test(html)) fail('Retired full-size case-study markup remains.');
+for (const category of data?.capabilities?.categories || []) {
+  if (!ids.includes(`capability-${category.id}`)) fail(`Capability ${category.id} is missing from prerendered HTML.`);
+  for (const example of category.examples || []) {
+    if (!ids.includes(`work-${example.id}`) || !html.includes(escapeHtml(example.title))) fail(`Example ${example.id} is missing from prerendered HTML.`);
+  }
+}
 if (/<noscript>|loading-section|Salesforce\s*(?:&amp;|&)\s*Data Operations Analyst/.test(html)) fail('Old JavaScript fallback content or Salesforce-first identity remains.');
 if (/\bfetch\(/.test(read('js/script.js'))) fail('Browser content must not depend on fetching JSON.');
 if (read('CNAME').trim() !== 'ryanscott.org') fail('CNAME must contain only ryanscott.org.');

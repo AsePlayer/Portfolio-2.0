@@ -30,13 +30,20 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   };
   const workSchema = {
     '@context': 'https://schema.org', '@type': 'ItemList',
-    name: data.selectedWork.eyebrow,
-    itemListElement: data.selectedWork.items.map((item, index) => ({
+    name: data.capabilities.eyebrow,
+    itemListElement: data.capabilities.categories.map((category, index) => ({
       '@type': 'ListItem', position: index + 1,
       item: {
-        '@type': 'CreativeWork', name: item.title, abstract: item.summary,
-        url: `${data.seo.url}#work-${item.id}`,
-        author: {'@id': `${data.seo.url}#person`}, keywords: item.skills.join(', ')
+        '@type': 'ItemList', name: category.title, description: category.intro,
+        url: `${data.seo.url}#capability-${category.id}`,
+        itemListElement: category.examples.map((example, exampleIndex) => ({
+          '@type': 'ListItem', position: exampleIndex + 1,
+          item: {
+            '@type': 'CreativeWork', name: example.title, abstract: example.summary,
+            url: `${data.seo.url}#work-${example.id}`,
+            author: {'@id': `${data.seo.url}#person`}, keywords: example.technologies.join(', ')
+          }
+        }))
       }
     }))
   };
@@ -45,7 +52,7 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   const values = {
     name: safe.person.name, initials: safe.person.initials, year, footer: safe.footer,
     navigation: safe.nav.map((item) => `<li><a href="${item.href}">${item.label}</a></li>`).join(''),
-    content: [heroSection(safe), impactSection(safe.impact), selectedWorkSection(safe.selectedWork, safe.impact), experienceSection(safe.experience),
+    content: [heroSection(safe), impactSection(safe.impact), capabilitiesSection(safe.capabilities, safe.impact), experienceSection(safe.experience),
       `<section class="section"><div class="container">${developmentSection(safe.experience.development)}</div></section>`,
       skillsSection(safe.skills), resumeSection(safe), contactSection(safe)].join(''),
     metadata: `<title>${safe.seo.title}</title>
@@ -73,9 +80,9 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   }).replace(/\r\n/g, '\n').replace(/[\t ]+$/gm, '');
 }
 
-function metricMarkup(metric) {
+function metricMarkup(metric, compact = false) {
   if (!metric || metric.enabled === false) return '';
-  return `<p class="work-metric">${metric.approximate ? '<span class="metric-qualifier">Approximately</span>' : ''}<strong>${metric.value}</strong><span>${metric.label}</span></p>`;
+  return `<p class="${compact ? 'example-metric' : 'impact-metric'}"><strong>${metric.approximate ? '<span aria-hidden="true">~</span><span class="visually-hidden">Approximately </span>' : ''}${metric.value}</strong><span>${metric.label}</span></p>`;
 }
 
 function impactSection(section) {
@@ -88,38 +95,53 @@ function impactSection(section) {
         ${items.map((item) => `<li class="impact-item">
           ${metricMarkup(item)}
           <p>${item.context}</p>
-          ${item.caseStudyId ? `<a class="impact-link" href="#work-${item.caseStudyId}">Explore the work<span class="visually-hidden">: ${item.label}</span><span aria-hidden="true"> ↗</span></a>` : ''}
+          ${item.exampleId ? `<a class="impact-link" href="#work-${item.exampleId}">Explore the example<span class="visually-hidden">: ${item.label}</span><span aria-hidden="true"> ↗</span></a>` : ''}
         </li>`).join('')}
       </ul>
     </div>
   </section>`;
 }
 
-function selectedWorkSection(section, impact) {
-  return `<section id="work" class="section work-section">
+function capabilitiesSection(section, impact) {
+  return `<section id="work" class="section work-section" aria-labelledby="work-heading">
     <div class="container">
-      ${sectionHeading(section.eyebrow, section.headline)}
+      ${sectionHeading(section.eyebrow, section.headline, 'work-heading')}
       <p class="section-intro">${section.intro}</p>
-      <div class="work-list">
-        ${section.items.map((item) => `<article id="work-${item.id}" class="work-card${item.featured ? ' work-card-featured' : ''}">
-          <div class="work-card-heading">
-            ${item.featured ? '<p class="work-tag">Featured work</p>' : ''}
-            <h3>${item.title}</h3>
-            <p class="work-summary">${item.summary}</p>
-            ${metricMarkup(impact?.items.find((metric) => metric.id === item.metric))}
+      <nav class="capability-nav" aria-label="Capability areas">
+        <ol>${section.categories.map((category) => `<li><a href="#capability-${category.id}">${category.title}</a></li>`).join('')}</ol>
+      </nav>
+      <div class="capability-list">
+        ${section.categories.map((category, index) => `<section id="capability-${category.id}" class="capability-area" aria-labelledby="capability-${category.id}-heading">
+          <header class="capability-heading">
+            <span class="capability-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 id="capability-${category.id}-heading">${category.title}</h3>
+              <p>${category.intro}</p>
+            </div>
+          </header>
+          <div class="example-grid">
+            ${category.examples.map((example) => exampleMarkup(example, impact)).join('')}
           </div>
-          <div class="work-card-copy">
-            <dl class="case-details">
-              ${[['challenge', 'Problem'], ['investigation', 'Investigation'], ['solution', 'Solution'], ['impact', 'Impact']].filter(([key]) => item[key]).map(([key, label]) => `<div class="case-stage${key === 'impact' ? ' case-impact' : ''}"><dt>${label}</dt><dd>${item[key]}</dd></div>`).join('')}
-            </dl>
-            ${item.process?.length ? `<ol class="audit-process" aria-label="Audit process">${item.process.map((step, index) => `<li><span>${step}</span>${index < item.process.length - 1 ? '<span class="process-arrow" aria-hidden="true">→</span>' : ''}</li>`).join('')}</ol>` : ''}
-            ${item.evidence?.length ? `<ul class="work-evidence">${item.evidence.map((point) => `<li>${point}</li>`).join('')}</ul>` : ''}
-            <ul class="tool-list" aria-label="Skills demonstrated">${item.skills.map((skill) => `<li>${skill}</li>`).join('')}</ul>
-          </div>
-        </article>`).join('')}
+        </section>`).join('')}
       </div>
     </div>
   </section>`;
+}
+
+function exampleMarkup(example, impact) {
+  return `<article id="work-${example.id}" class="work-example" aria-labelledby="example-${example.id}-heading">
+    <h4 id="example-${example.id}-heading">${example.title}</h4>
+    <p class="example-summary">${example.summary}</p>
+    ${metricMarkup(impact?.items.find((metric) => metric.id === example.metric), true)}
+    <p class="example-label">Impact</p>
+    <ul class="example-impact">${example.impact.map((point) => `<li>${point}</li>`).join('')}</ul>
+    <p class="example-label">Technology</p>
+    <ul class="tool-list" aria-label="Technology for ${example.title}">${example.technologies.map((tool) => `<li>${tool}</li>`).join('')}</ul>
+    ${example.details ? `<details class="example-details">
+      <summary>How it worked<span class="visually-hidden">: ${example.title}</span></summary>
+      <ol>${example.details.steps.map((step) => `<li>${step}</li>`).join('')}</ol>
+    </details>` : ''}
+  </article>`;
 }
 
 const icons = {
@@ -146,6 +168,7 @@ function heroSection(data) {
           <p class="eyebrow">${data.hero.eyebrow}</p>
           <h1>${data.person.name}</h1>
           <p class="headline">${data.person.title}</p>
+          <p class="hero-role">${data.person.currentRole}</p>
           <p class="subheadline">${data.hero.subheadline}</p>
           <div class="hero-ctas" aria-label="Primary actions">
             ${data.hero.actions.map(actionLink).join('')}
@@ -156,23 +179,14 @@ function heroSection(data) {
             </ul>
           ` : ''}
         </div>
-        <aside class="hero-panel" aria-label="Selected professional proof">
+        <aside class="hero-panel" aria-labelledby="how-i-work-heading">
           <div class="proof-card">
             <p class="profile-label">${data.hero.panel.label}</p>
-            <h2>${data.hero.panel.headline}</h2>
-            <dl class="proof-facts">
-              ${data.hero.panel.facts.map(function (fact) {
-                return `
-                  <div class="proof-stat">
-                    <dt>${fact.value}</dt>
-                    <dd>
-                      <span class="proof-stat-label">${fact.label}</span>
-                      <span class="proof-stat-detail">${fact.detail}</span>
-                    </dd>
-                  </div>
-                `;
-              }).join('')}
-            </dl>
+            <h2 id="how-i-work-heading">${data.hero.panel.headline}</h2>
+            <p class="process-intro">${data.hero.panel.intro}</p>
+            <ol class="process-steps">
+              ${data.hero.panel.steps.map((step) => `<li><h3>${step.title}</h3><p>${step.text}</p></li>`).join('')}
+            </ol>
           </div>
         </aside>
       </div>
@@ -375,11 +389,11 @@ function contactSection(data) {
   `;
 }
 
-function sectionHeading(eyebrow, headline) {
+function sectionHeading(eyebrow, headline, id) {
   return `
     <div class="section-heading">
       <p class="eyebrow">${eyebrow}</p>
-      <h2>${headline}</h2>
+      <h2${id ? ` id="${id}"` : ''}>${headline}</h2>
     </div>
   `;
 }

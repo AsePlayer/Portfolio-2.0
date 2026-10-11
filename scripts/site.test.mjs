@@ -14,9 +14,11 @@ const examples = (content) => content.capabilities.categories.flatMap((category)
 const structuredData = (html) => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]));
 
 test('capabilities, compact examples, credentials, and contact ship as HTML', () => {
+  assert.deepEqual(validateContent(data, root), []);
   const html = renderDocument(data, template, 2026);
   for (const value of [data.hero.subheadline, ...data.capabilities.categories.flatMap((item) => [item.title, item.intro]),
-    ...examples(data).flatMap((item) => [item.title, item.summary, ...item.impact, ...item.technologies]), data.contact.text,
+    ...data.capabilities.categories.flatMap((item) => item.technologies),
+    ...examples(data).flatMap((item) => [item.title, item.summary]), data.contact.text,
     ...data.experience.development.items.map((item) => item.title)]) {
     assert.ok(html.includes(escapeHtml(value)), `Missing content: ${value}`);
   }
@@ -30,7 +32,8 @@ test('content is escaped in text, attributes, and structured data', () => {
   copy.capabilities.categories[0].title = '" onclick="alert(1)';
   const example = examples(copy)[0];
   example.title = '" onclick="alert(1)';
-  example.details.steps[0] = '<img src=x onerror=alert(1)>';
+  example.summary = '<img src=x onerror=alert(1)>';
+  copy.capabilities.categories[0].technologies[0] = '<script>bad()</script>';
   copy.contact.formSubject = '"><script>alert(1)</script>';
   const html = renderDocument(copy, template, 2026);
   assert.ok(!html.includes('<script>alert'));
@@ -90,18 +93,20 @@ test('three capability areas precede experience with compact, accessible proof',
   for (const item of examples(data)) {
     assert.ok(html.includes(`id="work-${item.id}"`));
     assert.ok(html.includes(`<h4 id="example-${item.id}-heading">`));
-    assert.ok(html.includes(`aria-label="Technology for ${escapeHtml(item.title)}"`));
   }
   assert.ok(!html.includes('<dt>Problem</dt>'));
   assert.ok(!html.includes('Skills demonstrated'));
   assert.ok(!html.includes('class="work-card'));
+  assert.ok(!html.includes('capability-nav'));
+  assert.ok(!html.includes('class="example-label"'));
+  assert.equal((html.match(/class="capability-tools"/g) || []).length, 3);
 });
 
 test('minimal compact examples and an omitted proof band remain valid', () => {
   const copy = structuredClone(data);
   delete copy.impact;
   copy.capabilities.categories.forEach((category, i) => {
-    category.examples = [0, 1].map((j) => ({id:`example-${i}-${j}`,title:'A workflow',summary:'A concise example.',impact:['Reduced manual preparation.'],technologies:['SQL']}));
+    category.examples = [0, 1, 2].map((j) => ({id:`example-${i}-${j}`,title:'A workflow',summary:'A concise example.'}));
   });
   assert.deepEqual(validateContent(copy, root), []);
   const html = renderDocument(copy, template, 2026);
@@ -143,7 +148,7 @@ test('invalid metrics and references fail with actionable errors', () => {
     (copy) => { copy.impact.items[0].value = '8,000+'; },
     (copy) => { copy.impact.items[0].value = '~8,000'; },
     (copy) => { examples(copy)[0].metric = 'missing'; },
-    (copy) => { examples(copy)[0].metric = 'exhibitor-history'; }
+    (copy) => { examples(copy)[0].metric = {}; }
   ];
   for (const edit of edits) {
     const copy = structuredClone(data);
@@ -152,7 +157,7 @@ test('invalid metrics and references fail with actionable errors', () => {
   }
 });
 
-test('category counts, compact-example limits, and two-deep-dive maximum are enforced', () => {
+test('three capability areas, short proof lists, and shared toolkits are enforced', () => {
   const edits = [
     (copy) => { copy.capabilities.categories.pop(); },
     (copy) => { copy.capabilities.categories.push(copy.capabilities.categories[0]); },
@@ -161,14 +166,20 @@ test('category counts, compact-example limits, and two-deep-dive maximum are enf
     (copy) => { examples(copy)[0].id = '" onclick="alert(1)'; },
     (copy) => { copy.capabilities.categories[1].examples[0].id = examples(copy)[0].id; },
     (copy) => { copy.capabilities.categories[0].examples = [examples(copy)[0]]; },
+    (copy) => { copy.capabilities.categories[0].examples = examples(copy).slice(0, 2); },
     (copy) => { copy.capabilities.categories[0].examples.push(examples(copy)[0]); },
     (copy) => { examples(copy)[0].impact = 'A string'; },
     (copy) => { examples(copy)[0].impact = ['One', 'Two', 'Three', 'Four']; },
     (copy) => { examples(copy)[0].technologies = []; },
     (copy) => { examples(copy)[0].technologies = Array(7).fill('SQL'); },
+    (copy) => { copy.capabilities.categories[0].technologies = []; },
+    (copy) => { copy.capabilities.categories[0].technologies = 'SQL'; },
+    (copy) => { copy.capabilities.categories[0].technologies = Array(7).fill('SQL'); },
+    (copy) => { examples(copy)[0].summary = 'A short sentence. Another sentence.'; },
+    (copy) => { examples(copy)[0].summary = 'A'.repeat(241); },
+    (copy) => { copy.capabilities.categories[0].intro = 'A'.repeat(181); },
     (copy) => { examples(copy)[0].details = null; },
-    (copy) => { examples(copy)[0].details.steps = 'A string'; },
-    (copy) => { examples(copy)[1].details = {steps:['A third deep dive.']}; },
+    (copy) => { examples(copy)[0].details = {steps:['Unused deep dive.']}; },
     (copy) => { examples(copy)[0].solution = 'Old full case study'; },
     (copy) => { copy.selectedWork = {items:[]}; }
   ];
@@ -179,15 +190,20 @@ test('category counts, compact-example limits, and two-deep-dive maximum are enf
   }
 });
 
-test('only circulation and reconciliation have native, initially collapsed deep dives', () => {
+test('examples contain only a heading, one sentence, and optional scale with no disclosures', () => {
   const html = renderDocument(data, template, 2026);
-  const detailed = examples(data).filter((item) => item.details);
-  assert.deepEqual(detailed.map((item) => item.id), ['magazine-circulation', 'council-affiliations']);
-  assert.equal((html.match(/<details class="example-details">/g) || []).length, 2);
-  assert.ok(!/<details[^>]*\bopen\b/.test(html));
-  for (const item of detailed) {
-    assert.ok(html.includes(`How it worked<span class="visually-hidden">: ${escapeHtml(item.title)}</span>`));
-    for (const step of item.details.steps) assert.ok(html.includes(escapeHtml(step)));
+  assert.ok(!html.includes('<details'));
+  assert.ok(!html.includes('How it worked'));
+  assert.ok(!html.includes('class="tool-list"'));
+  const proofs = [...html.matchAll(/<li id="work-[^"]+" class="work-example"[^>]*>([\s\S]*?)<\/li>/g)];
+  assert.equal(proofs.length, 12);
+  for (const [,markup] of proofs) {
+    assert.equal((markup.match(/<h4\b/g) || []).length, 1);
+    assert.equal((markup.match(/<p\b/g) || []).length, 1);
+    assert.ok(!/<(?:ul|article|details)\b/.test(markup));
+  }
+  for (const category of data.capabilities.categories) {
+    assert.ok(html.includes(`aria-label="Technology for ${escapeHtml(category.title)}">${category.technologies.map(escapeHtml).join(' · ')}</p>`));
   }
 });
 
@@ -195,24 +211,43 @@ test('verified counts and business context stay accurate without lower-bound inf
   assert.deepEqual(data.impact.items.map(({value, approximate}) => ({value, approximate})), [
     {value:'8,000',approximate:true}, {value:'4,000',approximate:true}, {value:'473',approximate:false}
   ]);
-  assert.equal(data.impact.items[0].label, 'Historical exhibitor records');
-  assert.ok(data.impact.items[2].context.includes('without an assigned primary contact'));
+  assert.equal(data.impact.items[0].label, 'Historical exhibitor records analyzed');
+  assert.ok(data.impact.items[2].context.includes('primary contacts'));
   const html = renderDocument(data, template, 2026);
   assert.equal((html.match(/<strong>473<\/strong>/g) || []).length, 2);
-  for (const item of data.impact.items) assert.ok(html.includes(`href="#work-${item.exampleId}"`));
+  const band = html.match(/<section id="impact"[\s\S]*?<\/section>/)[0];
+  assert.ok(!band.includes('<a '));
+  assert.equal((html.match(/class="example-scale"/g) || []).length, 3);
   assert.ok(!html.includes('8,000+'));
   assert.ok(!html.includes('4,000+'));
   assert.ok(!html.includes('400+'));
 });
 
-test('How I Work follows the QA-informed Understand, Trace, Build, Validate sequence', () => {
-  assert.deepEqual(data.hero.panel.steps.map((item) => item.title), ['Understand', 'Trace', 'Build', 'Validate']);
+test('How I Work stays a four-word sequence, with the QA foundation in experience', () => {
+  assert.deepEqual(data.hero.approach, ['Understand', 'Trace', 'Build', 'Validate']);
   const html = renderDocument(data, template, 2026);
-  for (const item of data.hero.panel.steps) assert.ok(html.includes(escapeHtml(item.text)));
-  assert.ok(html.includes('<ol class="process-steps">'));
+  assert.ok(html.includes('<ol class="approach-sequence" aria-label="How I work">'));
+  assert.ok(html.includes('From QA and software to data operations.'));
+  assert.ok(!html.includes('hero-panel'));
+  assert.ok(!html.includes('process-steps'));
   const copy = structuredClone(data);
-  copy.hero.panel.steps.pop();
+  copy.hero.approach.pop();
   assert.ok(validateContent(copy, root).some((error) => error.includes('How I Work')));
+});
+
+test('skills and credentials use compact text groups without explanatory cards', () => {
+  const html = renderDocument(data, template, 2026);
+  assert.deepEqual(data.skills.groups.map((item) => item.title), ['Data','Business Systems','Automation','Data Operations']);
+  assert.equal(data.skills.groups.flatMap((item) => item.items).length, 24);
+  assert.equal(data.experience.development.items.length, 4);
+  assert.ok(html.includes('September 2026'));
+  assert.ok(html.includes('Salesforce Certified Data 360 Consultant'));
+  assert.ok(html.includes('class="credential-list"'));
+  assert.ok(!html.includes('development-card'));
+  for (const item of data.experience.development.items) assert.equal(item.text, undefined);
+  const copy = structuredClone(data);
+  copy.skills.groups.push(copy.skills.groups[0]);
+  assert.ok(validateContent(copy, root).some((error) => error.includes('four compact groups')));
 });
 
 test('category and example anchors can be used by navigation and hero actions', () => {

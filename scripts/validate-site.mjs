@@ -75,8 +75,11 @@ if (/tel:|(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/i.test(html)) fail('Pub
 if (/\b(?:data\s+(?:(?:and|&amp;)\s+operations\s+)?analyst|(?:solutions?|data|salesforce)\s+architect|business\s+systems\s+analyst)\b/i.test(html)) fail('Public HTML contains an inflated role title.');
 if (html.indexOf('id="work"') > html.indexOf('id="experience"')) fail('Capabilities must appear before Experience.');
 if ((html.match(/class="capability-area"/g) || []).length !== 3) fail('Rendered portfolio must have three capability areas.');
-if ((html.match(/<details\b/g) || []).length > 2) fail('Rendered portfolio may contain at most two deep dives.');
-if (/class="(?:work-card|case-details|audit-process)|<dt>(?:Problem|Investigation|Solution)<\/dt>/.test(html)) fail('Retired full-size case-study markup remains.');
+if (/<details\b/.test(html)) fail('The main portfolio must not render deep-dive disclosures.');
+if (/class="(?:work-card|case-details|audit-process|example-label|example-impact|tool-list|capability-nav|hero-panel|development-card)|<dt>(?:Problem|Investigation|Solution)<\/dt>/.test(html)) fail('Retired heavy portfolio markup remains.');
+const impactBand = html.match(/<section id="impact"[\s\S]*?<\/section>/)?.[0];
+if (impactBand?.includes('<a ')) fail('The impact band must not contain example navigation.');
+if ((html.match(/class="capability-tools"/g) || []).length !== 3) fail('Each capability must render exactly one shared technology line.');
 for (const category of data?.capabilities?.categories || []) {
   if (!ids.includes(`capability-${category.id}`)) fail(`Capability ${category.id} is missing from prerendered HTML.`);
   for (const example of category.examples || []) {

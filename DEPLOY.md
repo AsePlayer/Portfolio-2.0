@@ -15,7 +15,7 @@ The workflow uses Node.js 24, runs tests, prerenders the full portfolio from JSO
 ## Deployment checks
 
 - Open the deployed site at mobile, tablet, and desktop widths, in light and dark themes.
-- Disable JavaScript and confirm Hero, Impact, all three capability areas and their examples, Experience, Credentials, Skills, Resume, and Contact remain readable; mobile navigation stays visible and both How it worked disclosures still open.
+- Disable JavaScript and confirm Hero, Impact, all three capability areas and their proof lists, Experience, Credentials, Skills, Resume, and Contact remain readable; mobile navigation stays visible. The main page contains no disclosures.
 - Test keyboard navigation, Escape in the mobile menu, the skip link, and direct section links.
 - Confirm LinkedIn, GitHub, YouTube, Trailhead, email, and résumé destinations.
 - Open the deployed résumé and confirm its content and current version. Keep its phone number; public HTML, JSON, and metadata must not include it.

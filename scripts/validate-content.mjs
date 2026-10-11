@@ -16,6 +16,12 @@ export function validateContent(data, root) {
     return value;
   };
   const strings = (value, label) => array(value, label).forEach((item, i) => text(item, `${label}[${i}]`));
+  const sentence = (value, label, limit = 240) => {
+    text(value, label);
+    if (typeof value !== 'string') return;
+    const sentences = [...new Intl.Segmenter('en', {granularity:'sentence'}).segment(value)].filter((item) => item.segment.trim());
+    if (sentences.length !== 1 || value.length > limit) fail(`${label} must contain one short sentence (at most ${limit} characters).`);
+  };
   const https = (value, label) => {
     try {
       const url = new URL(value);
@@ -43,11 +49,11 @@ export function validateContent(data, root) {
     if (value !== '') https(value, `links.${key}`);
   });
   fields(data.hero, 'hero', ['eyebrow', 'subheadline']);
-  fields(data.hero?.panel, 'hero.panel', ['label', 'headline', 'intro']);
-  const steps = array(data.hero?.panel?.steps, 'hero.panel.steps');
-  if (steps.length !== 4) fail('hero.panel.steps must contain four How I Work steps.');
-  steps.forEach((item, i) => fields(item, `hero.panel.steps[${i}]`, ['title', 'text']));
-  fields(data.experience, 'experience', ['eyebrow', 'headline', 'intro']);
+  if (data.hero?.panel !== undefined) fail('hero.panel is retired; use the compact hero.approach sequence.');
+  strings(data.hero?.approach, 'hero.approach');
+  if (JSON.stringify(data.hero?.approach) !== JSON.stringify(['Understand', 'Trace', 'Build', 'Validate'])) fail('hero.approach must contain the four-word How I Work sequence: Understand, Trace, Build, Validate.');
+  fields(data.experience, 'experience', ['eyebrow', 'headline']);
+  if (data.experience?.intro !== undefined) text(data.experience.intro, 'experience.intro');
   array(data.experience?.items, 'experience.items').forEach((item, i) => {
     fields(item, `experience.items[${i}]`, ['date', 'organization']);
     if (item?.roles !== undefined) {
@@ -55,81 +61,79 @@ export function validateContent(data, root) {
     } else fields(item, `experience.items[${i}]`, ['role', 'text']);
   });
   if (data.experience?.items?.[0]?.role !== data.person?.currentRole) fail('The current experience role must match person.currentRole.');
-  fields(data.experience?.development, 'experience.development', ['eyebrow', 'headline']);
+  fields(data.experience?.development, 'experience.development', ['headline']);
   array(data.experience?.development?.items, 'experience.development.items').forEach((item, i) => {
-    fields(item, `experience.development.items[${i}]`, ['label', 'title', 'organization', 'text']);
+    text(item?.title, `experience.development.items[${i}].title`);
+    for (const field of ['organization', 'date']) {
+      if (item?.[field] !== undefined) text(item[field], `experience.development.items[${i}].${field}`);
+    }
+    if (item?.label !== undefined || item?.text !== undefined) fail(`experience.development.items[${i}] must use a title and optional organization/date without explanatory paragraphs.`);
     if (item?.link) {
       text(item.link.label, `credential[${i}].link.label`);
       if (item.link.href !== '') https(item.link.href, `credential[${i}].link.href`);
     }
   });
   if (data.selectedWork !== undefined) fail('selectedWork is retired; use capabilities.categories with compact examples.');
-  fields(data.capabilities, 'capabilities', ['eyebrow', 'headline', 'intro']);
+  fields(data.capabilities, 'capabilities', ['headline']);
   const categoryIds = new Set();
   const exampleIds = new Set();
   const examples = [];
-  let detailCount = 0;
   const categories = array(data.capabilities?.categories, 'capabilities.categories');
   if (categories.length !== 3) fail('capabilities.categories must contain exactly three capability areas.');
   categories.forEach((category, i) => {
     const label = `capabilities.categories[${i}]`;
     fields(category, label, ['title', 'intro']);
+    sentence(category?.intro, `${label}.intro`, 180);
+    strings(category?.technologies, `${label}.technologies`);
+    if (Array.isArray(category?.technologies) && category.technologies.length > 6) fail(`${label}.technologies must contain at most six tools in one capability-level line.`);
     identifier(category?.id, `${label}.id`);
     if (categoryIds.has(category?.id)) fail(`Duplicate capability identifier: ${category?.id}`);
     categoryIds.add(category?.id);
     const items = array(category?.examples, `${label}.examples`);
-    if (items.length < 2 || items.length > 4) fail(`${label}.examples must contain two to four compact examples.`);
+    if (items.length < 3 || items.length > 4) fail(`${label}.examples must contain three to four proof examples.`);
     items.forEach((item, j) => {
       const exampleLabel = `${label}.examples[${j}]`;
       examples.push({item, label: exampleLabel});
       fields(item, exampleLabel, ['title', 'summary']);
+      sentence(item?.summary, `${exampleLabel}.summary`);
       identifier(item?.id, `${exampleLabel}.id`);
       if (exampleIds.has(item?.id)) fail(`Duplicate example identifier: ${item?.id}`);
       exampleIds.add(item?.id);
-      strings(item?.impact, `${exampleLabel}.impact`);
-      if (Array.isArray(item?.impact) && item.impact.length > 3) fail(`${exampleLabel}.impact must contain at most three bullets.`);
-      strings(item?.technologies, `${exampleLabel}.technologies`);
-      if (Array.isArray(item?.technologies) && item.technologies.length > 6) fail(`${exampleLabel}.technologies must contain at most six concrete tools.`);
       if (item?.metric !== undefined) identifier(item.metric, `${exampleLabel}.metric`);
-      if (item?.details !== undefined) {
-        detailCount++;
-        strings(item.details?.steps, `${exampleLabel}.details.steps`);
-        if (Array.isArray(item.details?.steps) && item.details.steps.length > 6) fail(`${exampleLabel}.details.steps must contain at most six steps.`);
-      }
-      for (const field of ['challenge', 'investigation', 'solution', 'evidence', 'skills', 'featured', 'process']) {
-        if (item?.[field] !== undefined) fail(`${exampleLabel}.${field} is retired; keep examples compact and use optional details.steps for technical depth.`);
+      for (const field of ['impact', 'technologies', 'details', 'challenge', 'investigation', 'solution', 'evidence', 'skills', 'featured', 'process']) {
+        if (item?.[field] !== undefined) fail(`${exampleLabel}.${field} is retired; use a title, one sentence, and optional metric. Technologies belong to the capability.`);
       }
     });
   });
-  if (detailCount > 2) fail('At most two examples may include details across the entire portfolio.');
   const metricIds = new Set();
   const metrics = Array.isArray(data.impact?.items) ? data.impact.items : [];
   if (data.impact !== undefined) {
     text(data.impact?.eyebrow, 'impact.eyebrow');
     optionalBoolean(data.impact?.enabled, 'impact.enabled');
     if (!Array.isArray(data.impact?.items)) fail('impact.items must be an array (it can be empty).');
+    if (metrics.length > 3) fail('impact.items may contain at most three headline metrics.');
     metrics.forEach((item, i) => {
-      fields(item, `impact.items[${i}]`, ['value', 'label', 'context']);
+      fields(item, `impact.items[${i}]`, ['value', 'label']);
+      if (item?.context !== undefined) sentence(item.context, `impact.items[${i}].context`, 80);
       if (typeof item?.value === 'string' && !/^\d+(?:,\d{3})*$/.test(item.value)) fail(`impact.items[${i}].value must be a count without + or ~; use approximate for rounded figures.`);
       identifier(item?.id, `impact.items[${i}].id`);
       if (metricIds.has(item?.id)) fail(`Duplicate metric identifier: ${item?.id}`);
       metricIds.add(item?.id);
       if (typeof item?.approximate !== 'boolean') fail(`impact.items[${i}].approximate must be a boolean.`);
       optionalBoolean(item?.enabled, `impact.items[${i}].enabled`);
-      if (item?.caseStudyId !== undefined) fail(`impact.items[${i}].caseStudyId is retired; use exampleId.`);
-      if (item?.exampleId !== undefined && !exampleIds.has(item.exampleId)) fail(`Metric ${item.id} links to an unknown example.`);
+      if (item?.caseStudyId !== undefined || item?.exampleId !== undefined) fail(`impact.items[${i}] must not contain example navigation; use example.metric for a compact count.`);
     });
   }
   examples.forEach(({item, label}) => {
     if (item?.metric === undefined) return;
     if (!metricIds.has(item.metric)) fail(`${label}.metric references an unknown metric.`);
-    const metric = metrics.find((metric) => metric?.id === item.metric);
-    if (metric?.exampleId !== undefined && metric.exampleId !== item.id) fail(`${label}.metric must link back to the same example.`);
   });
-  fields(data.skills, 'skills', ['eyebrow', 'headline']);
+  fields(data.skills, 'skills', ['headline']);
+  if (data.skills?.groups?.length !== 4) fail('skills.groups must contain four compact groups.');
   array(data.skills?.groups, 'skills.groups').forEach((item, i) => {
     text(item?.title, `skills.groups[${i}].title`);
     strings(item?.items, `skills.groups[${i}].items`);
+    if (Array.isArray(item?.items) && item.items.length > 7) fail(`skills.groups[${i}].items must contain at most seven skills.`);
   });
   if (data.skills?.note !== undefined) text(data.skills.note, 'skills.note');
   fields(data.contact, 'contact', ['eyebrow', 'headline', 'text', 'formIntro', 'formSubject']);

@@ -30,7 +30,7 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   };
   const workSchema = {
     '@context': 'https://schema.org', '@type': 'ItemList',
-    name: data.capabilities.eyebrow,
+    name: data.capabilities.headline,
     itemListElement: data.capabilities.categories.map((category, index) => ({
       '@type': 'ListItem', position: index + 1,
       item: {
@@ -41,7 +41,7 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
           item: {
             '@type': 'CreativeWork', name: example.title, abstract: example.summary,
             url: `${data.seo.url}#work-${example.id}`,
-            author: {'@id': `${data.seo.url}#person`}, keywords: example.technologies.join(', ')
+            author: {'@id': `${data.seo.url}#person`}
           }
         }))
       }
@@ -53,7 +53,7 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
     name: safe.person.name, initials: safe.person.initials, year, footer: safe.footer,
     navigation: safe.nav.map((item) => `<li><a href="${item.href}">${item.label}</a></li>`).join(''),
     content: [heroSection(safe), impactSection(safe.impact), capabilitiesSection(safe.capabilities, safe.impact), experienceSection(safe.experience),
-      `<section class="section"><div class="container">${developmentSection(safe.experience.development)}</div></section>`,
+      developmentSection(safe.experience.development),
       skillsSection(safe.skills), resumeSection(safe), contactSection(safe)].join(''),
     metadata: `<title>${safe.seo.title}</title>
   <meta name="description" content="${safe.seo.description}">
@@ -80,9 +80,14 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   }).replace(/\r\n/g, '\n').replace(/[\t ]+$/gm, '');
 }
 
+function metricValue(metric) {
+  return `<strong>${metric.approximate ? '<span aria-hidden="true">~</span><span class="visually-hidden">Approximately </span>' : ''}${metric.value}</strong>`;
+}
+
 function metricMarkup(metric, compact = false) {
   if (!metric || metric.enabled === false) return '';
-  return `<p class="${compact ? 'example-metric' : 'impact-metric'}"><strong>${metric.approximate ? '<span aria-hidden="true">~</span><span class="visually-hidden">Approximately </span>' : ''}${metric.value}</strong><span>${metric.label}</span></p>`;
+  if (compact) return `<span class="example-scale">${metricValue(metric)}<span class="visually-hidden"> ${metric.label}</span></span>`;
+  return `<p class="impact-metric">${metricValue(metric)}<span>${metric.label}</span></p>`;
 }
 
 function impactSection(section) {
@@ -94,8 +99,7 @@ function impactSection(section) {
       <ul class="impact-grid">
         ${items.map((item) => `<li class="impact-item">
           ${metricMarkup(item)}
-          <p>${item.context}</p>
-          ${item.exampleId ? `<a class="impact-link" href="#work-${item.exampleId}">Explore the example<span class="visually-hidden">: ${item.label}</span><span aria-hidden="true"> ↗</span></a>` : ''}
+          ${item.context ? `<p>${item.context}</p>` : ''}
         </li>`).join('')}
       </ul>
     </div>
@@ -105,23 +109,17 @@ function impactSection(section) {
 function capabilitiesSection(section, impact) {
   return `<section id="work" class="section work-section" aria-labelledby="work-heading">
     <div class="container">
-      ${sectionHeading(section.eyebrow, section.headline, 'work-heading')}
-      <p class="section-intro">${section.intro}</p>
-      <nav class="capability-nav" aria-label="Capability areas">
-        <ol>${section.categories.map((category) => `<li><a href="#capability-${category.id}">${category.title}</a></li>`).join('')}</ol>
-      </nav>
+      ${sectionHeading('', section.headline, 'work-heading')}
       <div class="capability-list">
-        ${section.categories.map((category, index) => `<section id="capability-${category.id}" class="capability-area" aria-labelledby="capability-${category.id}-heading">
+        ${section.categories.map((category) => `<section id="capability-${category.id}" class="capability-area" aria-labelledby="capability-${category.id}-heading">
           <header class="capability-heading">
-            <span class="capability-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <h3 id="capability-${category.id}-heading">${category.title}</h3>
-              <p>${category.intro}</p>
-            </div>
+            <h3 id="capability-${category.id}-heading">${category.title}</h3>
+            <p>${category.intro}</p>
           </header>
-          <div class="example-grid">
+          <ul class="example-grid">
             ${category.examples.map((example) => exampleMarkup(example, impact)).join('')}
-          </div>
+          </ul>
+          <p class="capability-tools" aria-label="Technology for ${category.title}">${category.technologies.join(' · ')}</p>
         </section>`).join('')}
       </div>
     </div>
@@ -129,19 +127,13 @@ function capabilitiesSection(section, impact) {
 }
 
 function exampleMarkup(example, impact) {
-  return `<article id="work-${example.id}" class="work-example" aria-labelledby="example-${example.id}-heading">
-    <h4 id="example-${example.id}-heading">${example.title}</h4>
+  return `<li id="work-${example.id}" class="work-example" aria-labelledby="example-${example.id}-heading">
+    <div class="example-heading">
+      <h4 id="example-${example.id}-heading">${example.title}</h4>
+      ${metricMarkup(impact?.items.find((metric) => metric.id === example.metric), true)}
+    </div>
     <p class="example-summary">${example.summary}</p>
-    ${metricMarkup(impact?.items.find((metric) => metric.id === example.metric), true)}
-    <p class="example-label">Impact</p>
-    <ul class="example-impact">${example.impact.map((point) => `<li>${point}</li>`).join('')}</ul>
-    <p class="example-label">Technology</p>
-    <ul class="tool-list" aria-label="Technology for ${example.title}">${example.technologies.map((tool) => `<li>${tool}</li>`).join('')}</ul>
-    ${example.details ? `<details class="example-details">
-      <summary>How it worked<span class="visually-hidden">: ${example.title}</span></summary>
-      <ol>${example.details.steps.map((step) => `<li>${step}</li>`).join('')}</ol>
-    </details>` : ''}
-  </article>`;
+  </li>`;
 }
 
 const icons = {
@@ -163,13 +155,16 @@ function heroSection(data) {
 
   return `
     <section id="home" class="hero">
-      <div class="container hero-grid">
+      <div class="container hero-inner">
         <div class="hero-copy">
           <p class="eyebrow">${data.hero.eyebrow}</p>
           <h1>${data.person.name}</h1>
           <p class="headline">${data.person.title}</p>
           <p class="hero-role">${data.person.currentRole}</p>
           <p class="subheadline">${data.hero.subheadline}</p>
+          <ol class="approach-sequence" aria-label="How I work">
+            ${data.hero.approach.map((step, index) => `<li>${step}${index < data.hero.approach.length - 1 ? '<span aria-hidden="true"> →</span>' : ''}</li>`).join('')}
+          </ol>
           <div class="hero-ctas" aria-label="Primary actions">
             ${data.hero.actions.map(actionLink).join('')}
           </div>
@@ -179,16 +174,6 @@ function heroSection(data) {
             </ul>
           ` : ''}
         </div>
-        <aside class="hero-panel" aria-labelledby="how-i-work-heading">
-          <div class="proof-card">
-            <p class="profile-label">${data.hero.panel.label}</p>
-            <h2 id="how-i-work-heading">${data.hero.panel.headline}</h2>
-            <p class="process-intro">${data.hero.panel.intro}</p>
-            <ol class="process-steps">
-              ${data.hero.panel.steps.map((step) => `<li><h3>${step.title}</h3><p>${step.text}</p></li>`).join('')}
-            </ol>
-          </div>
-        </aside>
       </div>
     </section>
   `;
@@ -217,7 +202,7 @@ function experienceSection(section) {
     <section id="experience" class="section">
       <div class="container">
         ${sectionHeading(section.eyebrow, section.headline)}
-        <p class="section-intro">${section.intro}</p>
+        ${section.intro ? `<p class="section-intro">${section.intro}</p>` : ''}
         <div class="experience-list">
           ${section.items.map(experienceItem).join('')}
         </div>
@@ -268,23 +253,19 @@ function developmentSection(section) {
   if (!section || !Array.isArray(section.items) || !section.items.length) return '';
 
   return `
-    <section id="education" class="development-block" aria-labelledby="development-heading">
-      <div class="development-heading">
-        <p class="eyebrow">${section.eyebrow}</p>
-        <h2 id="development-heading">${section.headline}</h2>
-      </div>
-      <div class="development-grid">
+    <section id="education" class="section credentials-section" aria-labelledby="development-heading">
+      <div class="container">
+      ${sectionHeading('', section.headline, 'development-heading')}
+      <ul class="credential-list">
         ${section.items.map(function (item) {
           return `
-            <article class="development-card">
-              <p class="work-tag">${item.label}</p>
-              <h3>${item.title}</h3>
-              ${item.organization ? `<p class="development-organization">${item.organization}</p>` : ''}
-              <p>${item.text}</p>
-              ${item.link && isUsableLink(item.link.href) ? `<a class="development-link" href="${item.link.href}" target="_blank" rel="noopener noreferrer">${item.link.label}<span aria-hidden="true">↗</span></a>` : ''}
-            </article>
+            <li>
+              <h3>${item.link && isUsableLink(item.link.href) ? `<a href="${item.link.href}"${newTabAttributes(item.link.href)} aria-label="${item.link.label}">${item.title}</a>` : item.title}</h3>
+              ${item.organization || item.date ? `<p>${[item.organization, item.date].filter(Boolean).join(' · ')}</p>` : ''}
+            </li>
           `;
         }).join('')}
+      </ul>
       </div>
     </section>
   `;
@@ -292,9 +273,9 @@ function developmentSection(section) {
 
 function skillsSection(section) {
   return `
-    <section id="skills" class="section muted-section">
+    <section id="skills" class="section skills-section">
       <div class="container">
-        ${sectionHeading(section.eyebrow, section.headline)}
+        ${sectionHeading('', section.headline)}
         <div class="skills-grid">
           ${section.groups.map(function (group, index) {
             const id = `skill-group-${index}`;
@@ -302,13 +283,12 @@ function skillsSection(section) {
               <section class="skill-group" aria-labelledby="${id}">
                 <h3 id="${id}">${group.title}</h3>
                 <ul class="skill-list">
-                  ${group.items.map(function (item) { return `<li>${item}</li>`; }).join('')}
+                  ${group.items.map((item, itemIndex) => `<li>${item}${itemIndex < group.items.length - 1 ? '<span aria-hidden="true"> ·</span>' : ''}</li>`).join('')}
                 </ul>
               </section>
             `;
           }).join('')}
         </div>
-        ${section.note ? `<p class="section-intro skills-note">${section.note}</p>` : ''}
       </div>
     </section>
   `;
@@ -392,7 +372,7 @@ function contactSection(data) {
 function sectionHeading(eyebrow, headline, id) {
   return `
     <div class="section-heading">
-      <p class="eyebrow">${eyebrow}</p>
+      ${eyebrow ? `<p class="eyebrow">${eyebrow}</p>` : ''}
       <h2${id ? ` id="${id}"` : ''}>${headline}</h2>
     </div>
   `;

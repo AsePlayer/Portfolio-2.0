@@ -4,6 +4,7 @@
     "initials": "RS",
     "title": "Data Operations & Business Systems",
     "currentRole": "Data Operations Coordinator",
+    "currentEmployer": "SEMA",
     "email": "ryanscottcareer@gmail.com",
     "resume": "data/Ryan Scott Resume.pdf"
   },
@@ -38,7 +39,6 @@
     }
   ],
   "hero": {
-    "eyebrow": "SQL · Salesforce · Automation · Data Quality",
     "subheadline": "I turn complex business rules and disconnected data into reliable, repeatable processes across CRM, marketing, reporting, and operations.",
     "actions": [
       {

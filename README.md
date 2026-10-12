@@ -48,11 +48,11 @@ Each category requires a unique lowercase `id`, `title`, a one-sentence `intro` 
 }
 ```
 
-Categories and examples appear in JSON order before Experience. Stable anchors such as `#capability-crm-data-quality` and `#work-council-affiliations` remain available for direct links. The page flows from Hero to Capabilities, Experience, Credentials, Toolkit, and Contact; there is no category table of contents, headline impact band, or resume section. Examples read as a plain two-column proof list on desktop and stack on mobile. Technologies appear once beneath each capability.
+Categories and examples appear in JSON order before Experience. Stable anchors such as `#capability-crm-data-quality` and `#work-council-affiliations` remain available for direct links. The page flows from Hero to Capabilities, Experience, Credentials, Toolkit, and Contact; there is no category table of contents, headline impact band, or resume section. Proof examples use three open columns on desktop, two on tablet with the final example spanning the row, and one on mobile. Subtle dividers separate capability groups. Technologies appear once beneath each capability.
 
 Per-example impact lists, technologies, and deep dives have been removed from both content and rendering. Retired case-study fields, including `metric`, `impact`, `technologies`, and `details`, fail validation. JSON-LD still groups CreativeWork entries beneath three category ItemLists and links every example to Ryan's Person entry; it does not assign the shared toolkit to individual examples.
 
-`hero.approach` replaces the retired methodology panel with four strings: Understand, Trace, Build, Validate. It renders as a compact inline sequence. QA and software-development experience remain visible in Experience.
+`hero.approach` replaces the retired methodology panel with four strings: Understand, Trace, Build, Validate. It renders as a compact inline sequence. The hero has no keyword strip; `person.currentEmployer` supplies context beside the actual `currentRole`, without changing the structured job title. QA and software-development experience remain visible in Experience.
 
 Credentials require a `title` with optional `organization`, `date`, and professional `link`; optional boolean `secondary` gives Trailhead restrained emphasis after the certification, degree, and CSM. Explanatory labels and paragraphs are retired. Skills use four plain text groups with at most seven items each.
 

@@ -225,6 +225,19 @@ test('How I Work stays a four-word sequence, with the QA foundation in experienc
   assert.ok(validateContent(copy, root).some((error) => error.includes('How I Work')));
 });
 
+test('the simplified hero shows employer context while preserving the actual structured title', () => {
+  const html = renderDocument(data,template,2026);
+  const hero = html.match(/<section id="home"[\s\S]*?<\/section>/)[0];
+  assert.ok(hero.includes('Data Operations Coordinator · SEMA'));
+  assert.ok(!hero.includes('class="eyebrow"'));
+  assert.equal(structuredData(html)[0].jobTitle, 'Data Operations Coordinator');
+  const copy = structuredClone(data);
+  copy.person.currentEmployer = '<script>alert(1)</script>';
+  assert.ok(!renderDocument(copy,template,2026).includes('<script>alert(1)'));
+  delete copy.person.currentEmployer;
+  assert.ok(validateContent(copy,root).some((error) => error.includes('currentEmployer')));
+});
+
 test('skills and credentials use compact text groups without explanatory cards', () => {
   const html = renderDocument(data, template, 2026);
   assert.deepEqual(data.skills.groups.map((item) => item.title), ['Data','Business Systems','Automation','Data Operations']);

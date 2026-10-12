@@ -49,7 +49,7 @@ export function validateContent(data, root) {
     }
   };
   if (!data || typeof data !== 'object' || Array.isArray(data)) return ['Content must be an object.'];
-  fields(data.person, 'person', ['name', 'initials', 'title', 'currentRole', 'email']);
+  fields(data.person, 'person', ['name', 'initials', 'title', 'currentRole', 'currentEmployer', 'email']);
   if (!/^[^\s<>"@]+@[^\s<>"@]+\.[^\s<>"@]+$/.test(data.person?.email || '')) fail('person.email is invalid.');
   if (!data.links || typeof data.links !== 'object' || Array.isArray(data.links)) fail('links must be an object.');
   Object.entries(data.links || {}).forEach(([key, value]) => {
@@ -58,7 +58,7 @@ export function validateContent(data, root) {
   if (data.links?.youtube !== undefined) fail('The professional links must not include YouTube.');
   if (data.impact !== undefined) fail('The standalone impact section is retired; keep scale inside relevant example summaries.');
   if (data.resume !== undefined) fail('The standalone resume section is retired; link the configured PDF directly.');
-  fields(data.hero, 'hero', ['eyebrow', 'subheadline']);
+  fields(data.hero, 'hero', ['subheadline']);
   if (data.hero?.panel !== undefined) fail('hero.panel is retired; use the compact hero.approach sequence.');
   strings(data.hero?.approach, 'hero.approach');
   if (JSON.stringify(data.hero?.approach) !== JSON.stringify(['Understand', 'Trace', 'Build', 'Validate'])) fail('hero.approach must contain the four-word How I Work sequence: Understand, Trace, Build, Validate.');

@@ -128,10 +128,9 @@ function heroSection(data) {
     <section id="home" class="hero">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">${data.hero.eyebrow}</p>
           <h1>${data.person.name}</h1>
           <p class="headline">${data.person.title}</p>
-          <p class="hero-role">${data.person.currentRole}</p>
+          <p class="hero-role">${data.person.currentRole} · ${data.person.currentEmployer}</p>
           <p class="subheadline">${data.hero.subheadline}</p>
           <ol class="approach-sequence" aria-label="How I work">
             ${data.hero.approach.map((step, index) => `<li>${step}${index < data.hero.approach.length - 1 ? '<span aria-hidden="true"> →</span>' : ''}</li>`).join('')}

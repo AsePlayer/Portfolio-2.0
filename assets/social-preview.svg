@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">Ryan Scott — Data Operations &amp; Business Systems</title>
+  <desc id="description">SQL, Salesforce, automation, and data quality. ryanscott.org.</desc>
+  <rect width="1200" height="630" fill="#14213d"/>
+  <rect x="80" y="100" width="72" height="8" rx="4" fill="#8ce4d8"/>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="80" y="265" fill="#ffffff" font-size="88" font-weight="750" letter-spacing="-3">Ryan Scott</text>
+    <text x="80" y="350" fill="#8ce4d8" font-size="42" font-weight="600">Data Operations &amp; Business Systems</text>
+    <text x="80" y="421" fill="#edf2f7" font-size="27">SQL · Salesforce · Automation · Data Quality</text>
+    <text x="80" y="548" fill="#b4bfce" font-size="23">ryanscott.org</text>
+  </g>
+</svg>

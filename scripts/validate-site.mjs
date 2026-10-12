@@ -64,11 +64,13 @@ if (data?.seo) {
   if (data.seo.image) {
     const imageUrl = escapeHtml(new URL(data.seo.image.path, data.seo.url).href);
     if (!html.includes(`property="og:image" content="${imageUrl}"`) || !html.includes(`name="twitter:image" content="${imageUrl}"`)) fail('Configured social image metadata is missing.');
+    for (const dimension of ['width','height']) {
+      if (data.seo.image[dimension] && !html.includes(`property="og:image:${dimension}" content="${data.seo.image[dimension]}"`)) fail(`Social image ${dimension} metadata is missing.`);
+    }
   } else if (/\b(?:property="og:image"|name="twitter:image")/.test(html)) fail('Share image metadata must be omitted until an asset is configured.');
 }
 if (data?.person) {
-  if (!html.includes(`action="https://formsubmit.co/${escapeHtml(data.person.email)}" method="POST"`)) fail('Contact form action or method differs from configuration.');
-  if (!html.includes(`data-next-url value="${escapeHtml(data.seo?.url)}?sent=true#contact"`)) fail('Contact form needs a static success return URL.');
+  if (!html.includes(`href="mailto:${escapeHtml(data.person.email)}"`)) fail('Direct email must be available in HTML.');
   if (data.person.resume && !html.includes(`href="${escapeHtml(data.person.resume)}"`)) fail('Configured résumé is not linked in HTML.');
 }
 if (/tel:|(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/i.test(html)) fail('Public HTML contains a phone number.');
@@ -77,8 +79,13 @@ if (html.indexOf('id="work"') > html.indexOf('id="experience"')) fail('Capabilit
 if ((html.match(/class="capability-area"/g) || []).length !== 3) fail('Rendered portfolio must have three capability areas.');
 if (/<details\b/.test(html)) fail('The main portfolio must not render deep-dive disclosures.');
 if (/class="(?:work-card|case-details|audit-process|example-label|example-impact|tool-list|capability-nav|hero-panel|development-card)|<dt>(?:Problem|Investigation|Solution)<\/dt>/.test(html)) fail('Retired heavy portfolio markup remains.');
-const impactBand = html.match(/<section id="impact"[\s\S]*?<\/section>/)?.[0];
-if (impactBand?.includes('<a ')) fail('The impact band must not contain example navigation.');
+if (ids.includes('impact') || ids.includes('resume') || /class="(?:impact-metric|example-scale|resume-panel)|<form\b/.test(html)) fail('Standalone metrics, scale badges, resume panels, and contact forms are retired.');
+if (/youtube\.com|YouTube/.test(html)) fail('YouTube must not appear in the professional portfolio.');
+if ((html.match(/class="work-example"/g) || []).length !== 9) fail('The portfolio must render nine proof examples.');
+const sectionOrder = ['home','work','experience','education','skills','contact'];
+for (let i = 1; i < sectionOrder.length; i++) {
+  if (html.indexOf(`id="${sectionOrder[i-1]}"`) >= html.indexOf(`id="${sectionOrder[i]}"`)) fail('The portfolio section order must be Hero, Capabilities, Experience, Credentials, Toolkit, Contact.');
+}
 if ((html.match(/class="capability-tools"/g) || []).length !== 3) fail('Each capability must render exactly one shared technology line.');
 for (const category of data?.capabilities?.categories || []) {
   if (!ids.includes(`capability-${category.id}`)) fail(`Capability ${category.id} is missing from prerendered HTML.`);
@@ -105,4 +112,4 @@ if (errors.length) {
   console.error(`Portfolio validation failed:\n${errors.map((error) => `- ${error}`).join('\n')}`);
   process.exit(1);
 }
-console.log('Portfolio validation passed: content schema, prerendered sections, anchors, metadata, privacy, form, résumé, and deployment assets.');
+console.log('Portfolio validation passed: content schema, prerendered sections, anchors, social metadata, privacy, direct contact, resume, and deployment assets.');

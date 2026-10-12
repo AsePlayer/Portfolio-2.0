@@ -15,21 +15,20 @@ The workflow uses Node.js 24, runs tests, prerenders the full portfolio from JSO
 ## Deployment checks
 
 - Open the deployed site at mobile, tablet, and desktop widths, in light and dark themes.
-- Disable JavaScript and confirm Hero, Impact, all three capability areas and their proof lists, Experience, Credentials, Skills, Resume, and Contact remain readable; mobile navigation stays visible. The main page contains no disclosures.
+- Disable JavaScript and confirm Hero, all three capability areas and nine proof examples, Experience, Credentials, Toolkit, and Contact remain readable; mobile navigation stays visible. The main page contains no disclosures.
 - Test keyboard navigation, Escape in the mobile menu, the skip link, and direct section links.
-- Confirm LinkedIn, GitHub, YouTube, Trailhead, email, and résumé destinations.
+- Confirm LinkedIn, GitHub, Trailhead, email, and direct résumé destinations.
 - Open the deployed résumé and confirm its content and current version. Keep its phone number; public HTML, JSON, and metadata must not include it.
 - Confirm browser console and network requests have no errors.
-- Test production FormSubmit activation, delivery, success feedback, and spam handling.
-- Confirm page, Open Graph, Twitter, and JSON-LD metadata reflect data operations / business systems and the actual coordinator role. Configure a social image only when its asset is ready.
+- Confirm page, Open Graph, Twitter, and JSON-LD metadata reflect data operations / business systems and the actual coordinator role. Confirm the social preview PNG is published at `/assets/social-preview.png` and matches its 1200 × 630 dimensions.
 
 ## Content and résumé
 
 Edit `data/site.json`, then rebuild before previewing or deploying. The generated page and metadata share that source; do not maintain duplicate copy in HTML. See README.md for capability, compact-example, and grouped-role schemas.
 
-Metrics live in `impact.items` and can be referenced by examples. `approximate: true` identifies rounded figures; the exact reachability count remains 473. To keep a number private, remove its entry and example references; display toggles alone leave values in the public JSON. Review example copy for confidential identifiers, internal configuration, stakeholder names, and live payment links before publishing.
+Scale is embedded in relevant proof sentences rather than a separate metric section. Keep approximately 4,000 council affiliations, roughly 8,000 exhibitor histories, and the exact 473-organization finding in their business context. Retired impact and resume sections are rejected by validation.
 
-The revised general analytics résumé is bundled at `data/Ryan Scott Resume.pdf`. Keep job-specific versions separate. The build includes only the PDF selected by `person.resume`; if its path changes, update the résumé hero action too.
+The revised general analytics résumé is bundled at `data/Ryan Scott Resume.pdf`. Keep job-specific versions separate. The build includes only the PDF selected by `person.resume`; if its path changes, update its direct navigation link and hero action too.
 
 ## Custom domain
 
@@ -38,4 +37,4 @@ The root `CNAME` remains `ryanscott.org` and is copied into `dist/`.
 1. Confirm `ryanscott.org` under Settings → Pages → Custom domain.
 2. Keep DNS pointed to GitHub Pages.
 3. After DNS verification, enable Enforce HTTPS.
-4. If the domain changes, update `CNAME`, the workflow environment URL, and `seo.url` in `data/site.json`, then rebuild. Metadata and the contact return URL are generated from `seo.url`.
+4. If the domain changes, update `CNAME`, the workflow environment URL, and `seo.url` in `data/site.json`, then rebuild. Canonical and social metadata URLs are generated from `seo.url`.

@@ -6,15 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
   bindPageInteractions();
   setupActiveNavigation();
   handleInitialHash();
-  setupContactSuccess();
 });
 
 function bindPageInteractions() {
-  const nextUrl = document.querySelector('[data-next-url]');
-  if (nextUrl) {
-    nextUrl.value = `${window.location.origin}${window.location.pathname}?sent=true#contact`;
-  }
-
   document.querySelectorAll('a[href^="#"]:not(.skip-link)').forEach(function (anchor) {
     anchor.addEventListener('click', function (event) {
       const selector = anchor.getAttribute('href');
@@ -150,7 +144,7 @@ function setupActiveNavigation() {
 }
 
 function handleInitialHash() {
-  if (!window.location.hash || new URLSearchParams(window.location.search).get('sent') === 'true') return;
+  if (!window.location.hash) return;
   let target;
 
   try {
@@ -177,23 +171,6 @@ function focusDestination(section) {
     destination.addEventListener('blur', function () {
       destination.removeAttribute('tabindex');
     }, { once: true });
-  }
-}
-
-function setupContactSuccess() {
-  const status = document.querySelector('[data-form-status]');
-  const sent = new URLSearchParams(window.location.search).get('sent');
-  if (status && sent === 'true') {
-    status.hidden = false;
-    const cleanUrl = new URL(window.location.href);
-    cleanUrl.searchParams.delete('sent');
-    cleanUrl.hash = 'contact';
-    history.replaceState(null, '', cleanUrl);
-    // Apply focus after the browser's initial fragment navigation completes.
-    window.requestAnimationFrame(function () {
-      status.focus({ preventScroll: true });
-      status.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
-    });
   }
 }
 

@@ -9,8 +9,7 @@
   },
   "links": {
     "linkedin": "https://www.linkedin.com/in/ryan-scott-95aa651b0/",
-    "github": "https://github.com/AsePlayer",
-    "youtube": "https://www.youtube.com/@AsePlayer"
+    "github": "https://github.com/AsePlayer"
   },
   "nav": [
     {
@@ -26,12 +25,12 @@
       "href": "#education"
     },
     {
-      "label": "Skills",
+      "label": "Toolkit",
       "href": "#skills"
     },
     {
       "label": "Resume",
-      "href": "#resume"
+      "href": "data/Ryan Scott Resume.pdf"
     },
     {
       "label": "Contact",
@@ -101,20 +100,20 @@
           "date": "September 2026"
         },
         {
-          "title": "Trailhead Double Ranger",
-          "organization": "100,000+ points",
-          "link": {
-            "label": "View Trailhead profile",
-            "href": "https://www.salesforce.com/trailblazer/ryandscott"
-          }
-        },
-        {
           "title": "B.S. Computer Science, Cum Laude",
           "organization": "Grand Canyon University"
         },
         {
           "title": "Certified ScrumMaster (CSM)",
           "organization": "Scrum Alliance"
+        },
+        {
+          "title": "Trailhead Double Ranger",
+          "link": {
+            "label": "View Trailhead profile",
+            "href": "https://www.salesforce.com/trailblazer/ryandscott"
+          },
+          "secondary": true
         }
       ]
     }
@@ -140,7 +139,7 @@
           "Nimble AMS",
           "iPost",
           "NetForum",
-          "Data 360"
+          "Salesforce Data 360 — Certified"
         ]
       },
       {
@@ -168,18 +167,9 @@
       }
     ]
   },
-  "resume": {
-    "eyebrow": "Resume",
-    "headline": "Want the full picture?",
-    "text": "View my experience, technical background, and qualifications in one place.",
-    "button": "View Resume"
-  },
   "contact": {
-    "eyebrow": "Let’s talk",
-    "headline": "Let’s work together.",
-    "text": "Interested in data operations and business systems roles that combine automation, CRM reliability, and analysis.",
-    "formIntro": "Send me a message.",
-    "formSubject": "New portfolio contact for Ryan Scott"
+    "headline": "Let’s talk",
+    "text": "Interested in opportunities across data operations, business systems, CRM, automation, and analytics."
   },
   "capabilities": {
     "headline": "Capabilities",
@@ -207,14 +197,9 @@
             "summary": "Centralized fragmented suppression and exception rules into one automated audience-eligibility process."
           },
           {
-            "id": "audience-segmentation",
-            "title": "Audience Generation",
-            "summary": "Built reusable audience logic across CRM relationships, membership, event participation, and geography."
-          },
-          {
             "id": "event-data-integration",
             "title": "Event Data Integration",
-            "summary": "Automated ingestion and transformation of exhibitor and registration data for downstream marketing and operational use."
+            "summary": "Automated ingestion and transformation of exhibitor and registration data for recurring marketing and operational use."
           }
         ]
       },
@@ -233,24 +218,17 @@
           {
             "id": "legacy-crm-migration",
             "title": "CRM Migration Validation",
-            "summary": "Supported the move from a legacy CRM into Salesforce by validating and reconciling data, investigating transformation issues and relationship discrepancies."
+            "summary": "Supported the move from a legacy CRM into Salesforce by validating and reconciling records, relationships, and transformation issues."
           },
           {
             "id": "council-affiliations",
             "title": "Council Affiliation Reconciliation",
-            "summary": "Designed matching logic and resolved historical relationship conflicts and merged-record exceptions in council-affiliation data.",
-            "metric": "crm-affiliations"
-          },
-          {
-            "id": "membership-flowdown",
-            "title": "Membership Relationship Integrity",
-            "summary": "Tracked recurring Salesforce/Nimble relationship failures and helped identify underlying configuration issues."
+            "summary": "Designed matching logic and resolved historical relationship conflicts and merged-record exceptions across approximately 4,000 council-affiliation records."
           },
           {
             "id": "operational-monitoring",
             "title": "Data-Quality Monitoring",
-            "summary": "Built recurring audits that surfaced missing primary contacts, relationship inconsistencies, and record-quality issues.",
-            "metric": "reachability"
+            "summary": "Built recurring audits for contact, relationship, and record-quality risks, identifying 473 organizations missing primary contacts and helping distinguish record errors from configuration problems."
           }
         ]
       },
@@ -268,18 +246,12 @@
           {
             "id": "historical-exhibitors",
             "title": "Historical Exhibitor Analysis",
-            "summary": "Analyzed historical exhibitor records to distinguish first-time and returning organizations.",
-            "metric": "exhibitor-history"
+            "summary": "Mapped when organizations first exhibited across roughly 8,000 historical records to distinguish first-time and returning exhibitors."
           },
           {
             "id": "membership-forecasting",
             "title": "Membership Forecasting",
             "summary": "Built repeatable models for analyzing renewal, attrition, and potential revenue outcomes."
-          },
-          {
-            "id": "reporting-modernization",
-            "title": "Reporting Modernization",
-            "summary": "Automated recurring reporting that previously required manual extraction and reconciliation."
           },
           {
             "id": "engagement-analytics",
@@ -321,31 +293,13 @@
       "ETL",
       "Python",
       "Quality assurance"
-    ]
+    ],
+    "image": {
+      "path": "assets/social-preview.png",
+      "alt": "Ryan Scott — Data Operations & Business Systems. SQL · Salesforce · Automation · Data Quality.",
+      "width": 1200,
+      "height": 630
+    }
   },
-  "footer": "Data Operations & Business Systems.",
-  "impact": {
-    "eyebrow": "Selected impact",
-    "items": [
-      {
-        "id": "exhibitor-history",
-        "value": "8,000",
-        "approximate": true,
-        "label": "Historical exhibitor records analyzed"
-      },
-      {
-        "id": "crm-affiliations",
-        "value": "4,000",
-        "label": "CRM affiliation records reconciled",
-        "approximate": true
-      },
-      {
-        "id": "reachability",
-        "value": "473",
-        "label": "Organizations surfaced through data-quality auditing",
-        "approximate": false,
-        "context": "Missing primary contacts."
-      }
-    ]
-  }
+  "footer": "Data Operations & Business Systems."
 }

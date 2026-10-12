@@ -40,6 +40,13 @@ export function validateContent(data, root) {
     if (typeof asset !== 'string' || !/\.(png|jpe?g|webp)$/i.test(asset) || asset.includes('\\') || asset.split('/').includes('..') || !/^[a-zA-Z0-9][a-zA-Z0-9 /_.-]*$/.test(asset)) {
       fail('seo.image.path must be a relative PNG, JPEG, or WebP asset inside the repository.');
     } else if (!fs.existsSync(path.join(root, asset))) fail(`Share image does not exist: ${asset}`);
+    else if (value.width !== undefined || value.height !== undefined) {
+      if (!Number.isInteger(value.width) || !Number.isInteger(value.height) || value.width <= 0 || value.height <= 0) fail('seo.image.width and height must both be positive integers.');
+      else if (/\.png$/i.test(asset)) {
+        const png = fs.readFileSync(path.join(root, asset));
+        if (png.length < 24 || png.subarray(0,8).toString('hex') !== '89504e470d0a1a0a' || png.readUInt32BE(16) !== value.width || png.readUInt32BE(20) !== value.height) fail('Share PNG dimensions must match seo.image.width and height.');
+      }
+    }
   };
   if (!data || typeof data !== 'object' || Array.isArray(data)) return ['Content must be an object.'];
   fields(data.person, 'person', ['name', 'initials', 'title', 'currentRole', 'email']);
@@ -48,6 +55,9 @@ export function validateContent(data, root) {
   Object.entries(data.links || {}).forEach(([key, value]) => {
     if (value !== '') https(value, `links.${key}`);
   });
+  if (data.links?.youtube !== undefined) fail('The professional links must not include YouTube.');
+  if (data.impact !== undefined) fail('The standalone impact section is retired; keep scale inside relevant example summaries.');
+  if (data.resume !== undefined) fail('The standalone resume section is retired; link the configured PDF directly.');
   fields(data.hero, 'hero', ['eyebrow', 'subheadline']);
   if (data.hero?.panel !== undefined) fail('hero.panel is retired; use the compact hero.approach sequence.');
   strings(data.hero?.approach, 'hero.approach');
@@ -68,6 +78,7 @@ export function validateContent(data, root) {
       if (item?.[field] !== undefined) text(item[field], `experience.development.items[${i}].${field}`);
     }
     if (item?.label !== undefined || item?.text !== undefined) fail(`experience.development.items[${i}] must use a title and optional organization/date without explanatory paragraphs.`);
+    optionalBoolean(item?.secondary, `experience.development.items[${i}].secondary`);
     if (item?.link) {
       text(item.link.label, `credential[${i}].link.label`);
       if (item.link.href !== '') https(item.link.href, `credential[${i}].link.href`);
@@ -77,7 +88,6 @@ export function validateContent(data, root) {
   fields(data.capabilities, 'capabilities', ['headline']);
   const categoryIds = new Set();
   const exampleIds = new Set();
-  const examples = [];
   const categories = array(data.capabilities?.categories, 'capabilities.categories');
   if (categories.length !== 3) fail('capabilities.categories must contain exactly three capability areas.');
   categories.forEach((category, i) => {
@@ -90,43 +100,18 @@ export function validateContent(data, root) {
     if (categoryIds.has(category?.id)) fail(`Duplicate capability identifier: ${category?.id}`);
     categoryIds.add(category?.id);
     const items = array(category?.examples, `${label}.examples`);
-    if (items.length < 3 || items.length > 4) fail(`${label}.examples must contain three to four proof examples.`);
+    if (items.length !== 3) fail(`${label}.examples must contain three strong proof examples.`);
     items.forEach((item, j) => {
       const exampleLabel = `${label}.examples[${j}]`;
-      examples.push({item, label: exampleLabel});
       fields(item, exampleLabel, ['title', 'summary']);
       sentence(item?.summary, `${exampleLabel}.summary`);
       identifier(item?.id, `${exampleLabel}.id`);
       if (exampleIds.has(item?.id)) fail(`Duplicate example identifier: ${item?.id}`);
       exampleIds.add(item?.id);
-      if (item?.metric !== undefined) identifier(item.metric, `${exampleLabel}.metric`);
-      for (const field of ['impact', 'technologies', 'details', 'challenge', 'investigation', 'solution', 'evidence', 'skills', 'featured', 'process']) {
-        if (item?.[field] !== undefined) fail(`${exampleLabel}.${field} is retired; use a title, one sentence, and optional metric. Technologies belong to the capability.`);
+      for (const field of ['metric', 'impact', 'technologies', 'details', 'challenge', 'investigation', 'solution', 'evidence', 'skills', 'featured', 'process']) {
+        if (item?.[field] !== undefined) fail(`${exampleLabel}.${field} is retired; use a title and one sentence with useful scale in context. Technologies belong to the capability.`);
       }
     });
-  });
-  const metricIds = new Set();
-  const metrics = Array.isArray(data.impact?.items) ? data.impact.items : [];
-  if (data.impact !== undefined) {
-    text(data.impact?.eyebrow, 'impact.eyebrow');
-    optionalBoolean(data.impact?.enabled, 'impact.enabled');
-    if (!Array.isArray(data.impact?.items)) fail('impact.items must be an array (it can be empty).');
-    if (metrics.length > 3) fail('impact.items may contain at most three headline metrics.');
-    metrics.forEach((item, i) => {
-      fields(item, `impact.items[${i}]`, ['value', 'label']);
-      if (item?.context !== undefined) sentence(item.context, `impact.items[${i}].context`, 80);
-      if (typeof item?.value === 'string' && !/^\d+(?:,\d{3})*$/.test(item.value)) fail(`impact.items[${i}].value must be a count without + or ~; use approximate for rounded figures.`);
-      identifier(item?.id, `impact.items[${i}].id`);
-      if (metricIds.has(item?.id)) fail(`Duplicate metric identifier: ${item?.id}`);
-      metricIds.add(item?.id);
-      if (typeof item?.approximate !== 'boolean') fail(`impact.items[${i}].approximate must be a boolean.`);
-      optionalBoolean(item?.enabled, `impact.items[${i}].enabled`);
-      if (item?.caseStudyId !== undefined || item?.exampleId !== undefined) fail(`impact.items[${i}] must not contain example navigation; use example.metric for a compact count.`);
-    });
-  }
-  examples.forEach(({item, label}) => {
-    if (item?.metric === undefined) return;
-    if (!metricIds.has(item.metric)) fail(`${label}.metric references an unknown metric.`);
   });
   fields(data.skills, 'skills', ['headline']);
   if (data.skills?.groups?.length !== 4) fail('skills.groups must contain four compact groups.');
@@ -136,7 +121,7 @@ export function validateContent(data, root) {
     if (Array.isArray(item?.items) && item.items.length > 7) fail(`skills.groups[${i}].items must contain at most seven skills.`);
   });
   if (data.skills?.note !== undefined) text(data.skills.note, 'skills.note');
-  fields(data.contact, 'contact', ['eyebrow', 'headline', 'text', 'formIntro', 'formSubject']);
+  fields(data.contact, 'contact', ['headline', 'text']);
   fields(data.seo, 'seo', ['title', 'description', 'socialDescription', 'url', 'jobTitle']);
   https(data.seo?.url, 'seo.url');
   if (data.seo?.url !== 'https://ryanscott.org/') fail('seo.url must remain https://ryanscott.org/.');
@@ -146,10 +131,7 @@ export function validateContent(data, root) {
   const targets = new Set(['#home', '#experience', '#work', '#education', '#skills', '#contact']);
   categoryIds.forEach((id) => targets.add(`#capability-${id}`));
   exampleIds.forEach((id) => targets.add(`#work-${id}`));
-  if (Array.isArray(data.impact?.items) && data.impact.enabled !== false && data.impact.items.some((item) => item?.enabled !== false)) targets.add('#impact');
   if (data.person?.resume) {
-    targets.add('#resume');
-    fields(data.resume, 'resume', ['eyebrow', 'headline', 'text', 'button']);
     const resume = data.person.resume;
     if (typeof resume !== 'string' || !/\.pdf$/i.test(resume) || path.isAbsolute(resume) || resume.includes('\\') || resume.split('/').includes('..')) {
       fail('person.resume must be a relative PDF path inside the repository.');
@@ -164,7 +146,7 @@ export function validateContent(data, root) {
   } else if (data.person?.resume !== '') fail('person.resume must be a PDF path or an empty string.');
   array(data.nav, 'nav').forEach((item, i) => {
     fields(item, `nav[${i}]`, ['label', 'href']);
-    if (!targets.has(item?.href)) fail(`Navigation target ${item?.href} does not match a rendered section.`);
+    if (!targets.has(item?.href) && !(data.person?.resume && item?.href === data.person.resume)) fail(`Navigation target ${item?.href} must match a rendered section or the configured resume PDF.`);
   });
   array(data.hero?.actions, 'hero.actions').forEach((item, i) => {
     fields(item, `hero.actions[${i}]`, ['label', 'href', 'style']);

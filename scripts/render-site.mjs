@@ -51,10 +51,10 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   const shareImage = data.seo.image ? escapeHtml(new URL(data.seo.image.path, data.seo.url).href) : '';
   const values = {
     name: safe.person.name, initials: safe.person.initials, year, footer: safe.footer,
-    navigation: safe.nav.map((item) => `<li><a href="${item.href}">${item.label}</a></li>`).join(''),
-    content: [heroSection(safe), impactSection(safe.impact), capabilitiesSection(safe.capabilities, safe.impact), experienceSection(safe.experience),
+    navigation: safe.nav.map((item) => `<li><a href="${item.href}"${newTabAttributes(item.href)}>${item.label}</a></li>`).join(''),
+    content: [heroSection(safe), capabilitiesSection(safe.capabilities), experienceSection(safe.experience),
       developmentSection(safe.experience.development),
-      skillsSection(safe.skills), resumeSection(safe), contactSection(safe)].join(''),
+      skillsSection(safe.skills), contactSection(safe)].join(''),
     metadata: `<title>${safe.seo.title}</title>
   <meta name="description" content="${safe.seo.description}">
   <meta name="author" content="${safe.person.name}">
@@ -65,7 +65,9 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   <meta property="og:description" content="${safe.seo.socialDescription}">
   <meta property="og:url" content="${safe.seo.url}">
   ${shareImage ? `<meta property="og:image" content="${shareImage}">
-  <meta property="og:image:alt" content="${safe.seo.image.alt}">` : ''}
+  <meta property="og:image:alt" content="${safe.seo.image.alt}">
+  ${safe.seo.image.width ? `<meta property="og:image:width" content="${safe.seo.image.width}">
+  <meta property="og:image:height" content="${safe.seo.image.height}">` : ''}` : ''}
   <meta name="twitter:card" content="${shareImage ? 'summary_large_image' : 'summary'}">
   <meta name="twitter:title" content="${safe.seo.title}">
   <meta name="twitter:description" content="${safe.seo.socialDescription}">
@@ -80,33 +82,7 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   }).replace(/\r\n/g, '\n').replace(/[\t ]+$/gm, '');
 }
 
-function metricValue(metric) {
-  return `<strong>${metric.approximate ? '<span aria-hidden="true">~</span><span class="visually-hidden">Approximately </span>' : ''}${metric.value}</strong>`;
-}
-
-function metricMarkup(metric, compact = false) {
-  if (!metric || metric.enabled === false) return '';
-  if (compact) return `<span class="example-scale">${metricValue(metric)}<span class="visually-hidden"> ${metric.label}</span></span>`;
-  return `<p class="impact-metric">${metricValue(metric)}<span>${metric.label}</span></p>`;
-}
-
-function impactSection(section) {
-  const items = section?.enabled === false ? [] : section?.items.filter((item) => item.enabled !== false) || [];
-  if (!items.length) return '';
-  return `<section id="impact" class="impact-section" aria-labelledby="impact-heading">
-    <div class="container">
-      <h2 id="impact-heading" class="eyebrow">${section.eyebrow}</h2>
-      <ul class="impact-grid">
-        ${items.map((item) => `<li class="impact-item">
-          ${metricMarkup(item)}
-          ${item.context ? `<p>${item.context}</p>` : ''}
-        </li>`).join('')}
-      </ul>
-    </div>
-  </section>`;
-}
-
-function capabilitiesSection(section, impact) {
+function capabilitiesSection(section) {
   return `<section id="work" class="section work-section" aria-labelledby="work-heading">
     <div class="container">
       ${sectionHeading('', section.headline, 'work-heading')}
@@ -117,7 +93,7 @@ function capabilitiesSection(section, impact) {
             <p>${category.intro}</p>
           </header>
           <ul class="example-grid">
-            ${category.examples.map((example) => exampleMarkup(example, impact)).join('')}
+            ${category.examples.map(exampleMarkup).join('')}
           </ul>
           <p class="capability-tools" aria-label="Technology for ${category.title}">${category.technologies.join(' · ')}</p>
         </section>`).join('')}
@@ -126,12 +102,9 @@ function capabilitiesSection(section, impact) {
   </section>`;
 }
 
-function exampleMarkup(example, impact) {
+function exampleMarkup(example) {
   return `<li id="work-${example.id}" class="work-example" aria-labelledby="example-${example.id}-heading">
-    <div class="example-heading">
-      <h4 id="example-${example.id}-heading">${example.title}</h4>
-      ${metricMarkup(impact?.items.find((metric) => metric.id === example.metric), true)}
-    </div>
+    <h4 id="example-${example.id}-heading">${example.title}</h4>
     <p class="example-summary">${example.summary}</p>
   </li>`;
 }
@@ -139,7 +112,6 @@ function exampleMarkup(example, impact) {
 const icons = {
   linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h3.98v16H.5V8zM9.5 8h3.82v2.18h.05c.53-1 1.82-2.06 3.75-2.06C21.2 8.12 24 10 24 14.46V24h-4v-8.7c0-2.16-.04-4.94-3-4.94-3 0-3.46 2.34-3.46 4.76V24h-4V8z"/></svg>',
   github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.73.5.9 5.33.9 11.6c0 4.78 3.1 8.83 7.4 10.26.54.1.74-.24.74-.53 0-.26-.01-1.12-.02-2.03-3.01.66-3.64-1.45-3.64-1.45-.49-1.26-1.2-1.6-1.2-1.6-.98-.67.07-.66.07-.66 1.08.08 1.65 1.11 1.65 1.11.96 1.64 2.52 1.17 3.14.9.1-.7.38-1.17.69-1.44-2.4-.27-4.93-1.2-4.93-5.36 0-1.18.42-2.14 1.11-2.9-.11-.28-.48-1.4.11-2.92 0 0 .9-.29 2.95 1.11a10.2 10.2 0 0 1 5.38 0c2.04-1.4 2.94-1.11 2.94-1.11.59 1.52.22 2.64.11 2.92.69.76 1.11 1.72 1.11 2.9 0 4.17-2.53 5.08-4.94 5.35.39.33.73.98.73 1.98 0 1.43-.01 2.58-.01 2.93 0 .29.2.63.75.52 4.3-1.44 7.39-5.48 7.39-10.26C23.1 5.33 18.27.5 12 .5z"/></svg>',
-  youtube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2s-.2-1.6-.8-2.3c-.8-.9-1.7-.9-2.1-1C16.8 2.5 12 2.5 12 2.5s-4.8 0-8.6.4c-.4.1-1.3.1-2.1 1C.7 4.6.5 6.2.5 6.2S.3 8 .3 9.8v1.4c0 1.8.2 3.6.2 3.6s.2 1.6.8 2.3c.8.9 1.9.9 2.4 1 1.8.2 7.4.4 7.4.4s4.8 0 8.6-.4c.4-.1 1.3-.1 2.1-1 .6-.7.8-2.3.8-2.3s.2-1.8.2-3.6V9.8c0-1.8-.2-3.6-.2-3.6zM9.8 14.5v-7l6 3.5-6 3.5z"/></svg>',
   email: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 13 0 6v12a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6l-12 7zM12 11 24 4H0l12 7z"/></svg>'
 };
 
@@ -147,7 +119,6 @@ function heroSection(data) {
   const socialLinks = [
     { key: 'linkedin', label: 'LinkedIn profile', href: data.links.linkedin },
     { key: 'github', label: 'GitHub profile', href: data.links.github },
-    { key: 'youtube', label: 'YouTube channel', href: data.links.youtube },
     { key: 'email', label: `Email ${data.person.name}`, href: `mailto:${data.person.email}` }
   ].filter(function (link) {
     return isUsableLink(link.href);
@@ -259,7 +230,7 @@ function developmentSection(section) {
       <ul class="credential-list">
         ${section.items.map(function (item) {
           return `
-            <li>
+            <li${item.secondary ? ' class="credential-secondary"' : ''}>
               <h3>${item.link && isUsableLink(item.link.href) ? `<a href="${item.link.href}"${newTabAttributes(item.link.href)} aria-label="${item.link.label}">${item.title}</a>` : item.title}</h3>
               ${item.organization || item.date ? `<p>${[item.organization, item.date].filter(Boolean).join(' · ')}</p>` : ''}
             </li>
@@ -294,76 +265,21 @@ function skillsSection(section) {
   `;
 }
 
-function resumeSection(data) {
-  if (!data.person.resume) return '';
-
-  const section = data.resume || {
-    eyebrow: 'Resume',
-    headline: 'A closer look at my experience.',
-    text: 'View a concise summary of my experience, technical background, and qualifications.',
-    button: 'View Resume'
-  };
-
-  return `
-    <section id="resume" class="section resume-section">
-      <div class="container resume-panel">
-        <div>
-          <p class="eyebrow">${section.eyebrow}</p>
-          <h2>${section.headline}</h2>
-          <p>${section.text}</p>
-        </div>
-        <a class="btn primary" href="${data.person.resume}"${newTabAttributes(data.person.resume)}>${section.button}</a>
-      </div>
-    </section>
-  `;
-}
-
 function contactSection(data) {
-  const email = data.person.email;
-  const action = `https://formsubmit.co/${email}`;
-  const professionalLinks = [
-    { label: 'LinkedIn', href: data.links.linkedin },
-    { label: 'GitHub', href: data.links.github },
-    { label: 'YouTube', href: data.links.youtube }
-  ].filter(function (link) {
-    return isUsableLink(link.href);
-  });
+  const contactLinks = [
+    {label:data.person.email,href:`mailto:${data.person.email}`},
+    {label:'LinkedIn',href:data.links.linkedin},
+    {label:'Resume',href:data.person.resume}
+  ].filter((link) => isUsableLink(link.href));
 
   return `
-    <section id="contact" class="section contact-section">
-      <div class="container contact-grid">
-        <div>
-          <p class="eyebrow">${data.contact.eyebrow}</p>
-          <h2>${data.contact.headline}</h2>
-          <p>${data.contact.text}</p>
-          <a class="btn primary contact-email" href="mailto:${email}">${email}</a>
-          ${professionalLinks.length ? `
-            <div class="contact-links" aria-label="Professional links">
-              ${professionalLinks.map(function (link) {
-                return `<a href="${link.href}"${newTabAttributes(link.href, 'me')}>${link.label}</a>`;
-              }).join('')}
-            </div>
-          ` : ''}
-          <p class="form-status" data-form-status role="status" aria-live="polite" tabindex="-1" hidden>Your message was sent. Thanks for reaching out.</p>
-        </div>
-        <form id="contact-form" class="contact-form" action="${action}" method="POST" aria-label="Contact ${data.person.name}" aria-describedby="contact-form-intro">
-          <p id="contact-form-intro" class="form-intro">${data.contact.formIntro}</p>
-          <input type="hidden" name="_subject" value="${data.contact.formSubject}">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_next" data-next-url value="${data.seo.url}?sent=true#contact">
-          <input type="text" name="_honey" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-
-          <label for="name">Name</label>
-          <input id="name" name="name" type="text" autocomplete="name" required>
-
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" autocomplete="email" required>
-
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
-
-          <button type="submit" class="btn primary">Send Message</button>
-        </form>
+    <section id="contact" class="section contact-section" aria-labelledby="contact-heading">
+      <div class="container">
+        <h2 id="contact-heading">${data.contact.headline}</h2>
+        <p>${data.contact.text}</p>
+        <ul class="contact-links" aria-label="Contact and resume">
+          ${contactLinks.map((link) => `<li><a href="${link.href}"${newTabAttributes(link.href)}>${link.label}</a></li>`).join('')}
+        </ul>
       </div>
     </section>
   `;

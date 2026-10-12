@@ -22,7 +22,8 @@ test('capabilities, compact examples, credentials, and contact ship as HTML', ()
     ...data.experience.development.items.map((item) => item.title)]) {
     assert.ok(html.includes(escapeHtml(value)), `Missing content: ${value}`);
   }
-  assert.ok(html.includes('data-next-url value="https://ryanscott.org/?sent=true#contact"'));
+  assert.ok(html.includes(`href="mailto:${data.person.email}"`));
+  assert.ok(!html.includes('<form'));
   assert.ok(!html.includes('{{'));
 });
 
@@ -34,7 +35,7 @@ test('content is escaped in text, attributes, and structured data', () => {
   example.title = '" onclick="alert(1)';
   example.summary = '<img src=x onerror=alert(1)>';
   copy.capabilities.categories[0].technologies[0] = '<script>bad()</script>';
-  copy.contact.formSubject = '"><script>alert(1)</script>';
+  copy.contact.headline = '"><script>alert(1)</script>';
   const html = renderDocument(copy, template, 2026);
   assert.ok(!html.includes('<script>alert'));
   assert.ok(html.includes('Ryan &lt;script&gt;alert(&quot;x&quot;)'));
@@ -70,7 +71,7 @@ test('grouped roles and optional résumé continue to work', () => {
   const copy = structuredClone(data);
   copy.experience.items[2].roles = [{date: '2015 - 2022', role: 'QA', text: 'Reproduced defects.'}];
   copy.person.resume = '';
-  copy.nav = copy.nav.filter((item) => item.href !== '#resume');
+  copy.nav = copy.nav.filter((item) => item.href.startsWith('#'));
   copy.hero.actions = copy.hero.actions.filter((item) => item.href.startsWith('#'));
   assert.deepEqual(validateContent(copy, root), []);
   const html = renderDocument(copy, template, 2026);
@@ -80,12 +81,14 @@ test('grouped roles and optional résumé continue to work', () => {
 
 test('three capability areas precede experience with compact, accessible proof', () => {
   const html = renderDocument(data, template, 2026);
-  const order = ['home', 'impact', 'work', 'experience', 'education', 'skills', 'resume', 'contact'];
+  const order = ['home', 'work', 'experience', 'education', 'skills', 'contact'];
   for (let i = 1; i < order.length; i++) {
     assert.ok(html.indexOf(`id="${order[i - 1]}"`) < html.indexOf(`id="${order[i]}"`));
   }
   assert.equal((html.match(/class="capability-area"/g) || []).length, 3);
-  assert.equal((html.match(/class="work-example"/g) || []).length, 12);
+  assert.equal((html.match(/class="work-example"/g) || []).length, 9);
+  assert.ok(!html.includes('id="impact"'));
+  assert.ok(!html.includes('id="resume"'));
   for (const category of data.capabilities.categories) {
     assert.ok(html.includes(`aria-labelledby="capability-${category.id}-heading"`));
     assert.ok(html.includes(`<h3 id="capability-${category.id}-heading">`));
@@ -102,9 +105,8 @@ test('three capability areas precede experience with compact, accessible proof',
   assert.equal((html.match(/class="capability-tools"/g) || []).length, 3);
 });
 
-test('minimal compact examples and an omitted proof band remain valid', () => {
+test('minimal one-sentence proof examples remain valid', () => {
   const copy = structuredClone(data);
-  delete copy.impact;
   copy.capabilities.categories.forEach((category, i) => {
     category.examples = [0, 1, 2].map((j) => ({id:`example-${i}-${j}`,title:'A workflow',summary:'A concise example.'}));
   });
@@ -115,38 +117,28 @@ test('minimal compact examples and an omitted proof band remain valid', () => {
   assert.ok(!html.includes('<details'));
 });
 
-test('metric controls update every rendered reference and identify approximate figures', () => {
-  const copy = structuredClone(data);
-  const metric = copy.impact.items.find((item) => item.id === 'reachability');
-  metric.value = '472';
-  metric.approximate = true;
-  let html = renderDocument(copy, template, 2026);
-  assert.equal((html.match(/Approximately <\/span>472<\/strong>/g) || []).length, 2);
-  assert.ok(html.includes('<span aria-hidden="true">~</span><span class="visually-hidden">Approximately </span>472'));
-  metric.enabled = false;
-  html = renderDocument(copy, template, 2026);
-  assert.ok(!html.includes('472</strong>'));
-  copy.impact.items.forEach((item) => { item.enabled = false; });
-  assert.ok(!renderDocument(copy, template, 2026).includes('id="impact"'));
-  metric.enabled = true;
-  copy.impact.enabled = false;
-  html = renderDocument(copy, template, 2026);
-  assert.ok(!html.includes('id="impact"'));
-  assert.equal((html.match(/Approximately <\/span>472<\/strong>/g) || []).length, 1);
+test('resume PDF opens directly from navigation, hero, and compact contact links', () => {
+  const html = renderDocument(data, template, 2026);
+  assert.equal(data.nav.find((item) => item.label === 'Resume').href, data.person.resume);
+  assert.ok(html.includes(`<a href="${data.person.resume}" target="_blank" rel="noopener noreferrer">Resume</a>`));
+  const links = [...html.matchAll(/<a\b[^>]*>/g)].filter(([tag]) => tag.includes(`href="${data.person.resume}"`));
+  assert.equal(links.length, 3);
+  for (const [tag] of links) assert.ok(tag.includes('target="_blank"') && tag.includes('noopener noreferrer'));
+  const contact = html.match(/<section id="contact"[\s\S]*?<\/section>/)[0];
+  assert.equal((contact.match(/<a\b/g) || []).length, 3);
+  assert.ok(contact.includes('LinkedIn') && contact.includes(data.person.email));
+  assert.ok(!html.includes('<form') && !html.includes('YouTube'));
+  assert.deepEqual(Object.keys(data.links), ['linkedin','github']);
 });
 
-test('invalid metrics and references fail with actionable errors', () => {
+test('retired metrics, resume panels, and unrelated social links fail validation', () => {
   const edits = [
     (copy) => { copy.impact = null; },
-    (copy) => { copy.impact.items = {find:'incorrect'}; },
-    (copy) => { copy.impact.items = [null]; },
-    (copy) => { copy.impact.items[0].approximate = 'yes'; },
-    (copy) => { copy.impact.items[0].enabled = 'no'; },
-    (copy) => { copy.impact.items.push(copy.impact.items[0]); },
-    (copy) => { copy.impact.items[0].exampleId = 'unknown'; },
-    (copy) => { copy.impact.items[0].caseStudyId = 'historical-exhibitors'; },
-    (copy) => { copy.impact.items[0].value = '8,000+'; },
-    (copy) => { copy.impact.items[0].value = '~8,000'; },
+    (copy) => { copy.impact = {items:[]}; },
+    (copy) => { copy.resume = {headline:'Want the full picture?'}; },
+    (copy) => { copy.links.youtube = 'https://www.youtube.com/@AsePlayer'; },
+    (copy) => { copy.nav.find((item) => item.label === 'Resume').href = '#resume'; },
+    (copy) => { copy.nav.find((item) => item.label === 'Resume').href = 'data/other.pdf'; },
     (copy) => { examples(copy)[0].metric = 'missing'; },
     (copy) => { examples(copy)[0].metric = {}; }
   ];
@@ -190,13 +182,13 @@ test('three capability areas, short proof lists, and shared toolkits are enforce
   }
 });
 
-test('examples contain only a heading, one sentence, and optional scale with no disclosures', () => {
+test('nine proof examples contain only a heading and one contextual sentence', () => {
   const html = renderDocument(data, template, 2026);
   assert.ok(!html.includes('<details'));
   assert.ok(!html.includes('How it worked'));
   assert.ok(!html.includes('class="tool-list"'));
   const proofs = [...html.matchAll(/<li id="work-[^"]+" class="work-example"[^>]*>([\s\S]*?)<\/li>/g)];
-  assert.equal(proofs.length, 12);
+  assert.equal(proofs.length, 9);
   for (const [,markup] of proofs) {
     assert.equal((markup.match(/<h4\b/g) || []).length, 1);
     assert.equal((markup.match(/<p\b/g) || []).length, 1);
@@ -207,17 +199,15 @@ test('examples contain only a heading, one sentence, and optional scale with no 
   }
 });
 
-test('verified counts and business context stay accurate without lower-bound inflation', () => {
-  assert.deepEqual(data.impact.items.map(({value, approximate}) => ({value, approximate})), [
-    {value:'8,000',approximate:true}, {value:'4,000',approximate:true}, {value:'473',approximate:false}
-  ]);
-  assert.equal(data.impact.items[0].label, 'Historical exhibitor records analyzed');
-  assert.ok(data.impact.items[2].context.includes('primary contacts'));
+test('scale supports the business result inside the relevant proof, without badges', () => {
+  const proof = Object.fromEntries(examples(data).map((example) => [example.id,example.summary]));
+  assert.match(proof['council-affiliations'], /matching logic.*approximately 4,000.*affiliation records/);
+  assert.match(proof['historical-exhibitors'], /when organizations first exhibited.*roughly 8,000.*first-time and returning/);
+  assert.match(proof['operational-monitoring'], /473 organizations missing primary contacts.*configuration problems/);
+  for (const removed of ['audience-segmentation','membership-flowdown','reporting-modernization']) assert.equal(proof[removed], undefined);
   const html = renderDocument(data, template, 2026);
-  assert.equal((html.match(/<strong>473<\/strong>/g) || []).length, 2);
-  const band = html.match(/<section id="impact"[\s\S]*?<\/section>/)[0];
-  assert.ok(!band.includes('<a '));
-  assert.equal((html.match(/class="example-scale"/g) || []).length, 3);
+  assert.ok(!html.includes('class="example-scale"'));
+  assert.ok(!html.includes('Selected impact'));
   assert.ok(!html.includes('8,000+'));
   assert.ok(!html.includes('4,000+'));
   assert.ok(!html.includes('400+'));
@@ -240,6 +230,12 @@ test('skills and credentials use compact text groups without explanatory cards',
   assert.deepEqual(data.skills.groups.map((item) => item.title), ['Data','Business Systems','Automation','Data Operations']);
   assert.equal(data.skills.groups.flatMap((item) => item.items).length, 24);
   assert.equal(data.experience.development.items.length, 4);
+  assert.deepEqual(data.experience.development.items.map((item) => item.title), [
+    'Salesforce Certified Data 360 Consultant','B.S. Computer Science, Cum Laude','Certified ScrumMaster (CSM)','Trailhead Double Ranger'
+  ]);
+  assert.equal(data.experience.development.items[3].secondary, true);
+  assert.ok(html.includes('class="credential-secondary"'));
+  assert.ok(data.skills.groups[1].items.includes('Salesforce Data 360 — Certified'));
   assert.ok(html.includes('September 2026'));
   assert.ok(html.includes('Salesforce Certified Data 360 Consultant'));
   assert.ok(html.includes('class="credential-list"'));
@@ -280,7 +276,6 @@ test('nested capability and example structured data stay linked to Person and es
   const copy = structuredClone(data);
   examples(copy)[0].summary = 'Example </script><script>alert(1)</script>';
   copy.capabilities.categories[0].intro = '<img src=x onerror=alert(1)>';
-  copy.impact.items[0].context = '<script>bad()</script>';
   const html = renderDocument(copy, template, 2026);
   const blocks = structuredData(html);
   assert.equal(blocks.length, 2);
@@ -305,12 +300,12 @@ test('nested capability and example structured data stay linked to Person and es
 test('optional share image validates its asset and renders absolute social metadata', () => {
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'portfolio-share-'));
   const asset = 'share.png';
-  // Small image fixture; no production share image is configured yet.
+  // Small fixture exercises optional images independently of the production share asset.
   fs.writeFileSync(path.join(fixtureRoot, asset), Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jf1sAAAAASUVORK5CYII=', 'base64'));
   try {
     const copy = structuredClone(data);
     copy.person.resume = '';
-    copy.nav = copy.nav.filter((item) => item.href !== '#resume');
+    copy.nav = copy.nav.filter((item) => item.href.startsWith('#'));
     copy.hero.actions = copy.hero.actions.filter((item) => item.href.startsWith('#'));
     copy.seo.image = {path:asset,alt:'Ryan & his work'};
     assert.deepEqual(validateContent(copy, fixtureRoot), []);
@@ -323,9 +318,28 @@ test('optional share image validates its asset and renders absolute social metad
       copy.seo.image.path = unsafe;
       assert.ok(validateContent(copy, fixtureRoot).some((error) => /image|Share image/.test(error)));
     }
-    assert.ok(!renderDocument(data, template, 2026).includes('property="og:image"'));
+    const withoutImage = structuredClone(data);
+    delete withoutImage.seo.image;
+    assert.ok(!renderDocument(withoutImage, template, 2026).includes('property="og:image"'));
   } finally {
     fs.unlinkSync(path.join(fixtureRoot, asset));
     fs.rmdirSync(fixtureRoot);
   }
+});
+
+test('the production share PNG exists, matches its dimensions, and ships correct metadata', () => {
+  const asset = fs.readFileSync(path.join(root,data.seo.image.path));
+  assert.equal(asset.subarray(0,8).toString('hex'), '89504e470d0a1a0a');
+  assert.equal(asset.readUInt32BE(16), 1200);
+  assert.equal(asset.readUInt32BE(20), 630);
+  const html = renderDocument(data,template,2026);
+  assert.ok(html.includes('property="og:image" content="https://ryanscott.org/assets/social-preview.png"'));
+  assert.ok(html.includes('property="og:image:width" content="1200"'));
+  assert.ok(html.includes('property="og:image:height" content="630"'));
+  assert.ok(html.includes('name="twitter:image" content="https://ryanscott.org/assets/social-preview.png"'));
+  const copy = structuredClone(data);
+  copy.seo.image.width = 1100;
+  assert.ok(validateContent(copy,root).some((error) => error.includes('dimensions')));
+  copy.seo.image.width = '1200';
+  assert.ok(validateContent(copy,root).some((error) => error.includes('positive integers')));
 });

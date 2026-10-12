@@ -244,7 +244,7 @@ test('skills and credentials use compact text groups without explanatory cards',
   assert.equal(data.skills.groups.flatMap((item) => item.items).length, 24);
   assert.equal(data.experience.development.items.length, 4);
   assert.deepEqual(data.experience.development.items.map((item) => item.title), [
-    'Salesforce Certified Data 360 Consultant','B.S. Computer Science, Cum Laude','Certified ScrumMaster (CSM)','Trailhead Double Ranger'
+    'Salesforce Certified Data 360 Consultant','B.S. Computer Science, Cum Laude','Certified ScrumMaster (CSM)','Self-directed Salesforce learning'
   ]);
   assert.equal(data.experience.development.items[3].secondary, true);
   assert.ok(html.includes('class="credential-secondary"'));

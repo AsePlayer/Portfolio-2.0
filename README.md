@@ -4,6 +4,8 @@ A recruiter-focused portfolio built with semantic HTML, responsive CSS, and plai
 
 Live site: [ryanscott.org](https://ryanscott.org/)
 
+Projects appear as compact launch cards beneath Capabilities. The stretch finder opens as a full app at `/projects/stretch-finder/`. **[PROJECTS.md](PROJECTS.md) is the guide to where each project is edited and how to refresh its generated files.** Edit this card in `data/site.json`; edit the app itself in the separate **Health Stretch App** project.
+
 ## Build and local preview
 
 Use Node.js 24 (no package installation or runtime dependencies):

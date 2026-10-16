@@ -18,11 +18,17 @@ const mimeTypes = {
 
 const server = http.createServer((request, response) => {
   const requestPath = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
-  const relativePath = requestPath === '/' ? 'index.html' : requestPath.replace(/^\/+/, '');
+  let relativePath = requestPath.replace(/^\/+/, '');
+  if (requestPath.endsWith('/')) relativePath += 'index.html';
   const filePath = path.resolve(root, relativePath);
 
   if (filePath !== root && !filePath.startsWith(`${root}${path.sep}`)) {
     response.writeHead(403).end('Forbidden');
+    return;
+  }
+
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+    response.writeHead(308, {Location: `${requestPath}/${new URL(request.url, 'http://localhost').search}`}).end();
     return;
   }
 

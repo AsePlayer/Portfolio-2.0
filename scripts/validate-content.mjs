@@ -113,6 +113,22 @@ export function validateContent(data, root) {
       }
     });
   });
+  const projectIds = new Set();
+  if (data.projects !== undefined) {
+    fields(data.projects, 'projects', ['headline']);
+    array(data.projects?.items, 'projects.items').forEach((item, i) => {
+      const label = `projects.items[${i}]`;
+      fields(item, label, ['id', 'title', 'summary', 'href']);
+      identifier(item?.id, `${label}.id`);
+      if (projectIds.has(item?.id)) fail(`Duplicate project identifier: ${item?.id}`);
+      projectIds.add(item?.id);
+      sentence(item?.summary, `${label}.summary`);
+      strings(item?.technologies, `${label}.technologies`);
+      if (typeof item?.href !== 'string' || !/^\/projects\/[a-z][a-z0-9-]*\/$/.test(item.href)) {
+        fail(`${label}.href must be a local /projects/project-name/ URL.`);
+      }
+    });
+  }
   fields(data.skills, 'skills', ['headline']);
   if (data.skills?.groups?.length !== 4) fail('skills.groups must contain four compact groups.');
   array(data.skills?.groups, 'skills.groups').forEach((item, i) => {
@@ -129,6 +145,7 @@ export function validateContent(data, root) {
   if (data.seo?.image !== undefined) localImage(data.seo.image);
   text(data.footer, 'footer');
   const targets = new Set(['#home', '#experience', '#work', '#education', '#skills', '#contact']);
+  if (data.projects) targets.add('#projects');
   categoryIds.forEach((id) => targets.add(`#capability-${id}`));
   exampleIds.forEach((id) => targets.add(`#work-${id}`));
   if (data.person?.resume) {

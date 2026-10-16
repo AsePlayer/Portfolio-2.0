@@ -10,6 +10,11 @@ export function buildSite() {
   const data = JSON.parse(fs.readFileSync(path.join(root, 'data/site.json'), 'utf8'));
   const errors = validateContent(data, root);
   if (errors.length) throw new Error(`Invalid content:\n${errors.join('\n')}`);
+  for (const project of data.projects?.items || []) {
+    if (!fs.existsSync(path.join(root, project.href.slice(1), 'index.html'))) {
+      throw new Error(`Project ${project.id} is missing. Run its app's portfolio:sync command first.`);
+    }
+  }
   const template = fs.readFileSync(path.join(root, 'templates/index.html'), 'utf8');
   const html = renderDocument(data, template);
   // Keep the root page readable for direct file previews as well as deployments.
@@ -27,6 +32,10 @@ export function buildSite() {
     const destination = path.join(output, asset);
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.copyFileSync(path.join(root, asset), destination);
+  }
+  for (const project of data.projects?.items || []) {
+    const relative = project.href.slice(1);
+    fs.cpSync(path.join(root, relative), path.join(output, relative), {recursive: true});
   }
   console.log('Prerendered index.html and public GitHub Pages artifact in dist/.');
 }

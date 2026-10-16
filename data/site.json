@@ -18,6 +18,10 @@
       "href": "#work"
     },
     {
+      "label": "Projects",
+      "href": "#projects"
+    },
+    {
       "label": "Experience",
       "href": "#experience"
     },
@@ -260,6 +264,18 @@
             "summary": "Analyzed CRM, council, network, and email activity to help teams understand participation and audience behavior."
           }
         ]
+      }
+    ]
+  },
+  "projects": {
+    "headline": "Projects",
+    "items": [
+      {
+        "id": "stretch-finder",
+        "title": "Back-Fixer-Upper",
+        "summary": "Find stretch videos by body area, save useful finds, and revisit your history.",
+        "technologies": ["JavaScript", "IndexedDB", "GitHub Actions"],
+        "href": "/projects/stretch-finder/"
       }
     ]
   },

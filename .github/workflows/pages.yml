@@ -5,6 +5,9 @@ on:
     branches:
       - main
   workflow_dispatch:
+  schedule:
+    # Fetch the app after its 16:17 UTC catalog update, when configured.
+    - cron: '17 17 * * *'
 
 permissions:
   contents: read
@@ -17,6 +20,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.event_name != 'schedule' || vars.STRETCH_FINDER_REPOSITORY != ''
     environment:
       name: github-pages
       url: https://ryanscott.org/
@@ -29,6 +33,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+
+      - name: Checkout stretch finder source
+        if: vars.STRETCH_FINDER_REPOSITORY != ''
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: ${{ vars.STRETCH_FINDER_REPOSITORY }}
+          path: .tmp/stretch-finder-source
+          persist-credentials: false
+
+      - name: Build latest stretch finder into the portfolio
+        if: vars.STRETCH_FINDER_REPOSITORY != ''
+        working-directory: .tmp/stretch-finder-source
+        run: |
+          npm ci
+          npm run portfolio:sync -- --portfolio "$GITHUB_WORKSPACE"
 
       - name: Validate portfolio content and assets
         run: |

@@ -22,7 +22,8 @@ for (const match of html.matchAll(/\bhref="#([^"]*)"/g)) {
 for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
   const href = match[1];
   if (/^(?:https:|mailto:|#)/.test(href)) continue;
-  const file = decodeURIComponent(href.split(/[?#]/)[0]).replaceAll('&amp;', '&');
+  let file = decodeURIComponent(href.split(/[?#]/)[0]).replaceAll('&amp;', '&').replace(/^\//, '');
+  if (href.startsWith('/projects/') && file.endsWith('/')) file += 'index.html';
   const resolved = path.resolve(root, file);
   if (!resolved.startsWith(`${root}${path.sep}`) || !fs.existsSync(resolved)) fail(`Rendered local asset is missing or outside the site: ${file}`);
 }
@@ -99,6 +100,22 @@ if (read('CNAME').trim() !== 'ryanscott.org') fail('CNAME must contain only ryan
 const styles = read('css/styles.css').replace(/\/\*[\s\S]*?\*\//g, '');
 if ((styles.match(/{/g) || []).length !== (styles.match(/}/g) || []).length) fail('CSS has unbalanced braces.');
 const publicFiles = ['index.html', 'css/styles.css', 'js/script.js', 'data/site.json', 'favicon.svg', 'CNAME', '.nojekyll'];
+for (const project of data?.projects?.items || []) {
+  const relative = project.href.slice(1);
+  if (!fs.existsSync(path.join(root, relative, 'index.html'))) {
+    fail(`Missing project ${project.id}; run its app's portfolio:sync command first.`);
+    continue;
+  }
+  const compareDirectory = (directory) => {
+    for (const entry of fs.readdirSync(path.join(root, directory), {withFileTypes: true})) {
+      const file = path.join(directory, entry.name);
+      if (entry.isSymbolicLink()) fail(`Project must not contain a symbolic link: ${file}`);
+      else if (entry.isDirectory()) compareDirectory(file);
+      else publicFiles.push(file);
+    }
+  };
+  compareDirectory(relative);
+}
 if (data?.person?.resume) publicFiles.push(data.person.resume);
 if (data?.seo?.image) publicFiles.push(data.seo.image.path);
 for (const file of publicFiles) {

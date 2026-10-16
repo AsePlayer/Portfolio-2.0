@@ -52,7 +52,7 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   const values = {
     name: safe.person.name, initials: safe.person.initials, year, footer: safe.footer,
     navigation: safe.nav.map((item) => `<li><a href="${item.href}"${newTabAttributes(item.href)}>${item.label}</a></li>`).join(''),
-    content: [heroSection(safe), capabilitiesSection(safe.capabilities), projectsSection(safe.projects), experienceSection(safe.experience),
+    content: [heroSection(safe), capabilitiesSection(safe.capabilities), experienceSection(safe.experience), projectsSection(safe.projects),
       developmentSection(safe.experience.development),
       skillsSection(safe.skills), contactSection(safe)].join(''),
     metadata: `<title>${safe.seo.title}</title>
@@ -109,16 +109,20 @@ function projectsSection(section) {
       ${sectionHeading('', section.headline, 'projects-heading')}
       <ul class="project-list">
         ${section.items.map(project => `<li>
-          <a class="project-card" href="${project.href}" aria-labelledby="project-${project.id}-heading">
+          <a class="project-card" href="${project.href}"${newTabAttributes(project.href)} aria-labelledby="project-${project.id}-heading">
             <span class="project-icon" aria-hidden="true">
-              <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="9" r="3"/><path d="M20 16v10m-8-5 8-5 8 5M14 34l6-8 6 8"/></svg>
+              <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${project.id === 'stretch-finder'
+                ? '<circle cx="20" cy="9" r="3"/><path d="M20 16v10m-8-5 8-5 8 5M14 34l6-8 6 8"/>'
+                : project.id === 'aseplayer'
+                  ? '<rect x="5" y="9" width="30" height="22" rx="6"/><path d="m17 15 9 5-9 5Z"/>'
+                  : '<path d="m13 12-8 8 8 8m14-16 8 8-8 8M23 8l-6 24"/>'}</svg>
             </span>
             <div class="project-copy">
               <h3 id="project-${project.id}-heading">${project.title}</h3>
               <p class="project-summary">${project.summary}</p>
               <p class="project-technologies">${project.technologies.join(' &middot; ')}</p>
             </div>
-            <span class="project-action">Open project <span aria-hidden="true">&rarr;</span></span>
+            <span class="project-action">${project.actionLabel || 'Open project'} <span aria-hidden="true">&rarr;</span></span>
           </a>
         </li>`).join('')}
       </ul>

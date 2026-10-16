@@ -81,11 +81,10 @@ if ((html.match(/class="capability-area"/g) || []).length !== 3) fail('Rendered 
 if (/<details\b/.test(html)) fail('The main portfolio must not render deep-dive disclosures.');
 if (/class="(?:work-card|case-details|audit-process|example-label|example-impact|tool-list|capability-nav|hero-panel|development-card)|<dt>(?:Problem|Investigation|Solution)<\/dt>/.test(html)) fail('Retired heavy portfolio markup remains.');
 if (ids.includes('impact') || ids.includes('resume') || /class="(?:impact-metric|example-scale|resume-panel)|<form\b/.test(html)) fail('Standalone metrics, scale badges, resume panels, and contact forms are retired.');
-if (/youtube\.com|YouTube/.test(html)) fail('YouTube must not appear in the professional portfolio.');
 if ((html.match(/class="work-example"/g) || []).length !== 9) fail('The portfolio must render nine proof examples.');
-const sectionOrder = ['home','work','experience','education','skills','contact'];
+const sectionOrder = ['home','work','experience',...(data?.projects ? ['projects'] : []),'education','skills','contact'];
 for (let i = 1; i < sectionOrder.length; i++) {
-  if (html.indexOf(`id="${sectionOrder[i-1]}"`) >= html.indexOf(`id="${sectionOrder[i]}"`)) fail('The portfolio section order must be Hero, Capabilities, Experience, Credentials, Toolkit, Contact.');
+  if (html.indexOf(`id="${sectionOrder[i-1]}"`) >= html.indexOf(`id="${sectionOrder[i]}"`)) fail('The portfolio section order must be Hero, Capabilities, Experience, Projects, Credentials, Toolkit, Contact.');
 }
 if ((html.match(/class="capability-tools"/g) || []).length !== 3) fail('Each capability must render exactly one shared technology line.');
 for (const category of data?.capabilities?.categories || []) {
@@ -101,6 +100,7 @@ const styles = read('css/styles.css').replace(/\/\*[\s\S]*?\*\//g, '');
 if ((styles.match(/{/g) || []).length !== (styles.match(/}/g) || []).length) fail('CSS has unbalanced braces.');
 const publicFiles = ['index.html', 'css/styles.css', 'js/script.js', 'data/site.json', 'favicon.svg', 'CNAME', '.nojekyll'];
 for (const project of data?.projects?.items || []) {
+  if (!project.href.startsWith('/projects/')) continue;
   const relative = project.href.slice(1);
   if (!fs.existsSync(path.join(root, relative, 'index.html'))) {
     fail(`Missing project ${project.id}; run its app's portfolio:sync command first.`);

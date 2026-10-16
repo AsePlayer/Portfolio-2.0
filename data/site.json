@@ -18,12 +18,12 @@
       "href": "#work"
     },
     {
-      "label": "Projects",
-      "href": "#projects"
-    },
-    {
       "label": "Experience",
       "href": "#experience"
+    },
+    {
+      "label": "Projects",
+      "href": "#projects"
     },
     {
       "label": "Credentials",
@@ -276,6 +276,22 @@
         "summary": "Find stretch videos by body area, save useful finds, and revisit your history.",
         "technologies": ["JavaScript", "IndexedDB", "GitHub Actions"],
         "href": "/projects/stretch-finder/"
+      },
+      {
+        "id": "aseplayer",
+        "title": "AsePlayer YouTube Channel",
+        "summary": "Gaming videos and strategy guides with 59.9K subscribers, 31.6M+ views, and 770 published videos.",
+        "technologies": ["Video Editing", "SEO", "Community Building"],
+        "href": "https://www.youtube.com/channel/UCSFw0TyBxyYj2CvZOsq9RCQ",
+        "actionLabel": "Watch channel"
+      },
+      {
+        "id": "portfolio",
+        "title": "Portfolio Website",
+        "summary": "A responsive portfolio with accessible navigation, light and dark themes, and automated publishing to GitHub Pages.",
+        "technologies": ["HTML", "CSS", "JavaScript", "GitHub Actions"],
+        "href": "https://github.com/AsePlayer/Portfolio-2.0",
+        "actionLabel": "View source"
       }
     ]
   },

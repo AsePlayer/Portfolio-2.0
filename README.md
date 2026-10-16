@@ -6,7 +6,7 @@ Live site: [ryanscott.org](https://ryanscott.org/)
 
 Live project: [Back-Fixer-Upper stretch finder](https://ryanscott.org/projects/stretch-finder/) · App source: [AsePlayer/Back-Fixer-Upper-Web](https://github.com/AsePlayer/Back-Fixer-Upper-Web)
 
-Projects appear as compact launch cards beneath Capabilities. The stretch finder opens as a full app at `/projects/stretch-finder/`. **[PROJECTS.md](PROJECTS.md) is the guide to where each project is edited and how to refresh its generated files.** Edit this card in `data/site.json`; edit the app itself in the separate **Health Stretch App** project.
+Projects appear as compact launch cards after Experience: Back-Fixer-Upper, the AsePlayer YouTube channel, and this portfolio's source. The stretch finder opens as a full app at `/projects/stretch-finder/`; external projects open in a new tab. **[PROJECTS.md](PROJECTS.md) is the guide to where each project is edited and how to refresh its generated files.** Edit these cards in `data/site.json`; edit the stretch finder itself in the separate **Health Stretch App** project. Channel stats are a public snapshot from October 16, 2026 (59.9K subscribers, 31,690,902 views, 770 videos, retrieved through vidIQ), rounded down where shown with a plus sign.
 
 ## Build and local preview
 
@@ -52,7 +52,7 @@ Each category requires a unique lowercase `id`, `title`, a one-sentence `intro` 
 }
 ```
 
-Categories and examples appear in JSON order before Experience. Stable anchors such as `#capability-crm-data-quality` and `#work-council-affiliations` remain available for direct links. The page flows from Hero to Capabilities, Experience, Credentials, Toolkit, and Contact; there is no category table of contents, headline impact band, or resume section. Proof examples use three open columns on desktop, two on tablet with the final example spanning the row, and one on mobile. Subtle dividers separate capability groups. Technologies appear once beneath each capability.
+Categories and examples appear in JSON order before Experience. Stable anchors such as `#capability-crm-data-quality` and `#work-council-affiliations` remain available for direct links. The page flows from Hero to Capabilities, Experience, Projects, Credentials, Toolkit, and Contact; there is no category table of contents, headline impact band, or resume section. Proof examples use three open columns on desktop, two on tablet with the final example spanning the row, and one on mobile. Subtle dividers separate capability groups. Technologies appear once beneath each capability.
 
 Per-example impact lists, technologies, and deep dives have been removed from both content and rendering. Retired case-study fields, including `metric`, `impact`, `technologies`, and `details`, fail validation. JSON-LD still groups CreativeWork entries beneath three category ItemLists and links every example to Ryan's Person entry; it does not assign the shared toolkit to individual examples.
 
@@ -100,7 +100,7 @@ The public website's headline describes the scope of work; the current role rema
 
 ## Contact and professional links
 
-Contact consists of one sentence with email, LinkedIn, and the configured resume PDF. The PDF opens directly from navigation, Hero, and Contact with safe new-tab attributes. LinkedIn and GitHub remain the professional profiles; YouTube and third-party form submission are removed. Salesforce Data 360 is identified as certified knowledge in the compact toolkit.
+Contact consists of one sentence with email, LinkedIn, and the configured resume PDF. The section fills the available viewport height so its navigation link lands clearly on “Let's talk.” The PDF opens directly from navigation, Hero, and Contact with safe new-tab attributes. LinkedIn and GitHub remain the professional profiles; the YouTube channel appears in Projects. Salesforce Data 360 is identified as certified knowledge in the compact toolkit.
 
 ## Deployment
 

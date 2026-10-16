@@ -11,6 +11,7 @@ export function buildSite() {
   const errors = validateContent(data, root);
   if (errors.length) throw new Error(`Invalid content:\n${errors.join('\n')}`);
   for (const project of data.projects?.items || []) {
+    if (!project.href.startsWith('/projects/')) continue;
     if (!fs.existsSync(path.join(root, project.href.slice(1), 'index.html'))) {
       throw new Error(`Project ${project.id} is missing. Run its app's portfolio:sync command first.`);
     }
@@ -34,6 +35,7 @@ export function buildSite() {
     fs.copyFileSync(path.join(root, asset), destination);
   }
   for (const project of data.projects?.items || []) {
+    if (!project.href.startsWith('/projects/')) continue;
     const relative = project.href.slice(1);
     fs.cpSync(path.join(root, relative), path.join(output, relative), {recursive: true});
   }

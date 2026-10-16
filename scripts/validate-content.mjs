@@ -124,9 +124,11 @@ export function validateContent(data, root) {
       projectIds.add(item?.id);
       sentence(item?.summary, `${label}.summary`);
       strings(item?.technologies, `${label}.technologies`);
-      if (typeof item?.href !== 'string' || !/^\/projects\/[a-z][a-z0-9-]*\/$/.test(item.href)) {
-        fail(`${label}.href must be a local /projects/project-name/ URL.`);
+      if (typeof item?.href === 'string' && item.href.startsWith('https://')) https(item.href, `${label}.href`);
+      else if (typeof item?.href !== 'string' || !/^\/projects\/[a-z][a-z0-9-]*\/$/.test(item.href)) {
+        fail(`${label}.href must be a local /projects/project-name/ URL or a complete https URL.`);
       }
+      if (item?.actionLabel !== undefined) text(item.actionLabel, `${label}.actionLabel`);
     });
   }
   fields(data.skills, 'skills', ['headline']);

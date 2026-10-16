@@ -81,7 +81,7 @@ test('grouped roles and optional résumé continue to work', () => {
 
 test('three capability areas precede experience with compact, accessible proof', () => {
   const html = renderDocument(data, template, 2026);
-  const order = ['home', 'work', 'experience', 'education', 'skills', 'contact'];
+  const order = ['home', 'work', 'experience', 'projects', 'education', 'skills', 'contact'];
   for (let i = 1; i < order.length; i++) {
     assert.ok(html.indexOf(`id="${order[i - 1]}"`) < html.indexOf(`id="${order[i]}"`));
   }
@@ -127,7 +127,7 @@ test('resume PDF opens directly from navigation, hero, and compact contact links
   const contact = html.match(/<section id="contact"[\s\S]*?<\/section>/)[0];
   assert.equal((contact.match(/<a\b/g) || []).length, 3);
   assert.ok(contact.includes('LinkedIn') && contact.includes(data.person.email));
-  assert.ok(!html.includes('<form') && !html.includes('YouTube'));
+  assert.ok(!html.includes('<form') && !contact.includes('YouTube'));
   assert.deepEqual(Object.keys(data.links), ['linkedin','github']);
 });
 

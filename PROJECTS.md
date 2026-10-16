@@ -48,3 +48,5 @@ The app's worker is scoped to `/projects/stretch-finder/`, so it cannot take ove
 ## Add another app
 
 Give it its own source project and generated directory under `projects/`. Add one item to `projects.items` in `data/site.json` with a unique `id`, `title`, one-sentence `summary`, `technologies`, and `/projects/project-name/` `href`. The portfolio build copies that directory into `dist/`; validation requires its `index.html` to exist.
+
+For externally hosted projects, use a complete `https://` URL instead; these open in a new tab and are not copied into the build. Optional `actionLabel` changes the card's link text (for example, “Watch channel” or “View source”).

@@ -100,7 +100,7 @@ The public website's headline describes the scope of work; the current role rema
 
 ## Contact and professional links
 
-Contact consists of one sentence with email, LinkedIn, and the configured resume PDF. The section fills the available viewport height so its navigation link lands clearly on “Let's talk.” The PDF opens directly from navigation, Hero, and Contact with safe new-tab attributes. LinkedIn and GitHub remain the professional profiles; the YouTube channel appears in Projects. Salesforce Data 360 is identified as certified knowledge in the compact toolkit.
+Contact consists of one sentence with email, LinkedIn, and the configured resume PDF. The section uses roughly half the available viewport height to give “Let's talk” some breathing room. The PDF opens directly from navigation, Hero, and Contact with safe new-tab attributes. LinkedIn and GitHub remain the professional profiles; the YouTube channel appears in Projects. Salesforce Data 360 is identified as certified knowledge in the compact toolkit.
 
 ## Deployment
 

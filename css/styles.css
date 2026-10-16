@@ -684,7 +684,7 @@ h3 {
 }
 
 .contact-section {
-  min-height: calc(100svh - 88px);
+  min-height: calc(50svh - 44px);
   border-top: 1px solid var(--card-border);
 }
 

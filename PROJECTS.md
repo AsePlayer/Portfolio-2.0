@@ -39,7 +39,7 @@ After the app has its own public GitHub repository, set the **Portfolio-2.0** Ac
 
 In the app repository, set `HOSTING_TARGET=portfolio` to skip its separate Pages deployment while keeping catalog discovery and commits active. The portfolio then owns the public URL and deployment; there is no second app site to set up.
 
-Until that variable is configured, portfolio pushes and manual runs publish the checked-in app snapshot, and the extra daily workflow is skipped. Refresh that snapshot locally with `portfolio:sync`. The app repository and this variable are not configured by these local file changes. Private app repositories require a read token, which this workflow does not assume.
+Until that variable is configured, portfolio pushes and manual runs publish the checked-in app snapshot, and the extra daily workflow is skipped. Refresh that snapshot locally with `portfolio:sync`. Production is configured: app source is `AsePlayer/Back-Fixer-Upper-Web`, its `HOSTING_TARGET=portfolio`, and this repository has `STRETCH_FINDER_REPOSITORY=AsePlayer/Back-Fixer-Upper-Web`. The first real hosted source update committed successfully on October 16, 2026. Private app repositories require a read token, which this workflow does not assume.
 
 An app refresh that finishes after the portfolio's daily run appears on the next run; a manual portfolio deployment can publish it sooner. A failed app checkout or build stops deployment, leaving the last working portfolio live.
 

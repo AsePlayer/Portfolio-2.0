@@ -113,6 +113,8 @@ function projectsSection(section) {
             <span class="project-icon" aria-hidden="true">
               <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${project.id === 'stretch-finder'
                 ? '<circle cx="20" cy="9" r="3"/><path d="M20 16v10m-8-5 8-5 8 5M14 34l6-8 6 8"/>'
+                : project.id === 'what-we-eating'
+                  ? '<path d="M7 19h26a13 13 0 0 1-26 0Zm6 16h14M14 7v6m6-8v8m6-6v6"/>'
                 : project.id === 'aseplayer'
                   ? '<rect x="5" y="9" width="30" height="22" rx="6"/><path d="m17 15 9 5-9 5Z"/>'
                   : '<path d="m13 12-8 8 8 8m14-16 8 8-8 8M23 8l-6 24"/>'}</svg>

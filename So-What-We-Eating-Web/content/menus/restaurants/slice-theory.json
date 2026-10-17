@@ -1,0 +1,13 @@
+{
+  "schemaVersion":1,"restaurantId":"slice-theory","restaurantName":"Slice Theory","source":"original-fictional-fixture","updatedAt":"2026-10-16T00:00:00Z","currency":"USD",
+  "items":[
+    {"id":"slice","name":"Two cheese slices","role":"main","price":6},
+    {"id":"slice-combo","name":"Pepperoni slices & soda","role":"combo","price":8},
+    {"id":"margherita","name":"Whole margherita pizza","description":"A 14-inch pie to share. Serves two.","role":"shared","serves":2,"price":16},
+    {"id":"garden","name":"Whole garden pizza","role":"shared","serves":3,"price":22},
+    {"id":"salad","name":"Little green salad","role":"side","price":4},
+    {"id":"knots","name":"Garlic knots","role":"appetizer","price":4.5},
+    {"id":"soda","name":"Canned soda","role":"drink","price":2},
+    {"id":"cannoli","name":"Chocolate chip cannoli","role":"dessert","price":4}
+  ]
+}

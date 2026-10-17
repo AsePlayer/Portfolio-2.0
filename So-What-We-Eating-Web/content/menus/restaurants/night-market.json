@@ -1,0 +1,8 @@
+{
+  "schemaVersion":1,"restaurantId":"night-market","restaurantName":"Night Market Noodles","source":"original-fictional-fixture","updatedAt":"2026-10-16T00:00:00Z","currency":"USD",
+  "items":[
+    {"id":"noodles","name":"Basil wok noodles","role":"main","price":13},
+    {"id":"rice","name":"Ginger rice plate","role":"main","price":11},
+    {"id":"tea","name":"Thai iced tea","role":"drink","price":3}
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "so-what-we-eating-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24 <25" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "npm run content:validate && tsc --noEmit && vite build && node scripts/build-sw.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "portfolio:sync": "npm run build && node scripts/sync-portfolio.mjs",
+    "test": "node --test tests/*.test.ts",
+    "verify": "npm test && npm run build && node scripts/verify-build.mjs",
+    "content:validate": "node tools/menus/cli.ts validate",
+    "content:import": "node tools/menus/cli.ts import",
+    "check:browser": "node scripts/browser-check.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "typescript": "~5.9.3",
+    "vite": "8.3.4"
+  }
+}

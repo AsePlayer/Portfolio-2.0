@@ -1,0 +1,12 @@
+{
+  "schemaVersion":1,"restaurantId":"citrus-taco","restaurantName":"Citrus & Corn","source":"original-fictional-fixture","updatedAt":"2026-10-16T00:00:00Z","currency":"USD",
+  "items":[
+    {"id":"taco-plate","name":"Citrus chicken taco plate","description":"Three tacos, charred salsa, and a lime wedge.","category":"Plates","role":"main","price":8},
+    {"id":"bean-bowl","name":"Smoky black bean bowl","description":"Rice, black beans, roasted corn, and avocado salsa.","category":"Bowls","role":"main","price":7.5},
+    {"id":"burrito","name":"Roasted veggie burrito","role":"main","price":9.5},
+    {"id":"corn","name":"Street corn","role":"side","price":3},
+    {"id":"chips","name":"Chips & salsa","role":"appetizer","price":4},
+    {"id":"agua","name":"Hibiscus agua fresca","role":"drink","price":2.5},
+    {"id":"churro","name":"Cinnamon churro","role":"dessert","price":3}
+  ]
+}

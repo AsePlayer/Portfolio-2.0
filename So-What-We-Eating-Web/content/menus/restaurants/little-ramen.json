@@ -1,0 +1,12 @@
+{
+  "schemaVersion":1,"restaurantId":"little-ramen","restaurantName":"Little Ramen Shop","source":"original-fictional-fixture","updatedAt":"2026-10-16T00:00:00Z","currency":"USD",
+  "items":[
+    {"id":"miso","name":"Cozy miso ramen","description":"Miso broth, springy noodles, mushrooms, and a soft egg.","role":"main","price":14},
+    {"id":"shoyu","name":"Shoyu chicken ramen","role":"main","price":15},
+    {"id":"tofu","name":"Crispy tofu rice bowl","role":"main","price":12},
+    {"id":"edamame","name":"Sea-salt edamame","role":"side","price":4},
+    {"id":"gyoza","name":"Vegetable gyoza","role":"appetizer","price":5.5},
+    {"id":"tea","name":"Iced green tea","role":"drink","price":2.5},
+    {"id":"mochi","name":"Mango mochi","role":"dessert","price":4}
+  ]
+}

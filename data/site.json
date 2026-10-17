@@ -278,6 +278,13 @@
         "href": "/projects/stretch-finder/"
       },
       {
+        "id": "what-we-eating",
+        "title": "So What We Eating?",
+        "summary": "Skip the food debate with a budget-aware restaurant pick and a sensible order in a fictional demo.",
+        "technologies": ["TypeScript", "Vite", "PWA"],
+        "href": "/projects/what-we-eating/"
+      },
+      {
         "id": "aseplayer",
         "title": "AsePlayer YouTube Channel",
         "summary": "Gaming videos and strategy guides with 59.9K subscribers, 31.6M+ views, and 770 published videos.",

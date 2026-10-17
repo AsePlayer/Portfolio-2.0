@@ -1,0 +1,12 @@
+{
+  "schemaVersion":1,"restaurantId":"sunday-pasta","restaurantName":"Sunday Pasta Club","source":"original-fictional-fixture","updatedAt":"2026-10-16T00:00:00Z","currency":"USD",
+  "items":[
+    {"id":"rigatoni","name":"Slow Sunday rigatoni","description":"Tomato sauce, basil, and a generous snowfall of parmesan.","role":"main","price":15},
+    {"id":"pesto","name":"Lemon pesto spaghetti","role":"main","price":16.5},
+    {"id":"mushroom","name":"Roasted mushroom penne","role":"main","price":17},
+    {"id":"bread","name":"Garlic bread","role":"side","price":4.5},
+    {"id":"burrata","name":"Burrata & tomatoes","role":"appetizer","price":8},
+    {"id":"lemonade","name":"Sparkling lemonade","role":"drink","price":3.5},
+    {"id":"tiramisu","name":"Tiramisu","role":"dessert","price":6}
+  ]
+}

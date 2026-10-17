@@ -9,6 +9,8 @@ The portfolio is the home page and project launcher. Each app keeps its own sour
 | Stretch finder screens, body selector, history or storage | **Health Stretch App** → `src/` |
 | Creator configuration, classifications or catalog update logic | **Health Stretch App** → `content/`, `tools/`, `scripts/` |
 | Generated app published by the portfolio | **Portfolio 2.0** → `projects/stretch-finder/` — regenerate it from the app |
+| Food-decision demo screens, menus, recommendations, or storage | **Portfolio 2.0** → `So-What-We-Eating-Web/` |
+| Generated food-decision app | **Portfolio 2.0** → `projects/what-we-eating/` — regenerate with the food app's `portfolio:sync` |
 
 ## Update the stretch finder
 
@@ -44,6 +46,25 @@ Until that variable is configured, portfolio pushes and manual runs publish the 
 An app refresh that finishes after the portfolio's daily run appears on the next run; a manual portfolio deployment can publish it sooner. A failed app checkout or build stops deployment, leaving the last working portfolio live.
 
 The app's worker is scoped to `/projects/stretch-finder/`, so it cannot take over the portfolio home page. Personal records stay on the browser's current origin; localhost and ryanscott.org have separate data. Use the app's export/import when moving your personal records.
+
+## Update So What We Eating?
+
+From the portfolio checkout:
+
+```sh
+cd So-What-We-Eating-Web
+npm ci
+npm test
+npm run portfolio:sync
+cd ..
+node --test scripts/site.test.mjs
+node scripts/build.mjs
+node scripts/validate-site.mjs
+```
+
+The source stays in `So-What-We-Eating-Web/`. The sync command builds it, stages the generated app, adds a return link to `/#projects`, versions the modified offline shell, and replaces only its marked `projects/what-we-eating/` directory. It refuses an unmarked or linked destination. Do not edit generated files by hand.
+
+The portfolio's existing Pages workflow now builds this checked-in app source on every deployment. It needs no additional repository variable, account, or API key. The source and a generated snapshot are committed together so the normal local portfolio preview also works. The demo currently uses fictional restaurants near Pasadena, CA; the project card labels that clearly. Its scoped worker cannot control the portfolio or the stretch finder.
 
 ## Add another app
 

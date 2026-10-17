@@ -1,0 +1,12 @@
+{
+  "schemaVersion":1,"restaurantId":"daily-toast","restaurantName":"The Daily Toast","source":"original-fictional-fixture","updatedAt":"2026-10-16T00:00:00Z","currency":"USD",
+  "items":[
+    {"id":"egg-toast","name":"Egg & cheddar toast","description":"A folded egg and sharp cheddar on sourdough.","role":"main","price":5.5},
+    {"id":"avo","name":"Avocado & tomato toast","role":"main","price":7},
+    {"id":"melt","name":"Roasted tomato melt","role":"main","price":7.5},
+    {"id":"fruit","name":"Seasonal fruit cup","role":"side","price":3},
+    {"id":"coffee","name":"Filter coffee","role":"drink","price":2.5},
+    {"id":"iced-tea","name":"Peach iced tea","role":"drink","price":3},
+    {"id":"brownie","name":"Fudge brownie","role":"dessert","price":3.5}
+  ]
+}

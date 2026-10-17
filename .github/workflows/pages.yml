@@ -58,6 +58,16 @@ jobs:
           node --check scripts/render-site.mjs
           node --check scripts/validate-content.mjs
           node --test scripts/site.test.mjs
+
+      - name: Build So What We Eating into the portfolio
+        working-directory: So-What-We-Eating-Web
+        run: |
+          npm ci
+          npm test
+          npm run portfolio:sync
+
+      - name: Build and validate portfolio artifact
+        run: |
           node scripts/build.mjs
           node scripts/validate-site.mjs
 

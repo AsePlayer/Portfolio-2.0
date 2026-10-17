@@ -1,0 +1,12 @@
+{
+  "schemaVersion":1,"restaurantId":"good-burger","restaurantName":"Good Mood Burger","source":"original-fictional-fixture","updatedAt":"2026-10-16T00:00:00Z","currency":"USD",
+  "items":[
+    {"id":"classic","name":"The good mood cheeseburger","description":"A classic smash patty, cheddar, pickles, and house sauce.","role":"main","price":8},
+    {"id":"chicken","name":"Crispy chicken sandwich","role":"main","price":9},
+    {"id":"veggie","name":"Garden burger","role":"main","price":8.5},
+    {"id":"combo","name":"Burger, fries & soda combo","role":"combo","price":12},
+    {"id":"fries","name":"Skin-on fries","role":"side","price":3.5},
+    {"id":"soda","name":"Fountain soda","role":"drink","price":2},
+    {"id":"cookie","name":"Chocolate chunk cookie","role":"dessert","price":2.5}
+  ]
+}

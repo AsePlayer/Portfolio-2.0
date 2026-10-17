@@ -6,7 +6,7 @@ Live site: [ryanscott.org](https://ryanscott.org/)
 
 Live project: [Back-Fixer-Upper stretch finder](https://ryanscott.org/projects/stretch-finder/) · App source: [AsePlayer/Back-Fixer-Upper-Web](https://github.com/AsePlayer/Back-Fixer-Upper-Web)
 
-Projects appear as compact launch cards after Experience: Back-Fixer-Upper, the AsePlayer YouTube channel, and this portfolio's source. The stretch finder opens as a full app at `/projects/stretch-finder/`; external projects open in a new tab. **[PROJECTS.md](PROJECTS.md) is the guide to where each project is edited and how to refresh its generated files.** Edit these cards in `data/site.json`; edit the stretch finder itself in the separate **Health Stretch App** project. Channel stats are a public snapshot from October 16, 2026 (59.9K subscribers, 31,690,902 views, 770 videos, retrieved through vidIQ), rounded down where shown with a plus sign.
+Projects appear in a compact card grid after Experience: Back-Fixer-Upper, So What We Eating?, the AsePlayer YouTube channel, and this portfolio's source. The grid shows four columns on desktop, two on tablet, and one on phones. The stretch finder opens at `/projects/stretch-finder/`, and the fictional food-decision demo opens at `/projects/what-we-eating/`; external projects open in a new tab. **[PROJECTS.md](PROJECTS.md) is the guide to where each project is edited and how to refresh its generated files.** Edit these cards in `data/site.json`; edit the food app in `So-What-We-Eating-Web/` and the stretch finder in the separate **Health Stretch App** project. Channel stats are a public snapshot from October 16, 2026 (59.9K subscribers, 31,690,902 views, 770 videos, retrieved through vidIQ), rounded down where shown with a plus sign.
 
 ## Build and local preview
 

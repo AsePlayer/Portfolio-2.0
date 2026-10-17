@@ -1,0 +1,10 @@
+[
+  {"id":"citrus-taco","name":"Citrus & Corn","address":"101 Demo Lane, Pasadena, CA","latitude":34.1482,"longitude":-118.1468,"cuisines":["Mexican"],"rating":4.7,"reviewCount":128,"priceLevel":1,"isOpen":true,"source":"fixture"},
+  {"id":"good-burger","name":"Good Mood Burger","address":"22 Sample Street, Pasadena, CA","latitude":34.1441,"longitude":-118.1395,"cuisines":["American","Fast food"],"rating":4.5,"reviewCount":84,"priceLevel":1,"isOpen":true,"source":"fixture"},
+  {"id":"sunday-pasta","name":"Sunday Pasta Club","address":"83 Demo Avenue, Pasadena, CA","latitude":34.1511,"longitude":-118.132,"cuisines":["Italian"],"rating":4.8,"reviewCount":96,"priceLevel":2,"isOpen":true,"source":"fixture"},
+  {"id":"little-ramen","name":"Little Ramen Shop","address":"9 Example Walk, Pasadena, CA","latitude":34.138,"longitude":-118.15,"cuisines":["Japanese"],"rating":4.6,"reviewCount":155,"priceLevel":2,"isOpen":true,"source":"fixture"},
+  {"id":"basil-street","name":"Basil Street Kitchen","address":"46 Sample Road, Pasadena, CA","latitude":34.16,"longitude":-118.152,"cuisines":["Thai"],"rating":4.7,"reviewCount":63,"priceLevel":2,"isOpen":true,"source":"fixture"},
+  {"id":"daily-toast","name":"The Daily Toast","address":"7 Demo Square, Pasadena, CA","latitude":34.146,"longitude":-118.158,"cuisines":["Cafe"],"rating":4.4,"reviewCount":47,"priceLevel":1,"isOpen":true,"source":"fixture"},
+  {"id":"slice-theory","name":"Slice Theory","address":"64 Example Boulevard, Pasadena, CA","latitude":34.152,"longitude":-118.163,"cuisines":["Pizza","Italian"],"rating":4.6,"reviewCount":112,"priceLevel":1,"isOpen":true,"source":"fixture"},
+  {"id":"night-market","name":"Night Market Noodles","address":"18 Sample Way, Pasadena, CA","latitude":34.142,"longitude":-118.131,"cuisines":["Thai"],"priceLevel":2,"isOpen":false,"source":"fixture"}
+]

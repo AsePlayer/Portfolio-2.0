@@ -43,7 +43,7 @@
     }
   ],
   "hero": {
-    "subheadline": "I turn complex business rules and disconnected data into reliable, repeatable processes across CRM, marketing, reporting, and operations.",
+    "subheadline": "I turn complicated business rules, disconnected data, and manual workflows into reliable, repeatable processes across CRM, marketing, reporting, and operations.",
     "actions": [
       {
         "label": "Explore My Work",
@@ -65,33 +65,33 @@
   },
   "experience": {
     "eyebrow": "Experience",
-    "headline": "From QA and software to data operations.",
+    "headline": "From QA to business software to data operations.",
     "items": [
       {
-        "date": "June 2025 - Present",
+        "date": "June 2025 – Present",
         "role": "Data Operations Coordinator",
         "organization": "SEMA <i>(Specialty Equipment Market Association)</i>",
-        "text": "Data operations, business systems, CRM migration, automation, reporting, analysis, and data quality."
+        "text": "Independently designs and implements data processes supporting Sales, Marketing, Finance, and operations, including recurring workflow rebuilds during the NetForum-to-Salesforce/Nimble AMS transition."
       },
       {
-        "date": "2022 - 2025",
-        "role": "Software Developer",
+        "date": "August 2022 – April 2025",
+        "role": "Business Solutions Developer",
         "organization": "Knights of Creation",
-        "text": "SQL/Python tooling, internal software, ETL, automation, and operational systems."
+        "text": "Built a custom Python and Google Sheets application around a business owner’s purchasing, sales, earnings, and supply-tracking needs."
       },
       {
-        "date": "2015 - 2022",
+        "date": "May 2015 – July 2022",
         "organization": "MaxGames Studios",
         "roles": [
           {
-            "date": "2017 - 2022",
-            "role": "Quality Assurance & Live Operations Support",
-            "text": "Regression testing, defect reproduction, fix validation, and live-service support."
+            "date": "April 2017 – July 2022",
+            "role": "Quality Assurance & Release Testing",
+            "text": "Tested pre-release builds and weekly game content, reproduced community-reported bugs, and documented steps and video evidence in Trello. Verified fixes and provided difficulty and gameplay-balance feedback before beta testing and public release."
           },
           {
-            "date": "2015 - 2017",
+            "date": "May 2015 – April 2017",
             "role": "Volunteer QA Contributor",
-            "text": "Game-system testing and reproducible defect documentation."
+            "text": "Contributed game testing and defect documentation before transitioning into a paid QA role."
           }
         ]
       }
@@ -124,7 +124,7 @@
         }
       ]
     },
-    "intro": "Across QA, software development, and data operations, I start with the expected behavior, trace discrepancies to their cause, validate the result, and improve the process."
+    "intro": "From testing game builds to building a Python business application and working across CRM systems, I carry the same habits forward: understand the requirements, trace the behavior, build a practical solution, and validate it for continued use."
   },
   "skills": {
     "headline": "Toolkit",
@@ -136,7 +136,7 @@
           "SOQL",
           "Excel",
           "Power Query",
-          "Forecasting",
+          "Reporting",
           "Reconciliation"
         ]
       },
@@ -147,6 +147,7 @@
           "Nimble AMS",
           "iPost",
           "NetForum",
+          "Google Sheets",
           "Salesforce Data 360 — Certified"
         ]
       },
@@ -154,12 +155,12 @@
         "title": "Automation",
         "items": [
           "Python",
-          "Apex",
           "VBA",
           "APIs",
           "ETL",
           "FTP",
-          "Git"
+          "Git",
+          "Workflow Automation"
         ]
       },
       {
@@ -226,8 +227,8 @@
   },
   "seo": {
     "title": "Ryan Scott | Data Operations & Business Systems",
-    "description": "Ryan Scott, Data Operations Coordinator at SEMA. Professional work in CRM migration, SQL automation, reporting, operational analysis, and data quality.",
-    "socialDescription": "Professional case studies in data operations and business systems: CRM migration, SQL automation, reporting, reconciliation, and operational analysis.",
+    "description": "Ryan Scott, Data Operations Coordinator at SEMA. Explore how he investigates business problems, builds SQL automation, reconciles CRM data, and validates recurring workflows.",
+    "socialDescription": "Understand, trace, build, validate. Professional case studies in CRM migration, SQL automation, weekly Sales workflows, Finance reporting, and operational analysis.",
     "url": "https://ryanscott.org/",
     "jobTitle": "Data Operations Coordinator",
     "knowsAbout": [
@@ -248,7 +249,6 @@
       "Audience segmentation",
       "Operational monitoring",
       "Automation",
-      "Apex",
       "Excel",
       "Power Query",
       "ETL",
@@ -256,7 +256,12 @@
       "Quality assurance",
       "Reporting",
       "Business-rule translation",
-      "Process improvement"
+      "Process improvement",
+      "Google Sheets",
+      "VBA",
+      "FTP",
+      "Workflow automation",
+      "Release testing"
     ],
     "image": {
       "path": "assets/social-preview.png",
@@ -269,7 +274,7 @@
   "selectedWork": {
     "eyebrow": "Selected Professional Work",
     "headline": "Operational problems solved with data and systems.",
-    "intro": "A selection of professional work involving system migration, automation, reporting architecture, operational analysis, data quality, and process improvement.",
+    "intro": "A CRM migration, a weekly Sales workflow, and a financial analysis call for different solutions. In each, I work from the business question, trace the underlying data or behavior, and build and validate something people can keep using.",
     "items": [
       {
         "id": "legacy-crm-migration",
@@ -277,11 +282,11 @@
         "organization": "SEMA",
         "category": "Migration & reconciliation",
         "featured": true,
-        "summary": "Supported the move from NetForum to Salesforce/Nimble AMS by validating converted data, reconciling relationships, and rebuilding recurring reporting processes.",
-        "challenge": "Legacy reports depended on data structures and business logic that did not translate directly into the new CRM. Converted records and relationships needed to be checked before recurring processes could rely on them.",
-        "role": "Supported migration validation, investigated discrepancies, and rebuilt recurring reports and processes for the new environment.",
-        "approach": "Traced legacy reporting logic, compared records across systems, and reconciled identifiers and relationships. Adapted the reporting work as mapping and conversion requirements changed.",
-        "outcome": "Recurring reporting processes were rebuilt against Salesforce/Nimble AMS, with conversion discrepancies and relationship issues investigated to support operational use.",
+        "summary": "A new CRM changed the structure behind familiar reports. I rebuilt recurring processes around Salesforce/Nimble AMS while tracing legacy logic and reconciling converted data.",
+        "challenge": "Recurring reports carried business rules from NetForum that could not simply be copied into Salesforce/Nimble AMS. The same business questions had to be answered against different records, identifiers, and relationships.",
+        "role": "I rebuild recurring reporting processes, validate converted records, and investigate discrepancies as part of the broader CRM transition.",
+        "approach": "Start with what the legacy process was meant to do, then trace its logic and data relationships. Compare records across systems, investigate conversion discrepancies, and rebuild the reporting workflow against the new model. Validate the results and adapt the process as migration requirements change.",
+        "outcome": "Recurring reports have been rebuilt for the new environment, while reconciliation and validation continue as the migration evolves.",
         "technologies": [
           "SQL",
           "SOQL",
@@ -293,15 +298,15 @@
       },
       {
         "id": "marketing-audience-automation",
-        "title": "Marketing Audience Automation Ecosystem",
+        "title": "Marketing Data Automation & Segmentation",
         "organization": "SEMA",
-        "category": "Automation & data quality",
+        "category": "Recurring data processes",
         "featured": true,
-        "summary": "Built and maintained recurring SQL-driven audience processes connecting CRM, membership, exhibitor, council/network, and marketing data, with consistent segmentation, exclusions, refreshes, and validation.",
-        "challenge": "Recurring campaigns drew on fragmented sources and changing eligibility rules. Isolated audience requests made it difficult to keep segmentation, suppression, and email hygiene consistent.",
-        "role": "Built and maintained recurring audience and data workflows supporting marketing operations.",
-        "approach": "Translated campaign requirements into maintainable SQL processes, standardized segmentation and exclusion logic, and incorporated recurring refreshes, email-hygiene checks, validation, and operational monitoring.",
-        "outcome": "Campaign support became a repeatable data-operations workflow, with more consistent audience rules and refresh checks across recurring processes.",
+        "summary": "Audience rules were spread across data sources and recurring requests. I turned that work into reusable SQL processes for segmentation, exclusions, refreshes, and validation.",
+        "challenge": "Marketing and operational requests draw on CRM, membership, exhibitor, and council/network information. Eligibility rules, suppression logic, and source data need to stay consistent across recurring refreshes.",
+        "role": "I build and maintain hundreds of SQL queries and recurring data processes supporting marketing segmentation, operational reporting, and data quality.",
+        "approach": "Translate each business requirement into explicit selection and exclusion logic. Trace how the source records relate, build reusable SQL processes, and validate audience eligibility and data quality. Maintain the refreshes and checks as business requirements change.",
+        "outcome": "Recurring audience and reporting work runs through reusable processes with consistent rules and validation, giving business teams a dependable basis for ongoing operations.",
         "technologies": [
           "SQL",
           "iPost",
@@ -312,54 +317,53 @@
         ]
       },
       {
-        "id": "ar-aging-reporting",
-        "title": "AR Aging Reporting Architecture",
-        "organization": "SEMA / Finance",
-        "category": "Reporting architecture & validation",
+        "id": "weekly-sales-leads",
+        "title": "Weekly Sales Lead Reporting Automation",
+        "organization": "SEMA / Sales",
+        "category": "Weekly workflow automation",
         "featured": true,
-        "summary": "Translates Finance’s AR Aging needs into Salesforce/Nimble reporting logic, working through order-versus-line granularity, bundle behavior, and balance exceptions to validate meaningful outstanding receivables.",
-        "challenge": "Order balances and their underlying lines can tell different stories. Bundles and negative lines beneath positive overall balances complicate which receivables should appear in an aging report.",
-        "role": "Investigates transactional relationships and develops and validates the reporting logic with Finance’s reporting needs in view.",
-        "approach": "Works through Order Item and Order Item Line granularity, checks bundle behavior and balance exceptions, and tests what should surface as outstanding receivables.",
-        "outcome": "The investigation has clarified the order-versus-line and balance-exception decisions needed for usable AR Aging reporting. Those decisions are being validated against Finance’s needs.",
+        "summary": "Weekly Sales lists began with manual exports, deduplication, and assembly. Scheduled FTP delivery now supplies the data, and I use a VBA macro to prepare the output before distributing it.",
+        "challenge": "Weekly lead preparation started with manually exporting email opens and clicks, combining and deduplicating the engagement data, and assembling usable lists for Sales.",
+        "role": "I changed the preparation workflow to use scheduled FTP exports and VBA processing. I still prepare and distribute the weekly output.",
+        "approach": "Traced the path from email engagement data to the weekly Sales list to identify the manual preparation steps. Replaced manual source exports with scheduled FTP delivery and introduced a VBA macro to format and prepare the output. I run that preparation and distribute the results each week.",
+        "outcome": "Source data arrives automatically and the VBA-assisted workflow is used weekly. I handle final preparation and distribution.",
+        "technologies": [
+          "FTP",
+          "VBA",
+          "Excel",
+          "Reporting"
+        ]
+      },
+      {
+        "id": "ar-aging-reporting",
+        "title": "Accounts Receivable Aging Reporting",
+        "organization": "SEMA / Finance",
+        "category": "Transactional analysis & validation",
+        "featured": true,
+        "summary": "A positive order balance can hide a different picture at the line level. I work through bundles, payment rollups, and balance exceptions to develop and validate usable aging reports for Finance.",
+        "challenge": "Order-level balances do not tell the whole story of outstanding receivables. Bundled transactions, payment rollups, and positive overall balances with negative underlying lines complicate what should appear in an aging report.",
+        "role": "I develop and validate receivables reporting against Salesforce/Nimble AMS transactional data, translating Finance’s needs into reporting logic.",
+        "approach": "Work from the financial question back through Order Item and Order Item Line relationships. Reconcile order and line balances, examine bundle behavior and payment rollups, and validate how reporting exceptions affect the outstanding receivables shown.",
+        "outcome": "Finance’s requirements are being translated into explicit reporting logic grounded in the transactional relationships. Development and validation continue as balance and rollup exceptions are worked through.",
         "technologies": [
           "Salesforce",
           "Nimble AMS",
           "Reporting",
-          "Business Rules",
+          "Reconciliation",
           "Validation"
         ]
       },
       {
-        "id": "esra-warm-hot-leads",
-        "title": "ESRA Warm/Hot Lead System",
-        "organization": "SEMA / Sales",
-        "category": "Sales operations & automation",
-        "featured": true,
-        "summary": "Improved and maintained a repeatable Warm/Hot lead process that turns business and engagement data into qualified Sales outputs through refined refresh logic, qualification rules, and automation.",
-        "challenge": "Business and engagement data needed to become useful Sales information through qualification rules and a consistent recurring refresh process.",
-        "role": "Improved and maintained the operating lead process, its reporting structure, and supporting automation.",
-        "approach": "Refined recurring refresh logic and qualification rules, structured the Warm/Hot lead outputs, and improved repeatability while continuing to refine the process.",
-        "outcome": "An operating, repeatable process supplies qualified Warm/Hot lead information to Sales, with more consistent refreshes and supporting automation.",
-        "technologies": [
-          "SQL",
-          "Automation",
-          "Segmentation",
-          "Reporting",
-          "Sales Analytics"
-        ]
-      },
-      {
         "id": "booth-space-selection",
-        "title": "Booth Space Selection Process Overhaul",
+        "title": "Event Operations Workflow Improvement",
         "organization": "SEMA",
         "category": "Workflow design & documentation",
         "featured": true,
-        "summary": "Redesigned recurring booth-space-selection reporting into a structured, documented workflow that nontechnical staff could operate with less repeated technical intervention.",
-        "challenge": "A troublesome recurring reporting process depended on repeated technical intervention and needed a clearer workflow for the staff using it.",
-        "role": "Redesigned the reporting process and documented how staff could operate it.",
-        "approach": "Worked through the existing workflow, improved its reporting and data flow, and organized the recurring steps into a documented, repeatable process.",
-        "outcome": "Nontechnical staff could operate more of the process themselves, with a clearer workflow and less dependence on repeated technical support.",
+        "summary": "A recurring booth-selection workflow kept bringing staff back for technical help. I simplified the reporting and data-handling steps and documented a process they could run more independently.",
+        "challenge": "Staff needed to complete recurring booth-selection tasks, but the reporting and data-handling workflow depended on repeated technical assistance.",
+        "role": "I redesigned booth-selection reporting and documented a repeatable workflow for the nontechnical staff using it.",
+        "approach": "Worked through the existing procedure from the staff’s perspective to understand what each step needed to achieve. Simplified the reporting and data flow, organized the recurring steps, and documented how to run the process.",
+        "outcome": "Nontechnical staff can complete recurring tasks with less technical assistance, using a more structured and documented workflow.",
         "technologies": [
           "Reporting",
           "Workflow Design",
@@ -369,15 +373,15 @@
       },
       {
         "id": "membership-alignment",
-        "title": "Membership Alignment & Financial Analysis",
+        "title": "Membership & Financial Analysis",
         "organization": "SEMA",
-        "category": "Operational analysis & decision support",
+        "category": "Analysis & decision support",
         "featured": true,
-        "summary": "Analyzed national and chapter membership relationships, gain/loss patterns, and associated financial impact, turning complex membership data into reporting stakeholders could interpret and use.",
-        "challenge": "Complex national and chapter membership relationships made alignment and net gain/loss patterns difficult to interpret alongside their financial implications.",
-        "role": "Analyzed membership alignment and financial impact, then translated the findings into stakeholder reporting.",
-        "approach": "Examined national and chapter relationships, compared alignment and gain/loss patterns, and organized the financial analysis into interpretable reporting.",
-        "outcome": "Stakeholders gained a clearer view of membership alignment, gain/loss patterns, and their associated financial impact to support decisions.",
+        "summary": "National and chapter membership data needed to be read together to understand alignment and gain/loss. I reconciled those relationships and organized the financial and operational findings for stakeholders.",
+        "challenge": "National and chapter membership relationships are complex. Alignment and gain/loss patterns need to be interpreted together with their financial implications before the data can support a useful discussion.",
+        "role": "I analyzed membership relationships, organizational alignment, and net gain/loss, then prepared reporting that stakeholders could interpret.",
+        "approach": "Start with the alignment question, reconcile membership relationships, and compare the gain/loss patterns. Connect those findings to the financial and operational analysis, then organize the detail into reporting that makes the relationships understandable.",
+        "outcome": "Stakeholders received an interpretable view of membership alignment, gain/loss patterns, and their financial implications to support discussion and decisions.",
         "technologies": [
           "SQL",
           "Excel",

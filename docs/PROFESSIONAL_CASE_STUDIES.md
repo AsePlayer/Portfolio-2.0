@@ -1,186 +1,213 @@
-# Professional case-study reframing
+# Professional alignment and case-study update
 
-Implemented October 17, 2026 in the existing Portfolio-2.0 repository. This is a content and positioning pass using the existing typography, colors, theme system, responsive shell, accessibility enhancements, prerenderer, and Pages workflow.
+Updated October 17, 2026. This report supersedes the earlier case-study reframing report and its outdated title/technology assumptions.
 
-## Files changed
+## Positioning and shared approach
 
-- `data/site.json`: professional case-study data, compact Experience, shorter navigation labels, and professional SEO descriptions. Independent projects, hero identity, credentials, and toolkit remain intact.
-- `scripts/render-site.mjs`: six case-study cards, native disclosures, and a flat featured-work ItemList linked to Person JSON-LD.
-- `css/styles.css`: scoped card/disclosure layout using existing design tokens; summary focus styling; obsolete capability selectors removed.
-- `scripts/validate-content.mjs`: validates featured/unfeatured case-study fields, six featured items, concise copy, and valid rendered destinations.
-- `scripts/validate-site.mjs`: verifies prerendered case-study details, disclosure counts, unfeatured exclusion, and structured data alongside existing checks.
-- `scripts/site.test.mjs`: updates existing tests for the content model and disclosure markup while retaining escaping, privacy, URLs, résumé, credentials, SEO, and role-accuracy coverage.
-- `README.md`: current editing, schema, behavior, and validation documentation.
-- `index.html`: generated with the existing build; never manually edited.
-- `docs/PROFESSIONAL_CASE_STUDIES.md`: this implementation report.
+The site retains **Ryan Scott — Data Operations & Business Systems**, with **Data Operations Coordinator · SEMA** as the current role. The supplied résumé’s positioning is **Data Operations | Business Systems | SQL & Salesforce**. Hero and homepage metadata remain professionally focused.
 
-No embedded app source/snapshots, résumé PDF, project links, deployment workflow, template shell, or browser JavaScript were changed.
+Hero copy: I turn complicated business rules, disconnected data, and manual workflows into reliable, repeatable processes across CRM, marketing, reporting, and operations.
 
-## Final information architecture
+The compact **Understand → Trace → Build → Validate** sequence remains. The thread is problem-solving, not an assertion that every job involved the same duties:
 
-Hero → Selected Professional Work → Experience → Independent Projects → Credentials → Toolkit → Contact.
+1. Understand the business requirements, workflow, and data relationships.
+2. Trace behavior, reproduce issues, and investigate inconsistencies.
+3. Build a practical solution with the tools the situation requires.
+4. Validate the result, document the process, and make it dependable for continued use.
 
-Visible navigation: Work · Experience · Projects · Credentials · Toolkit · Resume · Contact. Existing section anchors and all three direct résumé links remain.
+The career narrative connects pre-release QA investigation and fix verification, a customized Python/Google Sheets business application, and current SQL/CRM/data work. It does not attribute SQL to Knights or game development/deployment to MaxGames. Each professional card begins with its specific problem rather than repeating a résumé accomplishment. The details explain the reasoning and actual contribution, including operational limits and ongoing work.
 
-The hero establishes Ryan Scott / Data Operations & Business Systems, with Data Operations Coordinator · SEMA. Its Understand → Trace → Build → Validate sequence connects the QA → software development → data operations career progression to the case studies.
+Professional-work introduction: A CRM migration, a weekly Sales workflow, and a financial analysis call for different solutions. In each, I work from the business question, trace the underlying data or behavior, and build and validate something people can keep using.
 
-## Exact final card and expanded copy
+Experience introduction: From testing game builds to building a Python business application and working across CRM systems, I carry the same habits forward: understand the requirements, trace the behavior, build a practical solution, and validate it for continued use.
 
-Only the following six studies are featured. All text below is copied directly from `data/site.json` for this implementation report.
+The information architecture remains Hero → Selected Professional Work → Experience → Independent Projects → Credentials → Toolkit → Contact, with the existing navigation and section anchors.
+
+## Updated Experience: exact copy
+
+### SEMA (Specialty Equipment Market Association)
+
+June 2025 – Present
+
+**Data Operations Coordinator**
+
+Independently designs and implements data processes supporting Sales, Marketing, Finance, and operations, including recurring workflow rebuilds during the NetForum-to-Salesforce/Nimble AMS transition.
+
+### Knights of Creation
+
+August 2022 – April 2025
+
+**Business Solutions Developer**
+
+Built a custom Python and Google Sheets application around a business owner’s purchasing, sales, earnings, and supply-tracking needs.
+
+### MaxGames Studios
+
+May 2015 – July 2022
+
+**Quality Assurance & Release Testing — April 2017 – July 2022**
+
+Tested pre-release builds and weekly game content, reproduced community-reported bugs, and documented steps and video evidence in Trello. Verified fixes and provided difficulty and gameplay-balance feedback before beta testing and public release.
+
+**Volunteer QA Contributor — May 2015 – April 2017**
+
+Contributed game testing and defect documentation before transitioning into a paid QA role.
+
+The revised résumé supplies the canonical titles and employment year ranges. Ryan’s explicit brief supplies the more precise employment months. There is no longer an unresolved Knights title question.
+
+## Final six case studies: exact visible and expanded copy
+
+Each default card contains context, title, summary, and tools. **Read case study** expands Challenge / My contribution / Approach / Result; the underlying JSON fields remain `challenge`, `role`, `approach`, and `outcome`.
 
 ### 1. CRM Migration & Reporting Rebuild
 
 Context: SEMA · Migration & reconciliation
 
-Supported the move from NetForum to Salesforce/Nimble AMS by validating converted data, reconciling relationships, and rebuilding recurring reporting processes.
+A new CRM changed the structure behind familiar reports. I rebuilt recurring processes around Salesforce/Nimble AMS while tracing legacy logic and reconciling converted data.
 
 Tools and methods: SQL · SOQL · Salesforce · Nimble AMS · NetForum · Excel
 
-Disclosure: **Read case study** (accessible name includes the title).
+**Challenge:** Recurring reports carried business rules from NetForum that could not simply be copied into Salesforce/Nimble AMS. The same business questions had to be answered against different records, identifiers, and relationships.
 
-**Challenge:** Legacy reports depended on data structures and business logic that did not translate directly into the new CRM. Converted records and relationships needed to be checked before recurring processes could rely on them.
+**My contribution:** I rebuild recurring reporting processes, validate converted records, and investigate discrepancies as part of the broader CRM transition.
 
-**Ryan’s role:** Supported migration validation, investigated discrepancies, and rebuilt recurring reports and processes for the new environment.
+**Approach:** Start with what the legacy process was meant to do, then trace its logic and data relationships. Compare records across systems, investigate conversion discrepancies, and rebuild the reporting workflow against the new model. Validate the results and adapt the process as migration requirements change.
 
-**Approach:** Traced legacy reporting logic, compared records across systems, and reconciled identifiers and relationships. Adapted the reporting work as mapping and conversion requirements changed.
+**Result:** Recurring reports have been rebuilt for the new environment, while reconciliation and validation continue as the migration evolves.
 
-**Outcome:** Recurring reporting processes were rebuilt against Salesforce/Nimble AMS, with conversion discrepancies and relationship issues investigated to support operational use.
+### 2. Marketing Data Automation & Segmentation
 
-### 2. Marketing Audience Automation Ecosystem
+Context: SEMA · Recurring data processes
 
-Context: SEMA · Automation & data quality
-
-Built and maintained recurring SQL-driven audience processes connecting CRM, membership, exhibitor, council/network, and marketing data, with consistent segmentation, exclusions, refreshes, and validation.
+Audience rules were spread across data sources and recurring requests. I turned that work into reusable SQL processes for segmentation, exclusions, refreshes, and validation.
 
 Tools and methods: SQL · iPost · Salesforce · Excel · Power Query · Data Quality
 
-Disclosure: **Read case study** (accessible name includes the title).
+**Challenge:** Marketing and operational requests draw on CRM, membership, exhibitor, and council/network information. Eligibility rules, suppression logic, and source data need to stay consistent across recurring refreshes.
 
-**Challenge:** Recurring campaigns drew on fragmented sources and changing eligibility rules. Isolated audience requests made it difficult to keep segmentation, suppression, and email hygiene consistent.
+**My contribution:** I build and maintain hundreds of SQL queries and recurring data processes supporting marketing segmentation, operational reporting, and data quality.
 
-**Ryan’s role:** Built and maintained recurring audience and data workflows supporting marketing operations.
+**Approach:** Translate each business requirement into explicit selection and exclusion logic. Trace how the source records relate, build reusable SQL processes, and validate audience eligibility and data quality. Maintain the refreshes and checks as business requirements change.
 
-**Approach:** Translated campaign requirements into maintainable SQL processes, standardized segmentation and exclusion logic, and incorporated recurring refreshes, email-hygiene checks, validation, and operational monitoring.
+**Result:** Recurring audience and reporting work runs through reusable processes with consistent rules and validation, giving business teams a dependable basis for ongoing operations.
 
-**Outcome:** Campaign support became a repeatable data-operations workflow, with more consistent audience rules and refresh checks across recurring processes.
+### 3. Weekly Sales Lead Reporting Automation
 
-### 3. AR Aging Reporting Architecture
+Context: SEMA / Sales · Weekly workflow automation
 
-Context: SEMA / Finance · Reporting architecture & validation
+Weekly Sales lists began with manual exports, deduplication, and assembly. Scheduled FTP delivery now supplies the data, and I use a VBA macro to prepare the output before distributing it.
 
-Translates Finance’s AR Aging needs into Salesforce/Nimble reporting logic, working through order-versus-line granularity, bundle behavior, and balance exceptions to validate meaningful outstanding receivables.
+Tools and methods: FTP · VBA · Excel · Reporting
 
-Tools and methods: Salesforce · Nimble AMS · Reporting · Business Rules · Validation
+**Challenge:** Weekly lead preparation started with manually exporting email opens and clicks, combining and deduplicating the engagement data, and assembling usable lists for Sales.
 
-Disclosure: **Read case study** (accessible name includes the title).
+**My contribution:** I changed the preparation workflow to use scheduled FTP exports and VBA processing. I still prepare and distribute the weekly output.
 
-**Challenge:** Order balances and their underlying lines can tell different stories. Bundles and negative lines beneath positive overall balances complicate which receivables should appear in an aging report.
+**Approach:** Traced the path from email engagement data to the weekly Sales list to identify the manual preparation steps. Replaced manual source exports with scheduled FTP delivery and introduced a VBA macro to format and prepare the output. I run that preparation and distribute the results each week.
 
-**Ryan’s role:** Investigates transactional relationships and develops and validates the reporting logic with Finance’s reporting needs in view.
+**Result:** Source data arrives automatically and the VBA-assisted workflow is used weekly. I handle final preparation and distribution.
 
-**Approach:** Works through Order Item and Order Item Line granularity, checks bundle behavior and balance exceptions, and tests what should surface as outstanding receivables.
+### 4. Accounts Receivable Aging Reporting
 
-**Outcome:** The investigation has clarified the order-versus-line and balance-exception decisions needed for usable AR Aging reporting. Those decisions are being validated against Finance’s needs.
+Context: SEMA / Finance · Transactional analysis & validation
 
-### 4. ESRA Warm/Hot Lead System
+A positive order balance can hide a different picture at the line level. I work through bundles, payment rollups, and balance exceptions to develop and validate usable aging reports for Finance.
 
-Context: SEMA / Sales · Sales operations & automation
+Tools and methods: Salesforce · Nimble AMS · Reporting · Reconciliation · Validation
 
-Improved and maintained a repeatable Warm/Hot lead process that turns business and engagement data into qualified Sales outputs through refined refresh logic, qualification rules, and automation.
+**Challenge:** Order-level balances do not tell the whole story of outstanding receivables. Bundled transactions, payment rollups, and positive overall balances with negative underlying lines complicate what should appear in an aging report.
 
-Tools and methods: SQL · Automation · Segmentation · Reporting · Sales Analytics
+**My contribution:** I develop and validate receivables reporting against Salesforce/Nimble AMS transactional data, translating Finance’s needs into reporting logic.
 
-Disclosure: **Read case study** (accessible name includes the title).
+**Approach:** Work from the financial question back through Order Item and Order Item Line relationships. Reconcile order and line balances, examine bundle behavior and payment rollups, and validate how reporting exceptions affect the outstanding receivables shown.
 
-**Challenge:** Business and engagement data needed to become useful Sales information through qualification rules and a consistent recurring refresh process.
+**Result:** Finance’s requirements are being translated into explicit reporting logic grounded in the transactional relationships. Development and validation continue as balance and rollup exceptions are worked through.
 
-**Ryan’s role:** Improved and maintained the operating lead process, its reporting structure, and supporting automation.
-
-**Approach:** Refined recurring refresh logic and qualification rules, structured the Warm/Hot lead outputs, and improved repeatability while continuing to refine the process.
-
-**Outcome:** An operating, repeatable process supplies qualified Warm/Hot lead information to Sales, with more consistent refreshes and supporting automation.
-
-### 5. Booth Space Selection Process Overhaul
+### 5. Event Operations Workflow Improvement
 
 Context: SEMA · Workflow design & documentation
 
-Redesigned recurring booth-space-selection reporting into a structured, documented workflow that nontechnical staff could operate with less repeated technical intervention.
+A recurring booth-selection workflow kept bringing staff back for technical help. I simplified the reporting and data-handling steps and documented a process they could run more independently.
 
 Tools and methods: Reporting · Workflow Design · Documentation · Process Improvement
 
-Disclosure: **Read case study** (accessible name includes the title).
+**Challenge:** Staff needed to complete recurring booth-selection tasks, but the reporting and data-handling workflow depended on repeated technical assistance.
 
-**Challenge:** A troublesome recurring reporting process depended on repeated technical intervention and needed a clearer workflow for the staff using it.
+**My contribution:** I redesigned booth-selection reporting and documented a repeatable workflow for the nontechnical staff using it.
 
-**Ryan’s role:** Redesigned the reporting process and documented how staff could operate it.
+**Approach:** Worked through the existing procedure from the staff’s perspective to understand what each step needed to achieve. Simplified the reporting and data flow, organized the recurring steps, and documented how to run the process.
 
-**Approach:** Worked through the existing workflow, improved its reporting and data flow, and organized the recurring steps into a documented, repeatable process.
+**Result:** Nontechnical staff can complete recurring tasks with less technical assistance, using a more structured and documented workflow.
 
-**Outcome:** Nontechnical staff could operate more of the process themselves, with a clearer workflow and less dependence on repeated technical support.
+### 6. Membership & Financial Analysis
 
-### 6. Membership Alignment & Financial Analysis
+Context: SEMA · Analysis & decision support
 
-Context: SEMA · Operational analysis & decision support
-
-Analyzed national and chapter membership relationships, gain/loss patterns, and associated financial impact, turning complex membership data into reporting stakeholders could interpret and use.
+National and chapter membership data needed to be read together to understand alignment and gain/loss. I reconciled those relationships and organized the financial and operational findings for stakeholders.
 
 Tools and methods: SQL · Excel · Power Query · Data Analysis · Financial Analysis · Reporting
 
-Disclosure: **Read case study** (accessible name includes the title).
+**Challenge:** National and chapter membership relationships are complex. Alignment and gain/loss patterns need to be interpreted together with their financial implications before the data can support a useful discussion.
 
-**Challenge:** Complex national and chapter membership relationships made alignment and net gain/loss patterns difficult to interpret alongside their financial implications.
+**My contribution:** I analyzed membership relationships, organizational alignment, and net gain/loss, then prepared reporting that stakeholders could interpret.
 
-**Ryan’s role:** Analyzed membership alignment and financial impact, then translated the findings into stakeholder reporting.
+**Approach:** Start with the alignment question, reconcile membership relationships, and compare the gain/loss patterns. Connect those findings to the financial and operational analysis, then organize the detail into reporting that makes the relationships understandable.
 
-**Approach:** Examined national and chapter relationships, compared alignment and gain/loss patterns, and organized the financial analysis into interpretable reporting.
+**Result:** Stakeholders received an interpretable view of membership alignment, gain/loss patterns, and their financial implications to support discussion and decisions.
 
-**Outcome:** Stakeholders gained a clearer view of membership alignment, gain/loss patterns, and their associated financial impact to support decisions.
+## Résumé and professional accuracy
 
-## Compact Experience
+The provided finalized PDF was read as a one-page document and visually inspected. It replaces `data/Ryan Scott Resume.pdf` exactly; all three existing download links retain their paths and safe new-tab behavior. The phone number stays inside the PDF and is not copied into public JSON/HTML.
 
-- **SEMA (Specialty Equipment Market Association)**, June 2025 - Present: Data Operations Coordinator — Data operations, business systems, CRM migration, automation, reporting, analysis, and data quality.
-- **Knights of Creation**, 2022 - 2025: Software Developer — SQL/Python tooling, internal software, ETL, automation, and operational systems.
-- **MaxGames Studios**, 2015 - 2022: Quality Assurance & Live Operations Support (2017 - 2022) — Regression testing, defect reproduction, fix validation, and live-service support. Volunteer QA Contributor (2015 - 2017) — Game-system testing and reproducible defect documentation.
+SHA-256: `47656e774d9fad3d2ae62c3f3aa55ce38c2ed72fff37da552b70ca92fa392db1`.
 
-SEMA’s former paragraph no longer repeats migration, audience, reporting, and data-quality accomplishments. Knights is one short descriptor. MaxGames retains its two supported role periods with one short sentence each, preserving the volunteer-to-paid progression and the QA foundation.
+Corrections from older content:
 
-## Independent projects and supporting proof
+- Knights: **Business Solutions Developer** and **Python/Google Sheets**. Removed the unsupported SQL/ETL description and the old unresolved-title note.
+- MaxGames: **Quality Assurance & Release Testing**, with accurate paid/volunteer dates, pre-release testing, community defect reproduction, Trello/video documentation, fix verification, and balance feedback. Removed live-operations wording that could imply deployment or infrastructure responsibility.
+- Sales: replaced internal lead terminology and generic qualification-system language with the actual weekly workflow: scheduled FTP exports, VBA-assisted preparation, and Ryan’s distribution. No predictive scoring, real-time intelligence, or fully unattended process is asserted.
+- Receivables: names the public business problem and includes order/line relationships, bundles, payment rollups, exceptions, and continuing validation. No completed production rollout is asserted.
+- Marketing: the “hundreds” scale is supported by the supplied résumé; it refers to the collection of SQL queries/data processes, not a new fabricated count of users or business impact.
+- Toolkit: added Google Sheets, replaced forecasting with reporting, and replaced Apex emphasis with workflow automation. Generic ETL remains supported by the résumé’s skills; it is not attributed to Knights.
 
-Independent Projects retains its own introduction, “Things I build outside of work.”, and three ready-to-view projects: Back-Fixer-Upper, So What We Eating?, and AsePlayer. Product stories, types, technologies, channel snapshot, and destinations remain intact. No artificial professional relevance or unfinished Music Library Manager/Mr. Nugs cards were added. The self-referential Portfolio Website card remains omitted.
+The public identity, employment history, core tools, and accomplishments align with the supplied résumé and the user’s LinkedIn clarifications. LinkedIn itself was not edited, and its live text could not be independently verified through automated access (HTTP 999). No claim is made that the remote LinkedIn profile was changed or audited. Salesforce Data 360 remains certified knowledge. Certified ScrumMaster is retained because the brief explicitly requests it, although it is absent from the supplied one-page résumé.
 
-Credentials retain Salesforce Certified Data 360 Consultant, B.S. Computer Science (Cum Laude), Certified ScrumMaster, and supporting Trailhead learning. Data 360 implementation experience is not asserted. The toolkit stays at four compact groups.
+## Independent Projects and omitted material
 
-## UI behavior
+Back-Fixer-Upper, So What We Eating?, and AsePlayer retain their existing ready-to-view cards and product/creative framing. Their descriptions and links were inspected and left unchanged. Both embedded apps launch in the browser and return to `/#projects`. So What We Eating? remains described as location-aware with real menu prices, consistent with its AllMenus/Photon production implementation. No consumer-app themes were added to homepage SEO.
 
-Each card contains a native `details/summary` disclosure with a unique accessible name. Its four detail fields are already in the HTML. Enter or Space toggles the focused summary; the focus indicator remains visible; no JavaScript is required. Disclosures operate independently. Cards use two columns above 600px and one at/below 600px, with the existing design tokens. There are no new project routes, dependencies, or content fetches.
+Music Library Manager and Mr. Nugs were not added: this repository does not establish their current public-demo readiness or provide a verified showcase destination. The self-referential Portfolio Website card remains omitted. The three alternate professional studies remain unfeatured in the data model. Magazine Circulation remains absent from the featured selection.
 
-## Evidence and deliberately omitted claims
+No proprietary screenshots, fictional dashboards, queries, schemas, raw financial/member/customer data, internal URLs, sensitive identifiers, rule thresholds, or private source files were introduced. No new savings, dollar amounts, percentages, revenue/conversion gains, user counts, dataset sizes, or performance claims were invented. Membership figures remain confidential; the case describes the analytical method and qualitative reporting result. No new ownership of organization-wide strategy or migration leadership is claimed.
 
-The user’s professional reframing brief supplies the six work narratives. Existing `data/site.json`, README, and the bundled résumé support current roles, dates, tool familiarity, and QA/software/data progression. The prior three alternate examples preserve their existing supported summaries and scales with `featured: false`; they are not published as page cards or structured case studies. Magazine Circulation is absent from the source selection and generated page.
+## Files changed
 
-AR Aging is presented as active transactional investigation, reporting development, and validation. No independent work documentation here verifies a completed production rollout, so neither a final launch nor completion metric is claimed. ESRA is an operating, improved process rather than a hypothetical future project.
+- `data/site.json`: problem-led case-study copy, precise/corrected Experience, shared career narrative, supported toolkit, and professional SEO descriptions/knowsAbout.
+- `data/Ryan Scott Resume.pdf`: exact replacement with the supplied finalized PDF.
+- `scripts/render-site.mjs`: visible disclosure labels changed to My contribution and Result; native behavior and schema structure preserved.
+- `scripts/site.test.mjs`: existing label/headline assertions updated and an arbitrary fixed skill count replaced with the existing compact-group constraint. Suite remains 19 tests; no new static-copy suite.
+- `README.md`: current titles, tools, narrative, case lineup, source-of-truth and validation guidance.
+- `docs/PROFESSIONAL_CASE_STUDIES.md`: this updated implementation report, including exact copy and factual boundaries.
+- `index.html`: generated through the existing build from content and renderer.
 
-No new percentages, dollar savings, hours saved, revenue/conversion impact, adoption counts, dataset sizes, or performance gains were invented. No proprietary screenshots, queries, schemas, raw data, internal URLs, account records, financial figures, or private rule thresholds were introduced. CRM migration wording stays at support/validation/rebuild rather than ownership of the entire migration. Booth tags use supported workflow/reporting methods rather than guessing implementation tools. AR tags omit SQL/SOQL and ESRA tags omit iPost/Power Query because project-specific usage was not established by the available evidence.
+CSS, browser JavaScript, templates, validation architecture, dependencies, Pages workflow, independent project descriptions/links, and embedded app source/generated bundles were not changed.
 
-## Validation
+## Validation and build
 
-- `node --test scripts/site.test.mjs`: **19 passed**. Obsolete capability-only tests were replaced/consolidated; existing safety, metadata, and content-pipeline coverage remains.
-- `node scripts/build.mjs`: **passed**; root `index.html` and `dist/` generated from JSON/templates.
-- `node scripts/validate-site.mjs`: **passed**; source/artifact freshness, all six full case studies, structured data, anchors/assets, privacy, PDF, and deployment architecture.
-- Local preview via `node scripts/serve.mjs`: **passed**.
-- Chrome/Playwright manual-verification harness in ignored `.tmp/professional-case-study-qa.mjs`: **passed** at 1440, 1200, 1024, 861, 860, 768, 600, 390, 375, and 320px in light and dark mode (20 combinations), with reduced motion enabled. No overflow or header collisions.
-- All six disclosures: Enter opens, Space closes, focus remains visible and retained, and multiple studies expand independently, checked at 1440 and 390px. Native expansion also passed with JavaScript disabled.
-- All six section navigation destinations, focus movement, mobile menu closing/Escape, skip link, and theme persistence: **passed**.
-- All three direct résumé links returned a valid PDF; both embedded app cards launched their full apps and returned to `/#projects` without a service worker controlling the homepage: **passed**.
-- GitHub and YouTube external destinations: HTTP **200**. LinkedIn: **999** automated-access restriction. Trailhead: **403** automated-access restriction. Existing URLs were retained; these two profiles need a normal browser visit for full remote verification.
-- Browser error collection: **none**. Screenshots and QA JSON are in ignored `.tmp/professional-case-study-qa/`.
+- `node --test scripts/site.test.mjs`: **19 passed**.
+- `node scripts/build.mjs`: **passed**; substantive content and metadata are prerendered into root HTML and `dist/`.
+- `node scripts/validate-site.mjs`: **passed**; checks content, schema, anchors, assets, privacy, PDF validity, structured data, freshness, and artifact consistency.
+- Local preview using `node scripts/serve.mjs`: **passed**.
+- Chrome/Playwright browser verification: **20 width/theme combinations** at 320, 375, 390, 600, 768, 860, 861, 1024, 1200, and 1440px in light/dark mode. No overflow or header collisions; existing layout and theme persistence preserved.
+- All six disclosures at 1440 and 390px: Enter opens, Space closes, visible focus retained, independent expansion. Native expansion also works without JavaScript.
+- All six section navigation links, focus destinations, mobile menu/Escape, and skip link: **passed**.
+- All three résumé links returned valid PDFs matching the supplied PDF’s SHA-256, not just its filename: **passed**.
+- Both embedded app launches and return links: **passed**; no service worker controlled the portfolio home page after return.
+- GitHub and YouTube returned **200**. LinkedIn returned **999** and Trailhead **403**, so those unchanged profile destinations require a normal manual visit for full remote verification.
+- Browser error collection: **none**. Local evidence is in ignored `.tmp/professional-alignment-local/`.
 
-No embedded app implementation changed, so app-internal behavioral suites were not broadened for this content pass; the unchanged deployment workflow continues to run its normal app tests/build.
+The browser harness is an ignored verification aid, not a new committed static-copy test suite. The unchanged deployment pipeline continues to run its regular app tests/builds.
 
-## Unresolved title discrepancy
+## Next iteration
 
-**Knights of Creation remains Software Developer**, as currently stored and shown in the bundled résumé. LinkedIn is reported to use **Solutions Architect**. Ryan must choose the accurate canonical title; this implementation does not guess or silently change it.
-
-## Recommended next pass
-
-Resolve the Knights title across the portfolio, LinkedIn, and résumé. As professional projects mature, verify specific completion states and project-specific tool usage before strengthening their outcomes. Rotate a fully documented alternate into the six rather than adding every accomplishment. Revisit Magazine Circulation only after it reaches a clear completed state. Add Music Library Manager or Mr. Nugs only when there is a public-ready destination.
+Verify LinkedIn in a normal signed-in browser against the now-resolved titles and date ranges. As receivables work matures, update its result only when completion/validation evidence supports it. Rotate in an alternate professional study when it has a distinct, documented story rather than expanding the section into a work log. Add independent software only with a public-ready demo or source destination. Any future professional visual should be explicitly public-safe and clearly identified as illustrative if it is not an actual artifact.

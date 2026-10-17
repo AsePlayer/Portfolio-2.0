@@ -93,9 +93,9 @@ function selectedWorkSection(section) {
               <summary>Read case study<span class="visually-hidden">: ${item.title}</span></summary>
               <dl class="case-body">
                 <dt>Challenge</dt><dd>${item.challenge}</dd>
-                <dt>Ryan’s role</dt><dd>${item.role}</dd>
+                <dt>My contribution</dt><dd>${item.role}</dd>
                 <dt>Approach</dt><dd>${item.approach}</dd>
-                <dt>Outcome</dt><dd>${item.outcome}</dd>
+                <dt>Result</dt><dd>${item.outcome}</dd>
               </dl>
             </details>
           </article>

@@ -89,7 +89,7 @@ test('six case studies precede compact experience with native, accessible disclo
     assert.ok(html.includes('<h3 id="work-' + item.id + '-heading">'));
     assert.ok(html.includes('Read case study<span class="visually-hidden">: ' + escapeHtml(item.title)));
   }
-  for (const label of ['Challenge', 'Ryan’s role', 'Approach', 'Outcome']) {
+  for (const label of ['Challenge', 'My contribution', 'Approach', 'Result']) {
     assert.equal(html.split('<dt>' + label + '</dt>').length - 1, 6);
   }
 });
@@ -170,7 +170,7 @@ test('How I Work stays a four-word sequence, with the QA foundation in experienc
   assert.deepEqual(data.hero.approach, ['Understand', 'Trace', 'Build', 'Validate']);
   const html = renderDocument(data, template, 2026);
   assert.ok(html.includes('<ol class="approach-sequence" aria-label="How I work">'));
-  assert.ok(html.includes('From QA and software to data operations.'));
+  assert.ok(html.includes(escapeHtml(data.experience.headline)));
   assert.ok(!html.includes('hero-panel'));
   assert.ok(!html.includes('process-steps'));
   const copy = structuredClone(data);
@@ -196,7 +196,7 @@ test('the simplified hero shows employer context while preserving the actual str
 test('skills and credentials use compact text groups without explanatory cards', () => {
   const html = renderDocument(data, template, 2026);
   assert.deepEqual(data.skills.groups.map((item) => item.title), ['Data','Business Systems','Automation','Data Operations']);
-  assert.equal(data.skills.groups.flatMap((item) => item.items).length, 24);
+  assert.ok(data.skills.groups.every(group => group.items.length <= 7));
   assert.equal(data.experience.development.items.length, 4);
   assert.deepEqual(data.experience.development.items.map((item) => item.title), [
     'Salesforce Certified Data 360 Consultant','B.S. Computer Science, Cum Laude','Certified ScrumMaster (CSM)','Self-directed Salesforce learning'

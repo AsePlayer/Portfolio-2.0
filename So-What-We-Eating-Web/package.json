@@ -16,6 +16,7 @@
     "content:validate": "node tools/menus/cli.ts validate",
     "content:import": "node tools/menus/cli.ts import",
     "check:browser": "node scripts/browser-pricing-check.mjs",
+    "check:party": "node scripts/browser-party-check.mjs",
     "check:live": "node scripts/live-hybrid-check.mjs"
   },
   "devDependencies": {

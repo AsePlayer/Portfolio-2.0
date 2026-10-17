@@ -1,10 +1,11 @@
 import type { App } from '../ui/App.ts';
 import { el, money, button, safeLink } from '../ui/dom.ts';
 import { attribution } from '../ui/attribution.ts';
+import { brandMark } from '../ui/brand.ts';
 export function historyView(app: App): HTMLElement {
     const page = el('section', { className: 'secondary-page' }, el('p', { className: 'eyebrow' }, 'THE GOOD CALLS'), el('h1', {}, 'Recent meals.'), el('p', { className: 'page-intro' }, 'The places, items, and listed prices from meals you marked as eaten. Saved on this browser.'));
     if (!app.history.meals.length)
-        page.append(el('div', { className: 'empty-state' }, el('span', { className: 'empty-mark', 'aria-hidden': true }, '✳'), el('h2', {}, 'A clean plate.'), el('p', {}, 'Your first meal is one decision away.'), button('LET’S EAT ↗', () => app.navigate('feed'), 'button primary')));
+        page.append(el('div', { className: 'empty-state' }, brandMark('empty-mark'), el('h2', {}, 'A clean plate.'), el('p', {}, 'Your first meal is one decision away.'), button('LET’S EAT ↗', () => app.navigate('feed'), 'button primary')));
     else {
         const list = el('ol', { className: 'history-list' });
         for (const meal of app.history.meals) {

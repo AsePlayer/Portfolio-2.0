@@ -2,7 +2,7 @@
 
 Google = discovery / canonical restaurant identity.
 AllMenus = menu and exact price enrichment.
-MealBuilder = deterministic budgeted order.
+MealBuilder = bounded party simulations with deterministic budget safety.
 
 ```text
 browser GPS or text

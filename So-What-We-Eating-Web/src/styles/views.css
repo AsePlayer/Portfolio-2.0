@@ -201,6 +201,14 @@
   font-weight: 400;
 }
 
+.feed-button.is-working .button-icon {
+  animation: stirring 1.2s ease-in-out infinite;
+}
+
+@keyframes stirring {
+  50% { transform: rotate(35deg); }
+}
+
 .form-note {
   font-size: 10px;
   color: var(--muted);
@@ -332,9 +340,60 @@
   margin: 0;
 }
 
-.receipt-heading>span {
-  font-size: 35px;
-  color: var(--accent);
+.receipt-mark {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.decision-controls {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 12px 0 0;
+  margin: -12px 0 8px;
+  background: var(--paper);
+}
+
+.decision-controls .reroll-actions .button {
+  height: 56px;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.decision-controls .button:hover:not(:disabled) {
+  transform: none;
+}
+
+.decision-status {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+  height: 44px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.reroll-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.receipt-stage {
+  overflow-anchor: none;
+}
+
+.accept-meal {
+  height: 54px;
+}
+
+.accept-meal.is-accepted {
+  opacity: 1;
+  background: #36513b;
+  border-color: #36513b;
+  letter-spacing: .03em;
 }
 
 .receipt-caption {
@@ -485,8 +544,8 @@
 }
 
 .empty-mark {
-  color: var(--accent);
-  font-size: 60px;
+  width: 64px;
+  height: 64px;
 }
 
 .empty-state h2 {

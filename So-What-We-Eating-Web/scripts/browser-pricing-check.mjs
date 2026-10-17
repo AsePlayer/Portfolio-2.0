@@ -155,7 +155,7 @@ try {
         await page.getByRole('button', { name: 'Current location ✓' }).waitFor();
         await page.getByRole('button', { name: 'FEED ME' }).click();
         await page.locator('.order-lines').waitFor();
-        assert((await page.locator('.item-name').first().textContent()).startsWith('2 ×'));
+        assert.equal(await page.locator('.item-name').evaluateAll(nodes => nodes.filter(node => /Noodle Bowl|Teriyaki Bowl/.test(node.textContent)).reduce((sum, node) => sum + Number(node.textContent.match(/^\d+/)[0]), 0)), 2);
         assert(cents(await page.locator('.grand-total dd').textContent()) <= 3500);
         const beforeDemo = requests.filter(u => u.includes('allmenus.com')).length;
         await page.goto(url + '?mode=demo');

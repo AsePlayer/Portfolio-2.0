@@ -85,8 +85,8 @@ test('hybrid recommendation skips no-menu, wrong-branch, outside-radius and unaf
     } }, () => 0);
     const first = await engine.recommend(preferences, emptyLearning());
     assert.equal(first.restaurant.sourceId, 'good');
-    assert.equal(first.meal.subtotalCents, 2000);
-    assert.equal(first.meal.totalCents, 2800);
+    assert.equal(first.meal.subtotalCents, 2100);
+    assert.equal(first.meal.totalCents, 2900);
     assert(first.meal.totalCents <= 4000);
     const before = resolutions;
     const anotherOrder = engine.differentOrder(first);

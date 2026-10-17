@@ -18,14 +18,16 @@ export class RecommendationFailure extends Error {
     code: 'unavailable' | 'empty' | 'budget' | 'menus';
     constructor(code: RecommendationFailure['code'], message: string) { super(message); this.code = code; }
 }
+export type RecommendationStage = 'finding' | 'menu' | 'building';
 export class RecommendationEngine {
     private restaurants: RestaurantProvider;
     private menus: MenuProvider | MenuResolver;
     private random: Random;
     private context?: { key: string; expires: number; candidates: Restaurant[]; resolvedLabel?: string };
     constructor(restaurants: RestaurantProvider, menus: MenuProvider | MenuResolver, random: Random = Math.random) { this.restaurants = restaurants; this.menus = menus; this.random = random; }
-    async recommend(preferences: SearchPreferences, learning: LearningContext, excludeId?: string): Promise<PricedMealRecommendation> {
+    async recommend(preferences: SearchPreferences, learning: LearningContext, excludeId?: string, progress?: (stage: RecommendationStage) => void): Promise<PricedMealRecommendation> {
         validatePreferences(preferences);
+        progress?.('finding');
         let discovered;
         const location = 'query' in preferences.location ? preferences.location.query : [preferences.location.latitude, preferences.location.longitude];
         const key = JSON.stringify([location, preferences.maxDistanceMeters]);
@@ -51,6 +53,7 @@ export class RecommendationEngine {
             remaining.splice(remaining.indexOf(restaurant), 1);
             let menu;
             try {
+                progress?.('menu');
                 if ('resolveMenu' in this.menus) {
                     const resolution = await this.menus.resolveMenu(restaurant);
                     if (resolution.status !== 'matched') continue;
@@ -67,6 +70,7 @@ export class RecommendationEngine {
             if (!isEligible(restaurant, preferences, learning, excludeId)) continue;
             if (!menu.items.some(item => ['main', 'combo', 'shared'].includes(item.role))) continue;
             pricedMeals++;
+            progress?.('building');
             const meal = buildMeal(menu, preferences, this.random);
             if (!meal) continue;
             const resolvedPreferences = structuredClone(preferences);

@@ -31,9 +31,8 @@ test('all generated meal templates respect cents, the reserved buffer, and servi
                     assert.equal(meal.bufferCents, budget * 20);
                     assert.equal(meal.totalCents, meal.subtotalCents + meal.bufferCents);
                     const anchors = meal.lines.filter(l => ['main', 'combo', 'shared'].includes(l.item.role));
-                    assert.equal(anchors.length, 1, 'No pile of unrelated entrées');
-                    assert(anchors[0].quantity * (anchors[0].item.serves ?? 1) >= people);
-                    if (anchors[0].item.role === 'combo')
+                    assert(anchors.reduce((sum, line) => sum + line.quantity * (line.item.serves ?? 1), 0) >= people);
+                    if (anchors.every(line => line.item.role === 'combo'))
                         assert(!meal.lines.some(l => ['side', 'drink'].includes(l.item.role)));
                     assert(Number.isSafeInteger(meal.totalCents));
                     checked++;
@@ -45,7 +44,8 @@ test('shared dishes cover the party, and an empty or side-only budget never crea
     const pizza = menuMap.get('slice-theory')!;
     const shared = mealCandidates(pizza, preferences(60, 4)).filter(m => m.lines[0].item.role === 'shared');
     assert(shared.length > 0);
-    assert(shared.every(m => m.lines[0].quantity * (m.lines[0].item.serves ?? 1) >= 4));
+    assert(shared.every(m => m.lines.filter(line => ['main', 'combo', 'shared'].includes(line.item.role))
+        .reduce((sum, line) => sum + line.quantity * (line.item.serves ?? 1), 0) >= 4));
     assert.equal(buildMeal(pizza, preferences(5)), null);
     const sideOnly = structuredClone(pizza);
     sideOnly.items = sideOnly.items.filter(i => i.role === 'side');

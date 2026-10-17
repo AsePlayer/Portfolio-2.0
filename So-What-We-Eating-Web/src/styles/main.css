@@ -16,6 +16,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
 }
@@ -127,9 +131,9 @@ button {
 }
 
 .brand-mark {
-  font-size: 54px;
-  color: var(--accent);
-  line-height: 1;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
 }
 
 .site-header nav {
@@ -242,6 +246,10 @@ main:focus {
 
 .button:hover:not(:disabled) {
   transform: translateY(-1px);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px) scale(.985);
 }
 
 .primary {
@@ -417,7 +425,8 @@ dialog::backdrop {
     gap: 7px;
   }
   .brand-mark {
-    font-size: 42px;
+    width: 36px;
+    height: 36px;
   }
   .site-header nav {
     gap: 18px;

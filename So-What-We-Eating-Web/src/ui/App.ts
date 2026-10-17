@@ -11,7 +11,8 @@ import { CONFIG } from '../domain/config.ts';
 import { DiscoveryError } from '../domain/Discovery.ts';
 import { nextRadius, radiusMiles, validRadius } from '../domain/Radius.ts';
 import { feedView } from '../views/feed.ts';
-import { resultView } from '../views/result.ts';
+import { resultView, receiptView, acceptButton } from '../views/result.ts';
+import { animateFeedback } from './motion.ts';
 import { historyView } from '../views/history.ts';
 import { settingsView } from '../views/settings.ts';
 import { aboutView } from '../views/about.ts';
@@ -33,6 +34,7 @@ export class App {
     private db: LocalDatabase;
     private engine: RecommendationEngine;
     private locationService: LocationService;
+    private displayedResultId?: string;
     private main = document.querySelector<HTMLElement>('#main')!;
     constructor(db: LocalDatabase, engine: RecommendationEngine, locationService: LocationService, restaurants: Restaurant[], runtime: {
         mode: 'live' | 'demo';
@@ -97,6 +99,11 @@ export class App {
         });
         if (focused)
             [...this.main.querySelectorAll<HTMLElement>('[data-focus]')].find(node => node.dataset.focus === focused)?.focus({ preventScroll: true });
+        if (this.route === 'result' && this.result && this.displayedResultId !== this.result.id) {
+            animateFeedback(this.main.querySelector('.restaurant-intro h1'), 'name');
+            animateFeedback(this.main.querySelector('.order-receipt'), 'receipt');
+            this.displayedResultId = this.result.id;
+        }
     }
     notice(text: string) {
         const node = document.querySelector<HTMLElement>('#notice')!;
@@ -154,7 +161,11 @@ export class App {
         this.render();
         this.notice('Finding nearby restaurants and checking menu prices…');
         try {
-            this.result = await this.engine.recommend(preferences, this.learning(), excludeId);
+            this.result = await this.engine.recommend(preferences, this.learning(), excludeId, stage => {
+                const copy = { finding: 'Finding your next meal…', menu: 'Checking the listed menu prices…', building: 'Doing the budget math. Building your order…' }[stage];
+                if (this.route === 'result') this.resultFeedback(copy);
+                else this.notice(copy);
+            });
             this.remember(this.result.restaurant);
             this.history.record('shown', this.result.restaurant.id);
             this.notice('Decision made. Here’s your order and the price.');
@@ -184,10 +195,25 @@ export class App {
         this.history.record('reroll-order', previous.restaurant.id);
         this.result = this.engine.differentOrder(previous);
         this.history.record('shown', this.result.restaurant.id);
-        this.notice(this.result.meal?.signature === previous.meal?.signature ? 'This is the only complete order that fits here. Try a higher budget or a different spot.' : 'Same spot. Fresh order.');
-        this.render();
-        document.querySelector<HTMLElement>('#order-title')?.setAttribute('tabindex', '-1');
-        document.querySelector<HTMLElement>('#order-title')?.focus({ preventScroll: true });
+        const stage = this.main.querySelector<HTMLElement>('.receipt-stage');
+        const scroll = { top: window.scrollY, left: window.scrollX };
+        if (stage) {
+            // Reserve only the space needed to avoid clamping a deeply scrolled
+            // viewport. Ordinary short receipts leave no growing blank gap.
+            const height = stage.getBoundingClientRect().height;
+            stage.style.minHeight = `${height}px`;
+            stage.replaceChildren(receiptView(this.result));
+            const receiptHeight = stage.firstElementChild!.getBoundingClientRect().height;
+            const outsideHeight = document.documentElement.scrollHeight - stage.getBoundingClientRect().height;
+            stage.style.minHeight = `${Math.ceil(Math.max(receiptHeight, scroll.top + window.innerHeight - outsideHeight))}px`;
+            this.main.querySelector('.accept-meal')?.replaceWith(acceptButton(this));
+            this.displayedResultId = this.result.id;
+            this.resultFeedback(this.result.meal.signature === previous.meal.signature
+                ? 'Only one complete order fits here. Try a higher budget or another spot.' : 'Same spot. Fresh order. Everyone’s fed.');
+            window.scrollTo({ ...scroll, behavior: 'instant' });
+            animateFeedback(stage.querySelector('.order-receipt'), 'receipt');
+            animateFeedback(this.main.querySelector('.reroll-icon'), 'reroll');
+        } else this.render();
     }
     async differentRestaurant() {
         if (!this.result || this.busy)
@@ -199,8 +225,15 @@ export class App {
         if (!this.result)
             return;
         const saved = this.history.accept(this.result);
-        this.notice(saved ? this.db.temporary ? 'Meal saved for this tab. Browser storage is unavailable.' : 'Good call. Saved to your recent meals.' : 'This meal is already in your history.');
-        this.render();
+        this.resultFeedback(saved ? this.db.temporary ? 'Meal saved for this tab. Browser storage is unavailable.' : 'Good call. Saved to your recent meals.' : 'This meal is already in your history.');
+        const accept = acceptButton(this);
+        this.main.querySelector('.accept-meal')?.replaceWith(accept);
+        animateFeedback(accept, 'stamp');
+    }
+    private resultFeedback(text: string) {
+        const status = this.main.querySelector('.decision-status');
+        if (status) status.textContent = text;
+        else this.notice(text);
     }
     private remember(restaurant: Restaurant) {
         const index = this.restaurants.findIndex(r => r.id === restaurant.id);

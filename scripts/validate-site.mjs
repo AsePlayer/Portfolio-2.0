@@ -40,16 +40,11 @@ try {
   if (JSON.stringify(schema.knowsAbout) !== JSON.stringify(data?.seo?.knowsAbout)) fail('JSON-LD knowsAbout differs from content.');
   const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]));
   const work = blocks.find((block) => block['@type'] === 'ItemList');
-  const categories = data?.capabilities?.categories || [];
-  if (work?.itemListElement?.length !== categories.length) fail('Capability structured data differs from content.');
-  categories.forEach((category, i) => {
-    const list = work?.itemListElement?.[i]?.item;
-    if (list?.name !== category.title || list?.url !== `${data.seo.url}#capability-${category.id}`) fail(`Structured capability ${category.id} is missing or stale.`);
-    if (list?.itemListElement?.length !== category.examples.length) fail(`Structured examples for ${category.id} differ from content.`);
-    category.examples.forEach((example, j) => {
-      const item = list?.itemListElement?.[j]?.item;
-      if (item?.name !== example.title || item?.abstract !== example.summary || item?.url !== `${data.seo.url}#work-${example.id}` || item?.author?.['@id'] !== schema['@id']) fail(`Structured example ${example.id} is missing, stale, or not linked to Ryan.`);
-    });
+  const studies = data?.selectedWork?.items?.filter(item => item.featured) || [];
+  if (work?.itemListElement?.length !== studies.length) fail('Professional work structured data differs from content.');
+  studies.forEach((study, i) => {
+    const item = work?.itemListElement?.[i]?.item;
+    if (item?.['@type'] !== 'CreativeWork' || item?.name !== study.title || item?.abstract !== study.summary || item?.url !== `${data.seo.url}#work-${study.id}` || item?.author?.['@id'] !== schema['@id']) fail(`Structured case study ${study.id} is missing, stale, or not linked to Ryan.`);
   });
 } catch { fail('JSON-LD metadata could not be parsed.'); }
 if (data?.seo) {
@@ -76,23 +71,26 @@ if (data?.person) {
 }
 if (/tel:|(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/i.test(html)) fail('Public HTML contains a phone number.');
 if (/\b(?:data\s+(?:(?:and|&amp;)\s+operations\s+)?analyst|(?:solutions?|data|salesforce)\s+architect|business\s+systems\s+analyst)\b/i.test(html)) fail('Public HTML contains an inflated role title.');
-if (html.indexOf('id="work"') > html.indexOf('id="experience"')) fail('Capabilities must appear before Experience.');
-if ((html.match(/class="capability-area"/g) || []).length !== 3) fail('Rendered portfolio must have three capability areas.');
-if (/<details\b/.test(html)) fail('The main portfolio must not render deep-dive disclosures.');
-if (/class="(?:work-card|case-details|audit-process|example-label|example-impact|tool-list|capability-nav|hero-panel|development-card)|<dt>(?:Problem|Investigation|Solution)<\/dt>/.test(html)) fail('Retired heavy portfolio markup remains.');
+if (html.indexOf('id="work"') > html.indexOf('id="experience"')) fail('Selected Professional Work must appear before Experience.');
+if ((html.match(/class="work-card"/g) || []).length !== 6) fail('Rendered portfolio must have six professional case studies.');
+if ((html.match(/<details class="case-study">/g) || []).length !== 6) fail('Each professional case study must have a native disclosure.');
+if (/class="(?:capability-area|work-example|audit-process|example-label|example-impact|tool-list|capability-nav|hero-panel|development-card)/.test(html)) fail('Retired portfolio markup remains.');
 if (ids.includes('impact') || ids.includes('resume') || /class="(?:impact-metric|example-scale|resume-panel)|<form\b/.test(html)) fail('Standalone metrics, scale badges, resume panels, and contact forms are retired.');
-if ((html.match(/class="work-example"/g) || []).length !== 9) fail('The portfolio must render nine proof examples.');
 const sectionOrder = ['home','work','experience',...(data?.projects ? ['projects'] : []),'education','skills','contact'];
 for (let i = 1; i < sectionOrder.length; i++) {
-  if (html.indexOf(`id="${sectionOrder[i-1]}"`) >= html.indexOf(`id="${sectionOrder[i]}"`)) fail('The portfolio section order must be Hero, Capabilities, Experience, Projects, Credentials, Toolkit, Contact.');
+  if (html.indexOf(`id="${sectionOrder[i-1]}"`) >= html.indexOf(`id="${sectionOrder[i]}"`)) fail('The portfolio section order must be Hero, Selected Professional Work, Experience, Independent Projects, Credentials, Toolkit, Contact.');
 }
-if ((html.match(/class="capability-tools"/g) || []).length !== 3) fail('Each capability must render exactly one shared technology line.');
-for (const category of data?.capabilities?.categories || []) {
-  if (!ids.includes(`capability-${category.id}`)) fail(`Capability ${category.id} is missing from prerendered HTML.`);
-  for (const example of category.examples || []) {
-    if (!ids.includes(`work-${example.id}`) || !html.includes(escapeHtml(example.title))) fail(`Example ${example.id} is missing from prerendered HTML.`);
+for (const study of data?.selectedWork?.items || []) {
+  if (!study.featured) {
+    if (ids.includes(`work-${study.id}`)) fail(`Unfeatured case study ${study.id} must not appear on the page.`);
+    continue;
+  }
+  if (!ids.includes(`work-${study.id}`)) fail(`Case study ${study.id} is missing from prerendered HTML.`);
+  for (const field of ['title', 'summary', 'challenge', 'role', 'approach', 'outcome']) {
+    if (!html.includes(escapeHtml(study[field]))) fail(`Case study ${study.id}.${field} is missing from prerendered HTML.`);
   }
 }
+if (/magazine circulation/i.test(html)) fail('Magazine Circulation must not appear as featured work.');
 if (/<noscript>|loading-section|Salesforce\s*(?:&amp;|&)\s*Data Operations Analyst/.test(html)) fail('Old JavaScript fallback content or Salesforce-first identity remains.');
 if (/\bfetch\(/.test(read('js/script.js'))) fail('Browser content must not depend on fetching JSON.');
 if (read('CNAME').trim() !== 'ryanscott.org') fail('CNAME must contain only ryanscott.org.');

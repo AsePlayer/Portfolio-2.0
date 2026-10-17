@@ -30,20 +30,13 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   };
   const workSchema = {
     '@context': 'https://schema.org', '@type': 'ItemList',
-    name: data.capabilities.headline,
-    itemListElement: data.capabilities.categories.map((category, index) => ({
+    name: data.selectedWork.headline,
+    itemListElement: data.selectedWork.items.filter(item => item.featured).map((item, index) => ({
       '@type': 'ListItem', position: index + 1,
       item: {
-        '@type': 'ItemList', name: category.title, description: category.intro,
-        url: `${data.seo.url}#capability-${category.id}`,
-        itemListElement: category.examples.map((example, exampleIndex) => ({
-          '@type': 'ListItem', position: exampleIndex + 1,
-          item: {
-            '@type': 'CreativeWork', name: example.title, abstract: example.summary,
-            url: `${data.seo.url}#work-${example.id}`,
-            author: {'@id': `${data.seo.url}#person`}
-          }
-        }))
+        '@type': 'CreativeWork', name: item.title, abstract: item.summary,
+        url: `${data.seo.url}#work-${item.id}`,
+        author: {'@id': `${data.seo.url}#person`}
       }
     }))
   };
@@ -52,7 +45,7 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   const values = {
     name: safe.person.name, initials: safe.person.initials, year, footer: safe.footer,
     navigation: safe.nav.map((item) => `<li><a href="${item.href}"${newTabAttributes(item.href)}>${item.label}</a></li>`).join(''),
-    content: [heroSection(safe), capabilitiesSection(safe.capabilities), experienceSection(safe.experience), projectsSection(safe.projects),
+    content: [heroSection(safe), selectedWorkSection(safe.selectedWork), experienceSection(safe.experience), projectsSection(safe.projects),
       developmentSection(safe.experience.development),
       skillsSection(safe.skills), contactSection(safe)].join(''),
     metadata: `<title>${safe.seo.title}</title>
@@ -82,23 +75,32 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
   }).replace(/\r\n/g, '\n').replace(/[\t ]+$/gm, '');
 }
 
-function capabilitiesSection(section) {
+function selectedWorkSection(section) {
   return `<section id="work" class="section work-section" aria-labelledby="work-heading">
     <div class="container">
       ${sectionHeading(section.eyebrow || '', section.headline, 'work-heading')}
       ${section.intro ? `<p class="section-intro">${section.intro}</p>` : ''}
-      <div class="capability-list">
-        ${section.categories.map((category) => `<section id="capability-${category.id}" class="capability-area" aria-labelledby="capability-${category.id}-heading">
-          <header class="capability-heading">
-            <h3 id="capability-${category.id}-heading">${category.title}</h3>
-            <p>${category.intro}</p>
-          </header>
-          <ul class="example-grid">
-            ${category.examples.map(exampleMarkup).join('')}
-          </ul>
-          <p class="capability-tools" aria-label="Technology for ${category.title}">${category.technologies.join(' · ')}</p>
-        </section>`).join('')}
-      </div>
+      <ul class="work-grid">
+        ${section.items.filter(item => item.featured).map(item => `<li>
+          <article id="work-${item.id}" class="work-card" aria-labelledby="work-${item.id}-heading">
+            <p class="case-context">${item.organization} · ${item.category}</p>
+            <h3 id="work-${item.id}-heading">${item.title}</h3>
+            <p class="case-summary">${item.summary}</p>
+            <ul class="case-technologies" aria-label="Tools and methods">
+              ${item.technologies.map(technology => `<li>${technology}</li>`).join('')}
+            </ul>
+            <details class="case-study">
+              <summary>Read case study<span class="visually-hidden">: ${item.title}</span></summary>
+              <dl class="case-body">
+                <dt>Challenge</dt><dd>${item.challenge}</dd>
+                <dt>Ryan’s role</dt><dd>${item.role}</dd>
+                <dt>Approach</dt><dd>${item.approach}</dd>
+                <dt>Outcome</dt><dd>${item.outcome}</dd>
+              </dl>
+            </details>
+          </article>
+        </li>`).join('')}
+      </ul>
     </div>
   </section>`;
 }
@@ -134,13 +136,6 @@ function projectsSection(section) {
       </ul>
     </div>
   </section>`;
-}
-
-function exampleMarkup(example) {
-  return `<li id="work-${example.id}" class="work-example" aria-labelledby="example-${example.id}-heading">
-    <h4 id="example-${example.id}-heading">${example.title}</h4>
-    <p class="example-summary">${example.summary}</p>
-  </li>`;
 }
 
 const icons = {

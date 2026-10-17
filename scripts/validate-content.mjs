@@ -16,12 +16,6 @@ export function validateContent(data, root) {
     return value;
   };
   const strings = (value, label) => array(value, label).forEach((item, i) => text(item, `${label}[${i}]`));
-  const sentence = (value, label, limit = 240) => {
-    text(value, label);
-    if (typeof value !== 'string') return;
-    const sentences = [...new Intl.Segmenter('en', {granularity:'sentence'}).segment(value)].filter((item) => item.segment.trim());
-    if (sentences.length !== 1 || value.length > limit) fail(`${label} must contain one short sentence (at most ${limit} characters).`);
-  };
   const https = (value, label) => {
     try {
       const url = new URL(value);
@@ -85,35 +79,33 @@ export function validateContent(data, root) {
       if (item.link.href !== '') https(item.link.href, `credential[${i}].link.href`);
     }
   });
-  if (data.selectedWork !== undefined) fail('selectedWork is retired; use capabilities.categories with compact examples.');
-  fields(data.capabilities, 'capabilities', ['headline']);
-  for (const field of ['eyebrow', 'intro']) if (data.capabilities?.[field] !== undefined) text(data.capabilities[field], `capabilities.${field}`);
-  const categoryIds = new Set();
-  const exampleIds = new Set();
-  const categories = array(data.capabilities?.categories, 'capabilities.categories');
-  if (categories.length !== 3) fail('capabilities.categories must contain exactly three capability areas.');
-  categories.forEach((category, i) => {
-    const label = `capabilities.categories[${i}]`;
-    fields(category, label, ['title', 'intro']);
-    sentence(category?.intro, `${label}.intro`, 180);
-    strings(category?.technologies, `${label}.technologies`);
-    if (Array.isArray(category?.technologies) && category.technologies.length > 6) fail(`${label}.technologies must contain at most six tools in one capability-level line.`);
-    identifier(category?.id, `${label}.id`);
-    if (categoryIds.has(category?.id)) fail(`Duplicate capability identifier: ${category?.id}`);
-    categoryIds.add(category?.id);
-    const items = array(category?.examples, `${label}.examples`);
-    if (items.length !== 3) fail(`${label}.examples must contain three strong proof examples.`);
-    items.forEach((item, j) => {
-      const exampleLabel = `${label}.examples[${j}]`;
-      fields(item, exampleLabel, ['title', 'summary']);
-      sentence(item?.summary, `${exampleLabel}.summary`);
-      identifier(item?.id, `${exampleLabel}.id`);
-      if (exampleIds.has(item?.id)) fail(`Duplicate example identifier: ${item?.id}`);
-      exampleIds.add(item?.id);
-      for (const field of ['metric', 'impact', 'technologies', 'details', 'challenge', 'investigation', 'solution', 'evidence', 'skills', 'featured', 'process']) {
-        if (item?.[field] !== undefined) fail(`${exampleLabel}.${field} is retired; use a title and one sentence with useful scale in context. Technologies belong to the capability.`);
-      }
-    });
+  if (data.capabilities !== undefined) fail('capabilities is retired; use selectedWork.items for professional case studies.');
+  fields(data.selectedWork, 'selectedWork', ['eyebrow', 'headline', 'intro']);
+  const workIds = new Set();
+  const featuredIds = new Set();
+  const work = array(data.selectedWork?.items, 'selectedWork.items');
+  if (work.filter(item => item?.featured === true).length !== 6) fail('selectedWork.items must contain exactly six featured professional case studies.');
+  work.forEach((item, i) => {
+    const label = `selectedWork.items[${i}]`;
+    fields(item, label, ['id', 'title', 'organization', 'category', 'summary']);
+    identifier(item?.id, `${label}.id`);
+    if (workIds.has(item?.id)) fail(`Duplicate professional work identifier: ${item?.id}`);
+    workIds.add(item?.id);
+    if (typeof item?.featured !== 'boolean') fail(`${label}.featured must be a boolean.`);
+    if (item?.featured) {
+      featuredIds.add(item.id);
+      fields(item, label, ['challenge', 'role', 'approach', 'outcome']);
+      if (/magazine|circulation/i.test(`${item.id} ${item.title}`)) fail('Magazine Circulation must not be a featured professional case study.');
+    }
+    for (const field of ['summary', 'challenge', 'role', 'approach', 'outcome']) {
+      if (item?.[field] !== undefined && typeof item[field] !== 'string') fail(`${label}.${field} must be a string.`);
+      if (typeof item?.[field] === 'string' && item[field].length > (field === 'summary' ? 400 : 600)) fail(`${label}.${field} must stay concise.`);
+    }
+    strings(item?.technologies, `${label}.technologies`);
+    if (Array.isArray(item?.technologies) && item.technologies.length > 6) fail(`${label}.technologies must contain at most six tools or methods.`);
+    for (const field of ['metric', 'impact', 'details']) {
+      if (item?.[field] !== undefined) fail(`${label}.${field} is unsupported; use the case-study fields without standalone metrics.`);
+    }
   });
   const projectIds = new Set();
   if (data.projects !== undefined) {
@@ -157,8 +149,7 @@ export function validateContent(data, root) {
   text(data.footer, 'footer');
   const targets = new Set(['#home', '#experience', '#work', '#education', '#skills', '#contact']);
   if (data.projects) targets.add('#projects');
-  categoryIds.forEach((id) => targets.add(`#capability-${id}`));
-  exampleIds.forEach((id) => targets.add(`#work-${id}`));
+  featuredIds.forEach((id) => targets.add(`#work-${id}`));
   if (data.person?.resume) {
     const resume = data.person.resume;
     if (typeof resume !== 'string' || !/\.pdf$/i.test(resume) || path.isAbsolute(resume) || resume.includes('\\') || resume.split('/').includes('..')) {

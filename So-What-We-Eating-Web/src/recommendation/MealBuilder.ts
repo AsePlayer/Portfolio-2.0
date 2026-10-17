@@ -26,8 +26,10 @@ export function mealCandidates(menu: Menu, preferences: SearchPreferences): Meal
         const base = [{ item: anchor, quantity: Math.ceil(people / (anchor.role === 'shared' ? anchor.serves ?? 1 : 1)) }];
         add(base);
         // A combo already includes accompaniments. Never stack another main onto it.
-        const sides = anchor.role === 'combo' ? [] : menu.items.filter(i => i.role === 'side');
-        const drinks = anchor.role === 'combo' ? [] : menu.items.filter(i => i.role === 'drink');
+        // Large real menus must not create millions of side/drink combinations on a phone.
+        const extras = (role: string) => menu.items.filter(i => i.role === role).sort((a, b) => a.price - b.price).slice(0, 8);
+        const sides = anchor.role === 'combo' ? [] : extras('side');
+        const drinks = anchor.role === 'combo' ? [] : extras('drink');
         for (const side of sides) {
             const withSide = [...base, { item: side, quantity: people }];
             add(withSide);
@@ -37,7 +39,7 @@ export function mealCandidates(menu: Menu, preferences: SearchPreferences): Meal
         for (const drink of drinks)
             add([...base, { item: drink, quantity: people }]);
         // One starter per two diners; one dessert per diner. Extras are optional templates.
-        for (const extra of menu.items.filter(i => ['appetizer', 'dessert'].includes(i.role))) {
+        for (const extra of [...extras('appetizer'), ...extras('dessert')]) {
             add([...base, { item: extra, quantity: extra.role === 'appetizer' ? Math.ceil(people / 2) : people }]);
         }
     }

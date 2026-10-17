@@ -64,7 +64,7 @@ node scripts/validate-site.mjs
 
 The source stays in `So-What-We-Eating-Web/`. The sync command builds it, stages the generated app, adds a return link to `/#projects`, versions the modified offline shell, and replaces only its marked `projects/what-we-eating/` directory. It refuses an unmarked or linked destination. Do not edit generated files by hand.
 
-The portfolio's Pages workflow builds/tests this checked-in app source on every deployment. Real discovery defaults to free OpenStreetMap data through Overpass and Photon, with no key, billing account, or Worker deployment. Google is an explicit optional provider; see `So-What-We-Eating-Web/docs/LIVE_PROVIDERS.md`. `?mode=demo` selects fictional development data. Source and a generated snapshot are committed together for local previews. The app's scoped service worker cannot control the portfolio or stretch finder.
+The portfolio's Pages workflow builds/tests this checked-in app source on every deployment. The live app follows the original AllMenus menu-first flow with Photon geocoding: named items, exact listed unit prices, and a complete order inside the party budget. No key, billing account, or backend deployment is required; see `So-What-We-Eating-Web/docs/LIVE_PROVIDERS.md`. `?mode=demo` selects fictional development data. Source and a generated snapshot are committed together for local previews. The app's scoped service worker cannot control the portfolio or stretch finder.
 
 ## Add another app
 

@@ -52,7 +52,7 @@ export async function handleRequest(request: Request, env: Env, upstream: typeof
     }
     catch (error) {
         const code = error instanceof DiscoveryError ? error.code : 'unavailable';
-        const status = { invalid: 400, location: 422, ambiguous: 422, quota: 429, timeout: 504, configuration: 503, unavailable: 503 }[code];
+        const status = { invalid: 400, location: 422, ambiguous: 422, coverage: 422, quota: 429, timeout: 504, configuration: 503, unavailable: 503 }[code];
         if (code === 'quota')
             headers.set('retry-after', '60');
         return json({ schemaVersion: 2, error: { code } }, status);

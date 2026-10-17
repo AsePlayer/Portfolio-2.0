@@ -15,14 +15,9 @@ const spot = (id: number, tags: Record<string, string> = {}, patch = {}) => ({
     tags: { amenity: 'restaurant', name: `Real-data shape ${id}`, cuisine: 'thai;noodle', opening_hours: 'Mo-Su 18:00-02:00', ...tags }, ...patch,
 });
 
-test('normal runtime is a configured free provider even with a leftover Google URL', async () => {
-    for (const endpoint of ['', 'https://old-worker.example/discover']) {
-        const runtime = await createRuntime(undefined, endpoint);
-        assert.equal(runtime.mode, 'live');
-        assert.equal(runtime.configured, true);
-        assert(runtime.restaurants instanceof OpenStreetMapProvider);
-        assert.deepEqual(runtime.catalog, []);
-    }
+test('legacy open-data adapter remains independent from the priced-meal runtime', () => {
+    assert(new OpenStreetMapProvider());
+    assert.throws(() => new OpenStreetMapProvider('http://insecure.example/'));
 });
 test('free discovery geocodes only on submit, normalizes/deduplicates, ignores unreliable hours, respects radius, and reuses the pool on reroll', async () => {
     const calls: { url: string; body: string }[] = [];
@@ -41,12 +36,7 @@ test('free discovery geocodes only on submit, normalizes/deduplicates, ignores u
     assert(found.every(r => r.source === 'openstreetmap' && r.distanceMeters! <= 8047));
     assert.equal(new URL(calls[0].url).searchParams.get('countrycode'), 'US');
     assert(new URLSearchParams(calls[1].body).get('data')?.includes('around:8047'));
-    const preferences = { ...query, budget: 35, people: 1, bufferPercent: 0.2, diningMode: 'unknown' as const, adventure: 'balanced' as const };
-    const engine = new RecommendationEngine(provider, { getMenu: async () => null }, () => 0);
-    const first = await engine.recommend(preferences, emptyLearning());
-    const second = await engine.recommend(preferences, emptyLearning(), first.restaurant.id);
-    assert.notEqual(first.restaurant.id, second.restaurant.id);
-    assert.equal(first.meal, null);
+    await provider.searchNearby(query);
     assert.equal(calls.length, 2);
     assert(found.every(r => r.isOpen === undefined));
     await provider.searchNearby(query);

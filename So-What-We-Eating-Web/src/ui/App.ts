@@ -1,5 +1,5 @@
 import type { Restaurant } from '../domain/Restaurant.ts';
-import type { MealRecommendation } from '../domain/MealRecommendation.ts';
+import type { PricedMealRecommendation } from '../domain/MealRecommendation.ts';
 import type { DiningLocation, SearchPreferences } from '../domain/SearchPreferences.ts';
 import type { LocationService } from '../location/LocationService.ts';
 import { RecommendationEngine, RecommendationFailure } from '../recommendation/RecommendationEngine.ts';
@@ -22,7 +22,7 @@ export class App {
     readonly preferences: PreferenceStore;
     readonly settings: SettingsStore;
     readonly restaurants: Restaurant[];
-    result?: MealRecommendation;
+    result?: PricedMealRecommendation;
     browserLocation?: DiningLocation;
     busy = false;
     draftLocation = '';
@@ -55,7 +55,7 @@ export class App {
     start() {
         document.body.dataset.providerMode = this.mode;
         const banner = document.querySelector<HTMLElement>('.demo-banner')!;
-        banner.replaceChildren(el('span', { className: 'status-dot', 'aria-hidden': true }), this.mode === 'demo' ? 'EXPLICIT DEMO MODE' : 'YOUR NEXT MEAL. NEARBY.', el('span', { className: 'banner-detail' }, this.mode === 'demo' ? 'Fictional places and sample menus.' : 'One good call, wherever you are.'), el('a', { href: '#about' }, 'About & privacy ↗'));
+        banner.replaceChildren(el('span', { className: 'status-dot', 'aria-hidden': true }), this.mode === 'demo' ? 'EXPLICIT DEMO MODE' : 'REAL MENU. REAL PRICES.', el('span', { className: 'banner-detail' }, this.mode === 'demo' ? 'Fictional places and sample menus.' : 'One order. Inside your budget.'), el('a', { href: '#about' }, 'About & privacy ↗'));
         addEventListener('hashchange', () => this.readRoute());
         this.db.addEventListener('storagefailure', () => this.storageStatus());
         document.querySelector('.skip-link')!.addEventListener('click', event => { event.preventDefault(); this.main.focus(); });
@@ -152,17 +152,17 @@ export class App {
     private async search(preferences: SearchPreferences, excludeId?: string) {
         this.busy = true;
         this.render();
-        this.notice('Consulting the stomach… making one good call.');
+        this.notice('Reading menu prices… finding an order inside your budget.');
         try {
             this.result = await this.engine.recommend(preferences, this.learning(), excludeId);
             this.remember(this.result.restaurant);
             this.history.record('shown', this.result.restaurant.id);
-            this.notice('Decision made. Your next spot is ready.');
+            this.notice('Decision made. Here’s your order and the price.');
             this.navigate('result');
         }
         catch (error) {
             this.notice(error instanceof RecommendationFailure || error instanceof DiscoveryError ? error.message : 'That decision didn’t come together. Check the basics and try again.');
-            if (error instanceof RecommendationFailure && error.code === 'empty') {
+            if (error instanceof RecommendationFailure && ['empty', 'menus'].includes(error.code)) {
                 const expanded = nextRadius(preferences.maxDistanceMeters);
                 if (expanded)
                     document.querySelector('#notice')!.append(button(`Expand to ${radiusMiles(expanded)} miles`, () => { this.settings.update({ radiusMeters: expanded }); void this.search({ ...preferences, maxDistanceMeters: expanded }, excludeId); }, 'text-button'));

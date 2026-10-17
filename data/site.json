@@ -292,7 +292,7 @@
       {
         "id": "what-we-eating",
         "title": "So What We Eating?",
-        "summary": "A location-aware restaurant decision tool for when nobody wants to decide where to eat. Use your current location, search radius, budget, and preferences to narrow nearby choices and get a practical recommendation.",
+        "summary": "A location-aware restaurant decision tool for when nobody wants to decide where to eat. Use your location, search radius, party size, and budget to get a nearby restaurant and an itemized order with real menu prices that fits.",
         "technologies": [
           "TypeScript",
           "Vite",

@@ -1,13 +1,11 @@
 # Privacy implementation
 
-The served policy is [public/privacy.html](public/privacy.html), linked with [terms](public/terms.html) from the app.
+Browser location is requested only on action. Photon receives typed locations or optional coordinates to resolve a US city. The browser then requests city listings and candidate menu pages directly from AllMenus, with credentials omitted. Operators receive ordinary network request data, including IP addresses.
 
-The default free provider sends typed queries to Photon and restaurant-search coordinates/radius to Overpass only on action. During an Overpass outage, coordinates/radius may also go to Photon’s restaurant index. Provider responses and resolved locations have a short, bounded, in-memory cache to reduce public-service load. They disappear on reload. Public service operators receive network requests, including IP addresses, under their policies.
+Parsed responses have a bounded 15-minute in-memory cache; no raw menu HTML is stored. Exact user coordinates and typed searches never enter persistent settings or history. The provider retains only the current search’s origin mapping in memory.
 
-Exact user coordinates and typed queries never enter persistent storage. History saves live provider IDs, party size, actions, and time; live names, addresses, ratings, and coordinates are not retained. The existing payload-v2 migration strips old Google snapshots and saved location labels. Fictional demo snapshots remain separate. The service worker caches only app-owned shell assets and the explicit demo; external API traffic is outside its scope.
+We ate here saves the chosen AllMenus restaurant name/ID, selected item names and unit prices, planned total, party size, and time locally. Preferences, favorites, exclusions, and a limited interaction history also stay on this browser. Legacy Google/OSM visits retain IDs and user actions only. The payload-v2 migration strips saved user-location labels, old Google snapshots, and obsolete hours toggles.
 
-Google/Cloudflare processing applies only when the operator deliberately selects the optional Google provider. Its Worker logs no application/location payloads and its Google responses are memory-only. No key or billing setup is needed for the default.
+The service worker caches app-owned shell assets and the original explicit-demo catalog. External geocoding and menu requests never enter its caches. There is no account, analytics, server-side history, or cloud sync. No Google/Cloudflare discovery integration is active.
 
-See [provider details and official policy links](docs/LIVE_PROVIDERS.md).
-
-Opening-hours controls/statuses are currently removed. Migration discards the old `openNow` setting without clearing other preferences or visit history.
+Public disclosures are in `public/privacy.html` and `public/terms.html`, linked from About. Clear my local data removes this app’s records; browser site-data controls also remove the installed shell.

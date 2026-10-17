@@ -81,16 +81,13 @@ test('excluded, avoided, far-away, and unaffordable restaurants cannot win', asy
         assert(!result.restaurant.cuisines.includes('Italian'));
     }
     await assert.rejects(engine().recommend(preferences(10, 8), emptyLearning()), (e: unknown) => e instanceof RecommendationFailure && e.code === 'budget');
-    await assert.rejects(engine().recommend({ ...preferences(), location: { ...DEMO_CENTER, latitude: 0, longitude: 0, label: 'Far away', source: 'manual' } }, emptyLearning()), /No suitable spots/);
+    await assert.rejects(engine().recommend({ ...preferences(), location: { ...DEMO_CENTER, latitude: 0, longitude: 0, label: 'Far away', source: 'manual' } }, emptyLearning()), /No restaurants found/);
 });
-test('missing, malformed, and failed menus preserve restaurant-only discovery with no invented total', async () => {
+test('missing, malformed, and failed menus cannot become unpriced successful recommendations', async () => {
     const only = [restaurants.find(r => r.id === 'basil-street')!];
     for (const getMenu of [async () => null, async () => { throw new Error('Network failure'); }, async () => ({ broken: true }) as unknown as Promise<Menu>]) {
         const e = new RecommendationEngine(new FixtureRestaurantProvider(only), { getMenu });
-        const result = await e.recommend(preferences(), emptyLearning());
-        assert.equal(result.restaurant.id, 'basil-street');
-        assert.equal(result.meal, null);
-        assert.equal(result.menuStatus, 'unavailable');
+        await assert.rejects(e.recommend(preferences(), emptyLearning()), (error: unknown) => error instanceof RecommendationFailure && error.code === 'menus');
     }
 });
 test('recent rejection reduces weight temporarily; favorites help but do not remove randomness', () => {

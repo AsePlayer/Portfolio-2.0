@@ -8,7 +8,7 @@ import { App } from './ui/App.ts';
 import { button } from './ui/dom.ts';
 const base = new URL(import.meta.env.BASE_URL, document.baseURI);
 const mode = new URLSearchParams(location.search).get('mode') ?? import.meta.env.VITE_DISCOVERY_MODE;
-const runtime = await createRuntime(mode, import.meta.env.VITE_RESTAURANT_PROXY_URL ?? '', import.meta.env.VITE_RESTAURANT_PROVIDER || 'openstreetmap', import.meta.env.VITE_OVERPASS_URL, import.meta.env.VITE_PHOTON_URL);
+const runtime = await createRuntime(mode, import.meta.env.VITE_PHOTON_URL);
 const app = new App(new LocalDatabase(base.pathname), new RecommendationEngine(runtime.restaurants, runtime.menus), new BrowserLocationService(), runtime.catalog, {
     mode: runtime.mode, configured: runtime.configured, lookup: runtime.restaurants.lookup?.bind(runtime.restaurants),
 });

@@ -49,7 +49,7 @@ function migrate(value: any): StoredData {
             return { ...base, provider: 'openstreetmap', sourceId: h.restaurantId.slice(4), cuisines: [], order: [], totalCents: null };
         if (typeof h.restaurantName !== 'string' || !strings(h.cuisines) || !strings(h.order) || (h.totalCents !== null && !Number.isSafeInteger(h.totalCents)))
             throw new Error('Invalid fixture history');
-        return { ...base, provider: 'fixture', restaurantName: h.restaurantName, cuisines: h.cuisines, order: h.order, totalCents: h.totalCents, isDemo: true };
+        return { ...base, provider: h.restaurantId.startsWith('allmenus:') ? 'allmenus' : 'fixture', sourceId: h.restaurantId.startsWith('allmenus:') ? h.restaurantId.slice(9) : undefined, restaurantName: h.restaurantName, cuisines: h.cuisines, order: h.order, totalCents: h.totalCents, isDemo: !h.restaurantId.startsWith('allmenus:') };
     });
     data.events = value.events.slice(0, CONFIG.eventLimit).map((e: any) => {
         if (!e || typeof e.restaurantId !== 'string' || typeof e.id !== 'string' || !Number.isFinite(Date.parse(e.at)) || !['shown', 'reject', 'reroll-order', 'directions', 'menu', 'accepted'].includes(e.type))

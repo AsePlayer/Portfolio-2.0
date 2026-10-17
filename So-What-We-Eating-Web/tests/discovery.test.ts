@@ -17,14 +17,10 @@ const env: Env = { GOOGLE_MAPS_API_KEY: 'server-only-test-key', ALLOWED_ORIGINS:
 const place = (id: string, patch: Record<string, unknown> = {}) => ({ id, displayName: { text: `Test ${id}` }, formattedAddress: '1 Example Road', location: point, types: ['restaurant', 'thai_restaurant'], businessStatus: 'OPERATIONAL', currentOpeningHours: { openNow: true }, priceLevel: 'PRICE_LEVEL_MODERATE', rating: 4.5, userRatingCount: 22, websiteUri: 'https://restaurant.example/menu', attributions: [{ provider: 'Example credit', providerUri: 'https://credit.example/' }], ...patch });
 const discover = (body: unknown, origin = allowed) => new Request('https://worker.example/discover', { method: 'POST', headers: { origin, 'content-type': 'application/json' }, body: JSON.stringify(body) });
 const query = { schemaVersion: 2, location: point, radiusMeters: 8047, openNow: true };
-test('unconfigured and invalid live configuration never silently become fixtures', async () => {
-    for (const endpoint of ['', 'not-a-url']) {
-        const runtime = await createRuntime(undefined, endpoint, 'google-places');
-        assert.equal(runtime.mode, 'live');
-        assert.equal(runtime.configured, false);
-        assert.deepEqual(runtime.catalog, []);
-        await assert.rejects(runtime.restaurants.searchNearby({ location: parseLocation('Claremont, CA'), maxDistanceMeters: 8047, openNow: true }), /isn’t connected/);
-    }
+test('legacy Google configuration errors remain explicit and do not turn into fictional data', async () => {
+    const provider = new GooglePlacesProvider();
+    await assert.rejects(provider.searchNearby({ location: parseLocation('Claremont, CA'), maxDistanceMeters: 8047 }), /isn’t connected/);
+    assert.throws(() => new GooglePlacesProvider('not-a-url'));
 });
 test('browser adapter independently deduplicates normalized records and rejects a false distance outside the circle', async () => {
     const near = { id: 'google:near', sourceId: 'near', source: 'google-places', name: 'Near', cuisines: ['Thai'], ...point, isOpen: true, distanceMeters: 0 };
@@ -108,7 +104,7 @@ test('CORS, request size, radius/version validation, missing secret, and rate li
     assert.equal((await handleRequest(discover(query), { ...env, GOOGLE_MAPS_API_KEY: '' }, never)).status, 503);
     assert.equal((await handleRequest(discover(query), { ...env, IP_LIMITER: { limit: async () => ({ success: false }) } }, never)).status, 429);
 });
-test('client recomputes circular distance, deduplicates IDs, and keeps live rerolls in the same request without a menu', async () => {
+test('client recomputes circular distance and keeps reroll inputs while the engine requires priced menus', async () => {
     const live = [place('one'), place('two'), place('far', { location: { ...point, latitude: point.latitude + 0.2 } })];
     const bodies: any[] = [];
     const client = new GooglePlacesProvider('https://worker.example/discover', (async (_url: unknown, init: RequestInit) => {
@@ -116,10 +112,10 @@ test('client recomputes circular distance, deduplicates IDs, and keeps live rero
         bodies.push(body);
         return handleRequest(discover(body), env, (async () => Response.json({ places: live })) as typeof fetch);
     }) as typeof fetch);
-    const engine = new RecommendationEngine(client, { getMenu: async () => null }, () => 0);
+    const engine = new RecommendationEngine(client, { getMenu: async restaurant => ({ schemaVersion: 1, restaurantId: restaurant.id, restaurantName: restaurant.name, source: 'synthetic-test', updatedAt: new Date().toISOString(), currency: 'USD', items: [{ id: 'main', name: 'Test entree', price: 12.25, role: 'main' }] }) }, () => 0);
     const preferences = { location: parseLocation(`${point.latitude},${point.longitude}`), budget: 35, people: 1, bufferPercent: 0.2, diningMode: 'unknown' as const, adventure: 'balanced' as const, maxDistanceMeters: 3219, openNow: true };
     const first = await engine.recommend(preferences, emptyLearning());
-    assert.equal(first.meal, null);
+    assert.equal(first.meal.subtotalCents, 1225);
     assert.equal(first.restaurant.id, 'google:one');
     const next = await engine.recommend(first.preferences, emptyLearning(), first.restaurant.id);
     assert.equal(next.restaurant.id, 'google:two');

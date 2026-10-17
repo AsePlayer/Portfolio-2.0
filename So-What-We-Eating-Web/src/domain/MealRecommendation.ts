@@ -24,3 +24,8 @@ export interface MealRecommendation {
     menuStatus: 'available' | 'unavailable' | 'unaffordable';
     preferences: SearchPreferences;
 }
+export interface PricedMealRecommendation extends MealRecommendation {
+    menu: Menu;
+    meal: Meal;
+    menuStatus: 'available';
+}

@@ -1,15 +1,15 @@
 # Verification
 
-Current checks use Node 24 and Chrome. No Google key, billing account, or Worker deployment is required.
+Current checks use Node 24 and Chrome. No API key, billing account, or Worker deployment is required.
 
-- `npm run verify`: 28 app tests, menu/content validation, browser/optional-Worker type checks, production build, and static/PWA artifact checks.
-- Portfolio: 21 tests, build, and validation, including Selected Work versus Independent Projects, optional type labels, safe text, compact credentials, and retained professional metadata.
-- `npm run check:browser`: free-default and optional-Google browser suites cover location success/denial, typed input, 2/30-mile radius, explicit expansion, privacy-safe saved visits, cached rerolls, no fabricated menu totals, external handoffs, mobile overflow, explicit demo, temporary storage, offline shell, updates, and subpath isolation.
-- Hours regression checks confirm no Open now input, no open/closed/unknown-hours result labels, no extra include-unknown action, and no persisted legacy toggle. Photon outage fallback returns a restaurant on the first search without schedule data.
-- The optional Worker v2 opening-status contract still has compatibility tests, but the current browser always sends false. The free schedule parser and timezone package have been removed.
+- `npm run verify`: 33 app tests, content validation, browser/retained-Worker type checks, production build, and static/PWA artifact checks.
+- Portfolio: 21 tests, build, and artifact validation.
+- `npm run check:browser`: the production app reads controlled city/menu HTML through its real parser. Checks cover absent/ranged/conflicting prices, restricted specials, out-of-radius venues, unaffordable orders, quantities, party totals, both rerolls, same-order cache reuse, history across reload, typed and browser location, source links, explicit demo isolation, and 375/390/430px overflow.
+- Failure checks require no result for a budget too small or a pool without usable prices. No restaurant-only fallback and no Open now control.
+- `node scripts/browser-pricing-check.mjs --live`: unmocked production-browser search. Each displayed item and price is compared against a separately fetched actual source menu; subtotal, buffer, and budget arithmetic are verified. Both rerolls and persisted meal history are exercised.
 
-Browser reports/screenshots live in ignored `artifacts/`. The live smoke check is `node scripts/browser-free-check.mjs --live`, which uses the ordinary production build and real public services. Public Overpass availability can vary; Photon can supply real OSM venues without hours data. No live opening-hours claim is made.
+Unmocked checks have succeeded for ZIPs 91711 and 10001. The 91711 run selected Eureka!: Cobb Salad at the listed $16.25, with a $7 reserved buffer and a $23.25 planned total inside a $35 budget. The source price was independently matched, not supplied by a test fixture. The New York check also led to exclusion of build-your-own offers so recommendations contain a named, complete order.
 
-The current unmocked ZIP 91711 search returned a real restaurant directly, without a second hours-related action. A reroll reused the cached venue pool. The portfolio preview also passed 375–1440px light/dark layout checks, keyboard/menu/theme behavior, no-JavaScript content, résumé PDF delivery, both embedded app launches, and return links with no page errors.
+Reports and screenshots are ignored under `artifacts/`. `PRICING_TEST_LOCATION` selects another live test query. `PRICING_TEST_URL` targets a deployed app instead of the local production build.
 
-Physical mobile installation, exhaustive nationwide coverage, and a full screen-reader audit remain manual checks. Real restaurant menus/prices are not bundled; the explicit fictional demo remains separate and works offline after shell installation.
+Live source availability, menu freshness, and nationwide coverage are not guaranteed by these checks. Prices remain the numbers published on the linked menu. Physical mobile installation and a full screen-reader audit remain manual checks.

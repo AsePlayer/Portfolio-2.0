@@ -2,7 +2,7 @@
 
 ## Current portfolio integration
 
-Live discovery defaults to free OpenStreetMap data through Overpass and Photon. No repository variable, API key, billing account, or Worker deployment is required. Google remains an explicit optional integration; see [provider details](docs/LIVE_PROVIDERS.md). `?mode=demo` explicitly selects fictional development data.
+Live mode uses AllMenus menus and prices with Photon location resolution. Every successful result includes a complete priced order inside the party budget. No repository variable, API key, billing account, or backend deployment is required; see [provider details](docs/LIVE_PROVIDERS.md). `?mode=demo` explicitly selects fictional development data.
 
 The portfolio card opens **`/projects/what-we-eating/`**. App source stays in this folder, and `projects/what-we-eating/` contains only a generated snapshot. From this folder, run `npm run portfolio:sync` to build and refresh that snapshot. For another portfolio location, use `npm run portfolio:sync -- --portfolio "path/to/Portfolio 2.0"`.
 

@@ -1,24 +1,24 @@
-# Normalized menus and future acquisition
+# Menu prices and normalization
 
-`content/menus/menu.schema.json` describes menu schema v1. `src/catalog/validate.ts` is the dependency-free runtime/build validator and also enforces cross-item uniqueness and safe cent arithmetic. `content/menus/index.json` lists the stable restaurant IDs with detailed menus. Each has a matching `restaurants/<id>.json`. Missing menus are intentional and do not fail discovery; invalid committed menus fail the build.
+## Live menus
 
-All committed content is original fictional test data, including names, sample coordinates/addresses, prices, and descriptions. None was copied from a copyrighted menu dataset or obtained by scraping. The fixture source is `original-fictional-fixture`; `updatedAt` records this snapshot. A `sourceUrl` is optional for original data, required by convention whenever real externally sourced content is added.
+`AllMenusProvider` restores the original application’s menu-first source flow. Public city and menu pages are read on user action in the browser. `src/providers/allmenus/parse.ts` extracts names, categories, and exact single USD prices into the shared Menu schema. It uses the dedicated restaurant heading and stable menu URL identity, not the first generic heading or a display-name join.
 
-## Manual import
+The parser rejects missing prices, ranges, “from” prices, multiple prices in one row, conflicting same-item prices, age/time-limited offers, and build-your-own offers. Add-ons cannot anchor a meal. Shared servings are not inferred without documented counts. Pure `inferRole.ts` rules classify complete meal anchors and optional extras.
 
-Create a candidate JSON using the existing schema (identity, provenance, timestamp, currency, items). Run:
+No real menu HTML or dataset is committed. The provider’s bounded session cache disappears on reload; shell caching excludes external requests. A completed meal saves the user-selected items and prices in local history. Every live result links its source. Listed prices may be stale and are not a checkout guarantee.
+
+## Schema and explicit-demo catalog
+
+`content/menus/menu.schema.json` defines schema v1. `src/catalog/validate.ts` enforces shape, unique IDs, and safe cent arithmetic. All committed catalog files are original fictional test data, loaded only by explicit demo mode. Their source is `original-fictional-fixture`. Missing menus are allowed at the provider boundary but cannot produce a successful recommendation; invalid committed menus fail the build.
+
+## Manual normalization
 
 ```sh
-npm run content:import -- input.json candidate.json
 npm run content:validate
+npm run content:import -- path/to/raw.json path/to/new-candidate.json
 ```
 
-The importer fills only **missing** roles using `inferRole.ts`; explicit roles, including `other`, win. It does not guess price strings/ranges, currencies, or serving counts. The output path must be new (`wx` write mode). Inspect the candidate, assign stable IDs, verify source rights and serving assumptions, then deliberately put it in `content/menus/restaurants/` and update the index. The validation command validates the committed catalog, not arbitrary candidate files; candidate validation occurs during import.
+The importer validates and writes only a new candidate path. It fills missing roles using `inferRole.ts`; explicit roles win. It does not guess price ranges, currencies, or serving counts. Review provenance, identity, prices, roles, and serving assumptions before promoting any candidate. Fixtures must remain separate from live content.
 
-Prices must be finite positive numbers with at most two decimals. No price ranges, missing values, zero-price placeholders, NaN, or duplicate item IDs. Shared entrées may declare `serves: 1..8`; other roles cannot declare multiple servings. An unknown role fails validation. Rule-based category/name inference is a rough aid, not authoritative nutrition or portion classification.
-
-## Future adapters and refresh
-
-Implement `MenuImporter.import(input): Menu` outside `src/ui` and browser runtime. A permitted source/API adapter should acquire data, normalize it, apply deliberate overrides, validate, and write a reviewable candidate. Only promote a complete valid result. Keep the last known good catalog if acquisition, prices, identity matching, or validation fails. Stable restaurant identity joins discovery to menu intelligence; do not join on display name alone.
-
-Potential sources include licensed restaurant APIs, a restaurant's own approved feed, manually supplied/permissioned menus, and approved chain data. An AllMenus adapter would be optional, after verifying its current terms and permission; none exists here. No scheduled refresh or network scraper is installed. Before future automation, document authorization, attribution, caching/retention rights, robots directives where relevant, rate limits, retry/backoff, provenance, and menu freshness. A refresh job should validate and propose/commit only its owned catalog changes, then run verification. It must not scrape during the frontend build or make failures a prerequisite for shell availability.
+Additional MenuProvider implementations must return validated real item prices under the matching restaurant ID. The engine never substitutes a rough restaurant price level, an invented total, or a fictional menu when a real menu is unavailable.

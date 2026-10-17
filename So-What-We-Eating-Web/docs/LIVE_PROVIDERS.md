@@ -1,37 +1,32 @@
-# Free live discovery
+# Live menu and price provider
 
-The default is **OpenStreetMap**. Normal local use and the portfolio need **no API keys, billing account, environment configuration, Cloudflare account, or server deployment**.
+The default follows the original app’s **AllMenus menu-first flow**. Normal use and GitHub Pages need **no API key, billing account, environment configuration, or backend deployment**.
 
-## Data flow
+## Search to receipt
 
-1. Browser/manual coordinates skip geocoding. Typed cities, ZIPs, and addresses use [Photon](https://github.com/komoot/photon) only when Feed me is pressed. US five-digit ZIP queries are country-restricted.
-2. [Private.coffee’s Overpass service](https://overpass.private.coffee/) supplies named restaurant, fast-food, cafe, and food-court nodes/ways/relations in the requested circle, capped at 200 records.
-3. On an Overpass network/server failure, Photon's reverse-search index can provide up to 50 real nearby OpenStreetMap venues. Quota responses are never bypassed; an Overpass outage starts a one-minute cooldown.
-4. Normalize stable `osm:<type>/<id>` IDs, coordinates or centers, address/cuisine/website/menu tags, and attribution. Independent Haversine filtering enforces the chosen radius.
-5. The engine filters by radius, user preferences, and available budget/menu information, then picks one restaurant. Real menu coverage remains a separate concern.
+1. [Photon](https://github.com/komoot/photon) resolves a typed location or reverse-geocodes optional browser coordinates into a US city and state.
+2. The browser reads that city’s public [AllMenus](https://www.allmenus.com/) listing directly over HTTPS/CORS.
+3. The engine selects a weighted candidate and reads its menu. The parser takes named items with one exact USD price, normalizes categories/roles, and validates the result.
+4. Venue map coordinates, or full-address geocoding, must place it inside the selected circle.
+5. MealBuilder reserves the chosen buffer and builds a complete order for the party. If a menu has no usable prices or cannot fit, the next restaurant is tried.
+6. Success always contains named items, quantities, prices, food subtotal, buffer, planned total, budget, and remaining money. The source menu is linked.
 
-## Opening hours are suspended
+No ratings, menu prices, serving counts, or opening states are fabricated. A restaurant without a priced order is never the successful result. Opening-hours functionality remains suspended.
 
-The current product has **no Open now setting, open/closed status, Hours unknown label, or opening-hours filter**. Existing saved `openNow` preferences are discarded during storage migration. The free provider does not parse schedules or prioritize hours-tagged records; the former parser and timezone package have been removed. A normal search returns usable real venues even when schedules are missing. Restoring this feature requires evidence of reliable coverage and behavior first.
+## Bounded requests and caching
 
-The optional Google browser adapter explicitly sends `openNow: false` for compatibility with the existing Worker v2 contract. The Worker retains its opt-in legacy contract for compatibility, but the application never enables it. Known non-operating businesses can still be rejected by Google's business-status data.
+Requests happen on action, sequentially, with a 10-second request timeout. Selection stops at the first affordable order or at 24 menus / a 25-second selection deadline. An in-flight request may finish after the deadline. Parsed responses reuse a bounded 15-minute in-memory cache, up to 64 entries; the cache disappears on reload. Same-restaurant rerolls do not fetch again.
 
-## Shared service limits
+Rate-limit responses start a cooldown of at least a minute. There is no automated city crawl, background refresh, proxy bypass, server rotation, or build-time menu download. Public services and page markup can change or be unavailable.
 
-Photon welcomes reasonable project use, may throttle extensive use, and provides no availability guarantee. Private.coffee welcomes project use without registration, asks users to optimize queries and avoid concurrent/disruptive usage, requires OSM attribution, and asks for contact before large-scale use. Read the linked operators' policies before scaling.
+## Coverage and price meaning
 
-Requests are user-triggered, with no autocomplete, background harvesting, or city crawl. Queries have a 20-second server timeout and 32 MiB server memory limit; browser timeout is 25 seconds. Identical successful requests reuse a five-minute in-memory cache (up to 12 entries), so rerolls do not query the services again. Rate-limit responses start a cooldown of at least one minute. The app does not automatically retry or rotate Overpass servers. Results are a sample, not every nearby venue.
+The live source covers listed US cities and venues, not every restaurant or country. City-level listings can miss nearby venues across a municipal boundary. Radius expansion is explicit and cannot invent source coverage. Unsupported locations, missing menus, and budgets that cannot fit produce clear errors.
 
-Optional `VITE_OVERPASS_URL` and `VITE_PHOTON_URL` can select compatible HTTPS/CORS-enabled services. Default use needs no setup. The app does not use public Nominatim.
+Prices are **the exact numbers listed on the retrieved menu**, not verified current checkout quotes. Ranges, “from” prices, modifiers/add-ons, conflicting duplicates, limited-time categories, and customizable build-your-own offers are excluded. Restaurant prices, availability, tax, and tips can differ. Retrieval time does not establish the source menu’s freshness.
 
-## Attribution and privacy
+## Privacy and modes
 
-OSM content displays **© OpenStreetMap contributors · ODbL** linked to [copyright/licensing](https://www.openstreetmap.org/copyright). No ratings, price levels, menus, or opening states are fabricated. Names and display details remain transient. Live completed visits retain provider IDs and the user's party size/actions/time.
+Photon receives typed queries or user-supplied coordinates; AllMenus receives city/menu page requests. Operators receive normal network-request data such as IP addresses. Source HTML and exact user locations are not saved. We ate here saves selected restaurant/item names, unit prices, planned total, party size, and time locally. See the public privacy page.
 
-Photon receives typed queries and, during Overpass outages, search coordinates/radius. Overpass receives coordinates/radius. Operators receive network requests under their policies. User coordinates and typed addresses never enter persistent browser settings; cross-origin discovery is outside the service worker's shell cache. Public privacy/terms pages describe these boundaries.
-
-## Optional modes
-
-`VITE_RESTAURANT_PROVIDER` defaults to `openstreetmap`. Google requires explicit `google-places` plus a Worker URL; see [optional setup](GOOGLE_PROVIDER.md). A leftover Worker URL does not enable Google, and errors never enable a paid fallback.
-
-Explicit `?mode=demo` loads original fictional test data, with visible demo notices. Ordinary visitors get real discovery; demo geography never substitutes for a failed search.
+`VITE_PHOTON_URL` can select a compatible HTTPS/CORS geocoder. No variable is needed for normal use. Legacy Google/Worker and OSM adapters remain isolated source references; they are not active runtime options or fallbacks. Explicit `?mode=demo` loads original fictional sample data with visible notices and never substitutes for failed live searches.

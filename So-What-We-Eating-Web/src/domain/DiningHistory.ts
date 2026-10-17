@@ -28,10 +28,11 @@ export function completedMeal(result: MealRecommendation, at = new Date().toISOS
             cuisines: [], order: [], totalCents: null, people: result.preferences.people,
         };
     return {
-        id: result.id, recommendationId: result.id, at, provider: 'fixture',
+        id: result.id, recommendationId: result.id, at, provider: result.restaurant.isDemo ? 'fixture' : result.restaurant.source,
+        sourceId: result.restaurant.sourceId,
         restaurantId: result.restaurant.id, restaurantName: result.restaurant.name,
         cuisines: result.restaurant.cuisines,
-        order: result.meal?.lines.map(line => `${line.quantity} × ${line.item.name}`) ?? [],
+        order: result.meal?.lines.map(line => `${line.quantity} × ${line.item.name} · $${line.item.price.toFixed(2)} each`) ?? [],
         totalCents: result.meal?.totalCents ?? null, people: result.preferences.people, isDemo: result.restaurant.isDemo,
     };
 }

@@ -15,21 +15,15 @@ export function resultView(app: App): HTMLElement {
     if (r.checkedAt)
         header.append(el('p', { className: 'sample-note' }, `Details retrieved ${new Date(r.checkedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}. Confirm availability before you go.`));
     header.append(el('p', { className: 'sample-note' }, `${radiusMiles(p.maxDistanceMeters)}-mile straight-line radius`));
-    const order = el('section', { className: 'order-receipt', 'aria-labelledby': 'order-title' }, el('div', { className: 'receipt-heading' }, el('h2', { id: 'order-title' }, meal ? 'HERE’S YOUR ORDER.' : 'THE SPOT IS SORTED.'), el('span', { 'aria-hidden': true }, '✳')), el('p', { className: 'receipt-caption' }, `FOR ${p.people === 1 ? 'ONE HUNGRY HUMAN' : `${p.people} HUNGRY HUMANS`}`));
-    if (meal) {
+    const order = el('section', { className: 'order-receipt', 'aria-labelledby': 'order-title' }, el('div', { className: 'receipt-heading' }, el('h2', { id: 'order-title' }, 'HERE’S YOUR ORDER.'), el('span', { 'aria-hidden': true }, '✳')), el('p', { className: 'receipt-caption' }, `FOR ${p.people === 1 ? 'ONE HUNGRY HUMAN' : `${p.people} HUNGRY HUMANS`}`));
+    {
         const list = el('ul', { className: 'order-lines' });
         for (const line of meal.lines)
-            list.append(el('li', {}, el('div', {}, el('span', { className: 'item-name' }, `${line.quantity} × ${line.item.name}`), line.item.description ? el('small', {}, line.item.description) : null), el('span', { className: 'item-price' }, money(Math.round(line.item.price * 100) * line.quantity))));
+            list.append(el('li', {}, el('div', {}, el('span', { className: 'item-name' }, `${line.quantity} × ${line.item.name}`), line.quantity > 1 ? el('small', {}, `${money(Math.round(line.item.price * 100))} each`) : null), el('span', { className: 'item-price' }, money(Math.round(line.item.price * 100) * line.quantity))));
         const row = (name: string, value: number, className = '') => el('div', { className: `total-row ${className}` }, el('dt', {}, name), el('dd', {}, money(value)));
-        order.append(list, el('dl', { className: 'totals' }, row('Food subtotal', meal.subtotalCents), row(`Budget buffer (${Math.round(p.bufferPercent * 100)}%)`, meal.bufferCents), row('Planned total', meal.totalCents, 'grand-total'), row('Party budget', meal.budgetCents), row('Left in your pocket', meal.budgetCents - meal.totalCents, 'remaining')), el('p', { className: 'receipt-disclaimer' }, 'Buffer is reserved from your total budget. Actual tax, tips, and prices can differ.'));
-    }
-    else {
-        order.append(el('p', { className: 'fallback-copy' }, result.menuStatus === 'unaffordable' ? 'No complete order fits this budget here. Try a higher budget or another spot.' : 'We’ve picked the place. Detailed menu data isn’t available, so you get the final say on the order.'), el('p', {}, 'No priced order or total is estimated. Check the menu and prices before you go.'), el('p', { className: 'fallback-budget' }, `Your party budget: ${money(Math.round(p.budget * 100))}`));
+        order.append(list, el('dl', { className: 'totals' }, row('Food subtotal', meal.subtotalCents), row(`Budget buffer (${Math.round(p.bufferPercent * 100)}%)`, meal.bufferCents), row('Planned total', meal.totalCents, 'grand-total'), row('Party budget', meal.budgetCents), row('Left in your pocket', meal.budgetCents - meal.totalCents, 'remaining')), el('p', { className: 'receipt-disclaimer' }, 'Item prices come from the linked menu. Your buffer is reserved separately; final tax, tips, and restaurant prices can differ.'));
     }
     const reroll = button('↻  Different order here', () => app.differentOrder(), 'button secondary');
-    reroll.disabled = !meal;
-    if (!meal)
-        reroll.title = 'A detailed menu is needed to choose an order.';
     const accepted = app.history.isAccepted(result.id);
     const accept = button(accepted ? '✓  Saved to recent meals' : 'WE ATE HERE  ✓', () => app.accept(), 'button primary');
     accept.disabled = accepted;

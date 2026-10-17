@@ -62,8 +62,6 @@ jobs:
       - name: Build So What We Eating into the portfolio
         working-directory: So-What-We-Eating-Web
         env:
-          VITE_RESTAURANT_PROXY_URL: ${{ vars.VITE_RESTAURANT_PROXY_URL }}
-          VITE_RESTAURANT_PROVIDER: ${{ vars.VITE_RESTAURANT_PROVIDER || 'openstreetmap' }}
           VITE_DISCOVERY_MODE: live
         run: |
           npm ci

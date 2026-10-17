@@ -19,6 +19,7 @@ export interface DiscoverResponse {
     restaurants: Restaurant[];
 }
 export const DISCOVERY_MESSAGES = {
+    coverage: 'We couldn’t find a supported US city for priced menus. Try a US ZIP or city and state.',
     configuration: 'Live restaurant discovery isn’t connected yet. The site owner needs to finish service setup.',
     unavailable: 'Restaurant discovery is unavailable right now. Try again in a moment.',
     timeout: 'Restaurant discovery took too long. Try again in a moment.',

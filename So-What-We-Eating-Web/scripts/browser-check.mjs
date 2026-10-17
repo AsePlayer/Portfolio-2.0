@@ -10,7 +10,7 @@ import { buildWorker } from './build-sw.mjs';
 const artifacts = resolve('artifacts'), root = resolve(artifacts, 'browser-build');
 await mkdir(artifacts, { recursive: true });
 // A separate artifact uses a reserved test endpoint; production dist/config stays intact.
-const build = spawnSync(process.execPath, ['node_modules/vite/bin/vite.js', 'build', '--outDir', root], { env: { ...process.env, VITE_DISCOVERY_MODE: 'live', VITE_RESTAURANT_PROXY_URL: 'https://discovery.invalid/discover' }, encoding: 'utf8' });
+const build = spawnSync(process.execPath, ['node_modules/vite/bin/vite.js', 'build', '--outDir', root], { env: { ...process.env, VITE_RESTAURANT_PROVIDER: 'google-places', VITE_DISCOVERY_MODE: 'live', VITE_RESTAURANT_PROXY_URL: 'https://discovery.invalid/discover' }, encoding: 'utf8' });
 if (build.status !== 0)
     throw new Error(build.stdout + build.stderr);
 await buildWorker(root);
@@ -164,7 +164,7 @@ try {
     await page.getByRole('button', { name: 'Expand to 10 miles' }).click();
     await page.getByRole('button', { name: 'Expand to 20 miles' }).click();
     await page.getByRole('button', { name: 'Expand to 30 miles' }).click();
-    await page.getByText('No suitable spots confirmed open within 30 miles.', { exact: false }).waitFor();
+    await page.getByText('No suitable spots listed as open within 30 miles.', { exact: false }).waitFor();
     assert.equal(await page.getByRole('button', { name: /Expand to/ }).count(), 0);
     assert.equal(requests.at(-1).radiusMeters, 48280);
     report.expansion = true;

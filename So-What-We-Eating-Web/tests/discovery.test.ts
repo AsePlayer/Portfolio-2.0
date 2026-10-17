@@ -19,7 +19,7 @@ const discover = (body: unknown, origin = allowed) => new Request('https://worke
 const query = { schemaVersion: 2, location: point, radiusMeters: 8047, openNow: true };
 test('unconfigured and invalid live configuration never silently become fixtures', async () => {
     for (const endpoint of ['', 'not-a-url']) {
-        const runtime = await createRuntime(undefined, endpoint);
+        const runtime = await createRuntime(undefined, endpoint, 'google-places');
         assert.equal(runtime.mode, 'live');
         assert.equal(runtime.configured, false);
         assert.deepEqual(runtime.catalog, []);

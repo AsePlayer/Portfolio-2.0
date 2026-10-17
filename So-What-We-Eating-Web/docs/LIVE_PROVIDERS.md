@@ -1,102 +1,32 @@
-# Live discovery: implementation and activation
+# Free live discovery
 
-CB02 implements the frontend and Cloudflare Worker. Actual Google service activation needs the account configuration below. No Worker has been deployed and no Google credential has been supplied by this implementation. Without a configured endpoint, production stays in live mode and reports setup unavailable; it never substitutes fictional restaurants.
+The default is **OpenStreetMap**, not Google. Normal local use and the portfolio require **no API keys, billing account, environment configuration, Cloudflare account, or server deployment**. The browser talks directly to public open-data services over HTTPS.
 
-## What runs where
+## Data flow
 
-`src/providers/GooglePlacesProvider.ts` sends normalized requests to **one `POST /discover` endpoint**. `worker/src/` owns geocoding, Google requests, validation, limits, and normalization. No server secret enters Vite. The recommendation engine receives our Restaurant model, independently of the discovery service. CB02's live MenuProvider returns null; no nationwide menu acquisition is attempted.
+1. Browser GPS/manual coordinates skip geocoding. Typed cities, ZIPs, and addresses use [Photon](https://github.com/komoot/photon) only when Feed me is pressed. Five-digit ZIP queries are restricted to the US.
+2. [Private.coffee’s Overpass instance](https://overpass.private.coffee/) supplies named restaurant, fast-food, cafe, and food-court nodes/ways/relations in the requested circle.
+3. On an Overpass network/server failure, use Photon’s bounded reverse-search restaurant index (at most 50 nearby candidates). This is still real OpenStreetMap data. Missing hours remain unknown and require the explicit include-unknown action. A quota response is never bypassed. An Overpass failure starts a one-minute cooldown so rerolls do not repeatedly hit a failing service.
+4. Normalize stable `osm:node/123`, `osm:way/123`, or `osm:relation/123` IDs, coordinates/centers, address/cuisine/website/menu tags, and source attribution. Haversine filtering independently enforces the chosen radius.
+5. Evaluate supported weekly hours in the venue's estimated time zone. Open now requires an affirmative scheduled-open state; unknown never means open. Conditional, holiday, solar, and seasonal syntax is deliberately unknown. Simple daily/weekday schedules, splits, overnight intervals, closures, and 24/7 are supported. The small CC0 [timezone lookup](https://github.com/photostructure/tz-lookup) runs locally; its geographic approximation can be wrong near boundaries.
+6. The existing engine filters/scores and picks one place. Detailed menus remain a separate provider. Website and OpenStreetMap directions handoffs need no credentials.
 
-The Worker uses current **Text Search (New)** with `includedType: restaurant`, strict type filtering, `openNow`, a bounding rectangle, and a final Haversine circle filter. It requests at most **two pages of 20**, deduplicating place IDs. This is a useful candidate sample, not every restaurant nearby. Nearby Search (New) was reviewed; Text Search was selected for its Open Now and pagination support. Google documents those options and rectangle semantics in the [current Text Search guide](https://developers.google.com/maps/documentation/places/web-service/text-search).
+## Public service limits
 
-Requested fields cover ID, display name, address, coordinates, types, business status, current open state, rating/count, price level, website, and provider attributions, plus a page token. The explicit mask avoids photos, reviews, and atmosphere fields. Some selected fields incur Enterprise-tier charges; consult the linked current field/SKU tables rather than assuming requests are free.
+Photon explicitly welcomes reasonable project usage, may throttle extensive use, and provides no availability guarantee. Private.coffee welcomes project use without registration and asks users to optimize queries, avoid concurrent/disruptive requests, credit OpenStreetMap, and contact the operator before large-scale usage. It provides no uptime guarantee. Read the linked operators' policies before scaling. This small portfolio implementation makes only user-triggered, bounded searches, not a city crawl or background harvesting.
 
-Typed queries use the documented [Geocoding API JSON endpoint](https://developers.google.com/maps/documentation/geocoding/requests-geocoding), separately from Places. US five-digit ZIPs use a US postal component restriction; ordinary queries use a US region bias, not a country restriction. Full international addresses remain supported. Missing results, partial matches, and widely separated multiple matches produce clean location/ambiguity errors. Browser coordinates skip geocoding entirely. Geocoding's v3 JSON endpoint is separate from the deprecated Legacy Places service; this code uses no Legacy Places APIs.
+Queries have a 20-second server timeout and 32 MiB server memory limit, requesting at most 100 records with hours plus 100 general records before deduplication. Results are a sample, not a complete inventory. The browser times out after 25 seconds, reuses identical requests for five minutes in memory (up to 12 entries), and honors a rate-limit cooldown of at least one minute. It does not automatically retry Overpass or rotate Overpass servers. Network/server outages may use Photon’s separate index, while rate-limit responses remain errors. Rerolls use the same cached pool, with opening state recalculated at search time. Typed queries and cached restaurant details disappear on reload. No autocomplete, tracking, or persistent location cache is added.
 
-## Exact activation steps
+Endpoints can be replaced with compatible public or self-hosted services via optional `VITE_OVERPASS_URL` and `VITE_PHOTON_URL`. HTTPS and browser CORS support are required. This is an escape hatch, not required setup for normal use. The code does not use the public Nominatim API.
 
-### 1. Google Cloud
+## Attribution and privacy
 
-1. Create/select a Google Cloud project and link an active billing account.
-2. Enable **Places API (New)** and **Geocoding API** in APIs & Services → Library.
-3. Create an API key. Under API restrictions, restrict it to those two services. This is a server key; do not apply browser-referrer restrictions to Worker requests.
-4. Configure Google API request quotas and billing alerts appropriate to your intended use. Worker edge rate limiting bounds traffic but is not a global billing cap.
-5. Keep the key for the Worker secret prompt. Do not paste it into frontend files, GitHub variables, URLs, or chat.
+OpenStreetMap-derived content displays **© OpenStreetMap contributors · ODbL**, linked to [copyright and database licensing](https://www.openstreetmap.org/copyright). No upstream ratings, price levels, or opening status are fabricated. Restaurant names/details are transient. Completed visits persist the source ID, party size, time, and user actions, and refresh one saved place on explicit action.
 
-See [Google's Places setup](https://developers.google.com/maps/documentation/places/web-service/get-api-key) and [Geocoding setup](https://developers.google.com/maps/documentation/geocoding/get-api-key) for project/key prerequisites. Standard Worker outbound addresses are not a dedicated static egress address; IP restrictions would need a separately configured suitable egress arrangement.
+Photon receives typed queries and the user's network request; Overpass receives the search coordinates/radius and the user's network request. These external services process requests under their own policies. GPS coordinates and typed addresses are never saved in preferences. The PWA caches only the built application shell and explicit demo, never cross-origin discovery data. Public privacy/terms pages describe these boundaries.
 
-### 2. Cloudflare Worker
+## Optional providers
 
-From this app folder, using Node 24 (`npm.cmd` / `npx.cmd` on restrictive PowerShell installations):
+`VITE_RESTAURANT_PROVIDER` defaults to `openstreetmap`. A leftover `VITE_RESTAURANT_PROXY_URL` does not change this. Google requires explicit `VITE_RESTAURANT_PROVIDER=google-places` plus the Worker URL; its separate [setup guide](GOOGLE_PROVIDER.md) documents account/billing requirements. It is never an automatic paid fallback.
 
-```sh
-cd worker
-npm ci
-npx wrangler login
-npm run build
-npm run deploy
-npx wrangler secret put GOOGLE_MAPS_API_KEY
-```
-
-The secret command prompts for the key. Do not pass its value as a command argument. It configures a server-side secret named **`GOOGLE_MAPS_API_KEY`**. The deployment before the secret is set returns a configuration error, not sample results. The secret command deploys the updated secret configuration; if prompted, confirm the named Worker created by the deployment.
-
-Use the deployed hostname Wrangler prints, typically `https://so-what-we-eating-discovery.<your-subdomain>.workers.dev`. The frontend needs its full **`/discover`** URL. No account ID or token is committed. Wrangler's manual login uses your Cloudflare account; automated deployment would need separately configured deployment authorization.
-
-`wrangler.toml` already allows the portfolio origins and AsePlayer's Pages origin. For another frontend, add its exact scheme/host/port to `ALLOWED_ORIGINS`, then redeploy. Do not use a wildcard. Its rate-limit namespace IDs must be unique to these bindings in your Cloudflare account; adjust them if you already assigned those IDs elsewhere.
-
-The Worker has per-IP (12/minute) and shared edge (120/minute) rate-limit bindings. These are applied per Cloudflare location, not globally. Request/application logging is disabled and the code logs no locations or upstream responses. CORS is an allowlist, not authentication against arbitrary nonbrowser clients. Google-side quotas remain part of the configuration.
-
-### 3. Configure and rebuild the portfolio
-
-In **AsePlayer/Portfolio-2.0 → Settings → Secrets and variables → Actions → Variables**, create the repository variable:
-
-```text
-VITE_RESTAURANT_PROXY_URL=https://<your-worker-hostname>/discover
-```
-
-This is a **public URL**, not a secret. The portfolio workflow now passes that variable to the app build and forces `VITE_DISCOVERY_MODE=live`. Run **Deploy to GitHub Pages → Run workflow → main** (or push an app change). No further code edit is required.
-
-For local use, copy `.env.example` to ignored `.env.local`, set the same public URL, and restart Vite. Add the local preview origin to the Worker's allowlist when deliberately testing against it. For a local Worker, `wrangler dev` can use an ignored `worker/.dev.vars` with the server key; override/add `http://127.0.0.1:5173` in the local allowlist. Never put the key in any `VITE_*` value.
-
-### 4. Verify real activation
-
-Open `https://ryanscott.org/projects/what-we-eating/` and try a typed city/ZIP, then Use my location, 2 and 30 miles, and Open Now. Check directions and website actions. If setup or quotas fail, the app must show the live error. This real credential-backed check has not been run in CB02.
-
-A request can also be made to the deployed endpoint with a permitted `Origin: https://ryanscott.org`, JSON Content-Type, and one of the following bodies. No Google secret is needed by the frontend caller.
-
-## Contract v2
-
-Coordinate discovery:
-
-```json
-{"schemaVersion":2,"location":{"latitude":34.1,"longitude":-117.7},"radiusMeters":8047,"openNow":true}
-```
-
-Typed-location discovery:
-
-```json
-{"schemaVersion":2,"locationQuery":"Claremont, CA","radiusMeters":8047,"openNow":true}
-```
-
-Successful response contains `schemaVersion: 2`, a transient resolved `origin`, `searchedAt`, `partial`, and normalized `restaurants`. An empty array is valid. `partial` means a later page failed after useful candidates were already obtained. Google IDs normalize to `id: "google:<id>"`, `source: "google-places"`, and `sourceId: "<id>"`. The browser independently validates, deduplicates, recomputes distances, and applies radius/open-state guards.
-
-History refresh uses the **same endpoint**, with a disjoint request:
-
-```json
-{"schemaVersion":2,"placeIds":["saved-place-id"]}
-```
-
-At most three IDs are accepted, using Place Details (New). The UI requests only one saved restaurant after an explicit refresh action; it does not automatically reload 200 saved places.
-
-Errors use `{schemaVersion:2,error:{code}}`; allowed codes are configuration, invalid, location, ambiguous, quota, timeout, unavailable. Human messages come from the frontend's own dictionary. Raw Google exceptions, key values, and upstream payloads never become UI messages.
-
-The server accepts only POST/OPTIONS on /discover, valid v2 requests, supported 2/5/10/20/30-mile values, valid coordinates, short queries, and bodies up to 2 KiB. It has an 18-second upstream deadline; the browser allows 22 seconds. There is no automatic retry, radius expansion, catalog scraping, or live-to-fixture fallback.
-
-## Attribution, history, and privacy
-
-The application displays the unmodified official Google Maps attribution asset beside Google-derived content, with returned third-party provider credits. Public `privacy.html` and `terms.html` are linked from the app. Live names, addresses, ratings, hours, coordinates, website links, and attribution records are memory-only; neither browser storage nor the service worker stores them. Responses and requests use no-store. Google place IDs and the user's own actions/preferences are durable; history details are refreshed on request.
-
-The existing storage key is retained for migration; payload schema v2 whitelists fields and strips any legacy Google snapshots or saved location labels. Original fictional menu/history content remains separate. These choices follow the current [Places policies](https://developers.google.com/maps/documentation/places/web-service/policies) and [Geocoding policies](https://developers.google.com/maps/documentation/geocoding/policies). The operator should keep these disclosures and provider settings aligned with future changes.
-
-## Explicit fixture development
-
-Use `?mode=demo` (or deliberately set `VITE_DISCOVERY_MODE=demo` locally). The banner and fixture notices identify it. Only that explicit path loads the sample catalog and its small demo geography. `?mode=live` returns to normal mode. Failed or unconfigured production discovery never selects this mode on its own.
+Explicit `?mode=demo` uses the original fictional test catalog, with visible demo notices. `?mode=live` returns to the configured real provider. An outage never enables Google or fake data.

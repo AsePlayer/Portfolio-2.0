@@ -18,11 +18,10 @@ jobs:
         with:
           node-version: 24
       - run: npm ci
-      - run: npm ci --prefix worker
-      - run: npm run build --prefix worker
       - run: npm run verify
         env:
           VITE_RESTAURANT_PROXY_URL: ${{ vars.VITE_RESTAURANT_PROXY_URL }}
+          VITE_RESTAURANT_PROVIDER: ${{ vars.VITE_RESTAURANT_PROVIDER || 'openstreetmap' }}
           VITE_DISCOVERY_MODE: live
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:

@@ -1,7 +1,11 @@
 # Privacy implementation
 
-The publicly served policy is [public/privacy.html](public/privacy.html), linked with the public [terms](public/terms.html) from the app. It describes location forwarding, local preferences/IDs/actions, transient Google display data, provider processing, and clear-data controls.
+The served policy is [public/privacy.html](public/privacy.html), linked with [terms](public/terms.html) from the app.
 
-Browser/manual coordinates and typed addresses are memory-only and sent only when searching through the active discovery provider. The Worker logs no application/location payloads. Responses are no-store and the PWA never caches discovery POSTs. Google-backed history persists place IDs and the user's own visit state rather than Google content snapshots; payload-v2 migration removes old snapshots and saved location labels. Original fictional data remains separate.
+The default free provider sends typed queries to Photon and restaurant-search coordinates/radius to Overpass only on action. During an Overpass outage, coordinates/radius may also go to Photon’s restaurant index. Provider responses and resolved locations have a short, bounded, in-memory cache to reduce public-service load. They disappear on reload. Public service operators receive network requests, including IP addresses, under their policies.
 
-See [docs/LIVE_PROVIDERS.md](docs/LIVE_PROVIDERS.md) for provider-policy sources and exact deployment settings. Provider accounts, logging settings, policies, and disclosures must stay aligned when activation or future behavior changes.
+Exact user coordinates and typed queries never enter persistent storage. History saves live provider IDs, party size, actions, and time; live names, addresses, ratings, schedules, and coordinates are not retained. The existing payload-v2 migration strips old Google snapshots and saved location labels. Fictional demo snapshots remain separate. The service worker caches only app-owned shell assets and the explicit demo; external API traffic is outside its scope.
+
+Google/Cloudflare processing applies only when the operator deliberately selects the optional Google provider. Its Worker logs no application/location payloads and its Google responses are memory-only. No key or billing setup is needed for the default.
+
+See [provider details and official policy links](docs/LIVE_PROVIDERS.md).

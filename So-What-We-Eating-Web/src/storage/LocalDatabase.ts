@@ -46,6 +46,8 @@ function migrate(value: any): StoredData {
         // Whitelist user-owned fields. Remove any Google snapshots, including legacy ones.
         if (h.restaurantId.startsWith('google:'))
             return { ...base, provider: 'google-places', sourceId: h.restaurantId.slice(7), cuisines: [], order: [], totalCents: null };
+        if (h.restaurantId.startsWith('osm:'))
+            return { ...base, provider: 'openstreetmap', sourceId: h.restaurantId.slice(4), cuisines: [], order: [], totalCents: null };
         if (typeof h.restaurantName !== 'string' || !strings(h.cuisines) || !strings(h.order) || (h.totalCents !== null && !Number.isSafeInteger(h.totalCents)))
             throw new Error('Invalid fixture history');
         return { ...base, provider: 'fixture', restaurantName: h.restaurantName, cuisines: h.cuisines, order: h.order, totalCents: h.totalCents, isDemo: true };

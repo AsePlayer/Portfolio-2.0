@@ -8,7 +8,7 @@ export function historyView(app: App): HTMLElement {
     else {
         const list = el('ol', { className: 'history-list' });
         for (const meal of app.history.meals) {
-            const live = meal.provider === 'google-places';
+            const live = ['google-places', 'openstreetmap'].includes(meal.provider ?? '');
             const fresh = live ? app.restaurants.find(r => r.id === meal.restaurantId) : undefined;
             const favorite = app.preferences.restaurant(meal.restaurantId).favorite;
             const toggle = button(favorite ? '♥ Favorited' : '♡ Favorite', () => { app.preferences.updateRestaurant(meal.restaurantId, { favorite: !favorite }); app.render(); }, 'text-button');

@@ -63,11 +63,10 @@ jobs:
         working-directory: So-What-We-Eating-Web
         env:
           VITE_RESTAURANT_PROXY_URL: ${{ vars.VITE_RESTAURANT_PROXY_URL }}
+          VITE_RESTAURANT_PROVIDER: ${{ vars.VITE_RESTAURANT_PROVIDER || 'openstreetmap' }}
           VITE_DISCOVERY_MODE: live
         run: |
           npm ci
-          npm ci --prefix worker
-          npm run build --prefix worker
           npm test
           npm run portfolio:sync
 

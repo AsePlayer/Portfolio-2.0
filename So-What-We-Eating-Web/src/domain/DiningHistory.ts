@@ -21,10 +21,10 @@ export interface CompletedMeal {
     isDemo?: boolean;
 }
 export function completedMeal(result: MealRecommendation, at = new Date().toISOString()): CompletedMeal {
-    if (result.restaurant.source === 'google-places')
+    if (['google-places', 'openstreetmap'].includes(result.restaurant.source))
         return {
             id: result.id, recommendationId: result.id, at, restaurantId: result.restaurant.id,
-            provider: 'google-places', sourceId: result.restaurant.sourceId,
+            provider: result.restaurant.source, sourceId: result.restaurant.sourceId,
             cuisines: [], order: [], totalCents: null, people: result.preferences.people,
         };
     return {

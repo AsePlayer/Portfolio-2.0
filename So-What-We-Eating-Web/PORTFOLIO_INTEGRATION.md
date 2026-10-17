@@ -2,7 +2,7 @@
 
 ## Current portfolio integration
 
-CB02 adds live discovery. Set the portfolio repository variable `VITE_RESTAURANT_PROXY_URL` to the deployed Worker's full `/discover` URL, then rerun the portfolio workflow. The workflow forces live mode; an unset endpoint displays a setup message and never silently uses fixtures. Google secrets belong only in the Worker. Follow [live activation instructions](docs/LIVE_PROVIDERS.md) before expecting real results. `?mode=demo` remains an explicit local/demo option.
+Live discovery defaults to free OpenStreetMap data through Overpass and Photon. No repository variable, API key, billing account, or Worker deployment is required. Google remains an explicit optional integration; see [provider details](docs/LIVE_PROVIDERS.md). `?mode=demo` explicitly selects fictional development data.
 
 The portfolio card opens **`/projects/what-we-eating/`**. App source stays in this folder, and `projects/what-we-eating/` contains only a generated snapshot. From this folder, run `npm run portfolio:sync` to build and refresh that snapshot. For another portfolio location, use `npm run portfolio:sync -- --portfolio "path/to/Portfolio 2.0"`.
 

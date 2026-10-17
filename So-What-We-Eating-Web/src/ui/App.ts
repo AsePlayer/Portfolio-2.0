@@ -158,7 +158,7 @@ export class App {
             this.result = await this.engine.recommend(preferences, this.learning(), excludeId);
             this.remember(this.result.restaurant);
             this.history.record('shown', this.result.restaurant.id);
-            this.notice(preferences.openNow && (this.result.candidateCount ?? 0) < 4 ? `Our search found a few suitable places confirmed open within ${radiusMiles(preferences.maxDistanceMeters)} miles. We picked one.` : 'Decision made. Your next spot is ready.');
+            this.notice(preferences.openNow && (this.result.candidateCount ?? 0) < 4 ? `Our search found a few suitable places listed as open within ${radiusMiles(preferences.maxDistanceMeters)} miles. We picked one.` : 'Decision made. Your next spot is ready.');
             this.navigate('result');
         }
         catch (error) {
@@ -167,6 +167,8 @@ export class App {
                 const expanded = nextRadius(preferences.maxDistanceMeters);
                 if (expanded)
                     document.querySelector('#notice')!.append(button(`Expand to ${radiusMiles(expanded)} miles`, () => { this.settings.update({ radiusMeters: expanded }); void this.search({ ...preferences, maxDistanceMeters: expanded }, excludeId); }, 'text-button'));
+                if (preferences.openNow)
+                    document.querySelector('#notice')!.append(button('Include places with unknown hours', () => { this.settings.update({ openNow: false }); void this.search({ ...preferences, openNow: false }, excludeId); }, 'text-button'));
             }
             if (error instanceof RecommendationFailure && error.code === 'budget') {
                 const next = Math.min(CONFIG.maxBudget, Math.ceil(preferences.budget * 1.4 / 5) * 5);
@@ -211,7 +213,7 @@ export class App {
             this.restaurants.push(restaurant);
     }
     async refreshPlace(restaurantId: string) {
-        if (!this.lookupRestaurant || this.busy || !restaurantId.startsWith('google:')) {
+        if (!this.lookupRestaurant || this.busy || !/^(google:|osm:)/.test(restaurantId)) {
             this.notice('Current restaurant details need a connected live service.');
             return;
         }
@@ -219,7 +221,7 @@ export class App {
         this.render();
         this.notice('Refreshing this restaurant’s current details…');
         try {
-            const restaurants = await this.lookupRestaurant([restaurantId.slice(7)]);
+            const restaurants = await this.lookupRestaurant([restaurantId.slice(restaurantId.startsWith('osm:') ? 4 : 7)]);
             for (const restaurant of restaurants)
                 this.remember(restaurant);
             this.notice(restaurants.length ? 'Current details loaded. They stay in memory only.' : 'Current details are unavailable. Your saved visit is still here.');

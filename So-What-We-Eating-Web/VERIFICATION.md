@@ -1,36 +1,29 @@
-# CB02 verification
+# Verification
 
-Verified locally using Node 24.16.0, npm 11.13.0, installed Google Chrome, and Wrangler 4.151.1. Real Google credentials and Cloudflare deployment were not used.
+Verified October 16, 2026 with Node 24.16.0, npm 11.13.0, and installed Chrome.
 
-## Checks
+## Current checks
 
-- `npm run verify`: 23 domain/storage/provider/Worker tests, content validation, browser/Worker TypeScript check, Vite build, and production artifact checks.
-- `npm run build` inside worker: Wrangler deploy **dry-run** succeeds with both rate-limit bindings. No deployment or paid request occurs.
-- Domain tests retain party-wide cent/buffer/serving/template/reroll coverage across $10/$20/$35/$60/$100 and 1–8 diners.
-- New tests cover supported radius conversion/expansion/max, polar/antimeridian math, hard circle filtering, open/closed/unknown states, a mocked 11:30 PM search-time scenario, geocoding failures/ambiguity/quotas/timeouts, bounded pagination, stable-ID deduplication, attribution normalization, CORS/size/version/rate/secret validation, live-without-menu, preserved reroll inputs, live-mode configuration failures, and privacy-safe history/migration.
+- `npm run verify`: 29 app tests, menu validation, browser/optional-Worker TypeScript checks, Vite build, and relative-path/manifest/PNG/offline-shell artifact checks.
+- Parent portfolio: 20 tests, build, and publication validation.
+- Free-provider tests cover default configuration without keys (including a leftover Google URL), coordinate/ZIP geocoding, normalization/deduplication, node/way identity, circle enforcement, opening states, venue time zones, midnight/split schedules, unsupported hours, memory caching, real-data outage fallback, quota cooldown, friendly errors, and privacy-safe history migration.
+- Existing menu/budget/party/reroll and optional Google Worker contract tests remain covered. The separate Google Worker is not required by normal builds or deployment.
 
 ## Browser acceptance
 
-`npm run check:browser` builds a separate ignored artifact with a reserved test endpoint. Chrome uses the actual frontend and actual Worker handler; **only Google's upstream responses are mocked**. Normal dist/config is untouched. No credential-backed Google request is made.
+`npm run check:browser` runs two suites:
 
-Passed:
+1. The ordinary production artifact with free public endpoints intercepted only for deterministic response scenarios: no setup note or automatic location prompt, typed ZIP, GPS without geocoding, restaurant-only result, ODbL attribution, preserved/cached reroll, history refresh, 2/30-mile controls, explicit unknown-hours choice, and Overpass-outage discovery through Photon's real-data response format. Desktop/mobile screenshots are inspected for overflow.
+2. The optional Google integration, using a separate test artifact and real Worker handler with mocked Google responses: arbitrary typed locations, location success/denial, radius expansion, opening states, directions, storage/migration, explicit demo, offline shell, scope, and updates.
 
-- Desktop and 375/390/430px layout, with no horizontal overflow; screenshots visually inspected.
-- No automatic geolocation request. User-action success with controlled browser coordinates, and denial followed by typed input.
-- Claremont, CA; 91711; Ontario, CA; Los Angeles, CA; Las Vegas, NV; 10001; and a street-address query all reach server-side geocoding in the mock.
-- 2-mile and 30-mile requests, default Open Now, unknown-hours handling when disabled, saved radius/Open Now after refresh.
-- No-result 5→10→20→30 expansion, stopping at the cap.
-- Real-mode restaurant-only UI, required logo/provider credit, directions handoff, same-request restaurant reroll.
-- Completed visit only after We ate here; Google display fields/coordinates absent from saved data; fresh detail lookup after reload.
-- Friendly bad-location/service failures with no fixture substitution.
-- Offline shell and honest live-connectivity message, worker replacement, scope isolation, portfolio repository subpath, and temporary storage fallback.
-- Explicit demo mode loads fixtures with no Worker requests; order reroll still works.
-- No page errors or unexpected console errors. Expected HTTP 422/503 from deliberate failure scenarios are excluded from the unexpected-error list.
+Neither automated fixture suite needs a credential or makes a paid Google request. Reports/screenshots are ignored under `artifacts/`.
 
-Results and screenshots: ignored artifacts/cb02-browser-acceptance.json and artifacts/cb02-*.png. The acceptance server/browser close after completion.
+## Unmocked free-service check
 
-## Not verified
+`node scripts/browser-free-check.mjs --live` uses the normal production artifact and real public services. Photon resolved ZIP 91711 and returned real nearby restaurant records. Private.coffee's Overpass API was returning HTTP 500 without CORS headers during this check; the app used Photon's OpenStreetMap restaurant index. The browser explicitly selected **Include places with unknown hours** before receiving a real result (Domino's). A reroll selected another stable venue ID from the same cached pool with no additional external request. The run made three external requests, needed no credentials/billing/backend, and completed in roughly two seconds. This verifies free restaurant discovery, not real-time open status.
 
-No deployed Worker, real Google API key/billing/quota/CORS configuration, actual nationwide results, or live late-night availability has been exercised. Browser coordinates and upstream opening states were controlled test inputs. Physical iOS/Android installation and a full screen-reader audit remain manual checks. Straight-line radius is not drive time. Menu coverage for real places remains absent by design.
+A direct bounded Overpass query also returned restaurant records earlier in the session, before public service timeouts. Public service health varies; no availability guarantee is implied.
 
-Follow [activation instructions](docs/LIVE_PROVIDERS.md), then perform the small credential-backed acceptance check before claiming real live availability.
+## Limits and remaining manual checks
+
+No Google key/account/Worker was activated. Live nationwide coverage and actual late-night availability have not been exhaustively checked. OpenStreetMap hours may be absent or stale; unsupported/conditional schedules remain unknown. Time-zone lookup is approximate. Physical mobile installation and full screen-reader auditing remain manual. Menus/prices are not invented for real venues. Live discovery needs a connection; the explicit fictional demo remains available offline.

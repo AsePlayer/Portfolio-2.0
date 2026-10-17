@@ -1,5 +1,11 @@
 # Architecture
 
+## Current portfolio production
+
+Normal live mode composes AllMenusProvider for listings/menus with Photon for location resolution. It requires no API key or Worker. Existing exact-price parsing feeds the party MealBuilder, which uses 100 bounded simulations and a guaranteed budget-safe completion. Rerolls reuse the menu and preserve the persistent controls. See [current providers](docs/LIVE_PROVIDERS.md) and [party release](docs/PARTY_VARIETY.md).
+
+## Experimental Google mode
+
 Google = discovery / canonical restaurant identity.
 AllMenus = menu and exact price enrichment.
 MealBuilder = bounded party simulations with deterministic budget safety.
@@ -20,7 +26,7 @@ browser GPS or text
 ## Boundaries
 
 `src/providers/runtime.ts` composes `GooglePlacesProvider` and
-`AllMenusMenuResolver` in live mode. The public
+`AllMenusMenuResolver` only for explicit mode=google. The public
 `VITE_RESTAURANT_PROXY_URL` points to the Worker's `POST /discover`.
 Missing configuration is visible; only explicit `?mode=demo` loads fixtures.
 There is no live fallback to fixtures or another discovery source.

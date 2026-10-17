@@ -1,76 +1,42 @@
-# Live discovery and menu enrichment
+# Live providers
 
-The default live runtime is **GooglePlacesProvider + AllMenusMenuResolver**.
-Google determines which physical restaurants are inside the requested circle;
-AllMenus supplies exact listed item prices only for a verified branch.
-AllMenus coverage never determines the restaurant search universe.
+The portfolio's normal live runtime is **AllMenusProvider + Photon**.
+AllMenus supplies restaurant listings and exact listed menu prices. Photon
+resolves the user's chosen location. No API key, billing account or Worker is
+required. This preserves the working product for the party-variety release.
 
-## Setup
+Browser GPS is requested only on click. Typed US city/ZIP/address input or
+chosen coordinates resolve through Photon to the needed AllMenus city listing.
+Promising candidates are tried sequentially. Menu pages supply precise venue
+coordinates and exact prices; final recommendations must fit the selected
+straight-line radius and shared party budget.
 
-Set the public `VITE_RESTAURANT_PROXY_URL=https://<worker-host>/discover`
-at build time. The Google API key stays exclusively in the Worker secret
-`GOOGLE_MAPS_API_KEY`. Both portfolio and standalone Pages workflows pass the
-repository variable to Vite. See [Google setup](GOOGLE_PROVIDER.md).
-Missing setup produces a real configuration message.
+The conservative price parser still rejects ranges, from/plus/market prices,
+conflicting duplicates, ambiguous option pricing and configurable offers.
+No menu item, price, tax, tip or serving count is invented.
 
-Text queries, ZIPs and full addresses go through Google Geocoding in the Worker.
-Browser GPS and entered coordinates go directly to Places without geocoding.
-Corrected region-qualified city names, including Diamondbar, CA, can be accepted;
-unqualified localities such as Springfield and separated alternatives require
-clarification. A transient resolved label confirms the interpretation.
+MealBuilder uses 100 bounded party simulations, reserves enough food budget
+for all remaining diners, encourages different mains and aggregates real
+duplicates. Shared anchors require explicit serving metadata. Optional extras
+are considered only after every diner has an anchor.
 
-## Calls in one recommendation
+Different order uses the loaded menu with no external requests. Different
+restaurant reuses the active candidate context where practical. Parsed source
+pages use a bounded 15-minute memory cache. No background crawling occurs.
 
-1. Browser -> one Worker POST.
-2. Worker -> one geocode request for text; none for GPS/coordinates.
-3. Worker -> up to two Google Text Search requests / 40 upstream places.
-4. For each promising candidate, browser -> its AllMenus city index if uncached.
-5. Only a unique strong branch match earns a menu-page request.
-6. After rechecking that page's identity and coordinates, existing MealBuilder
-   either returns an affordable receipt or selection tries another candidate.
+AllMenus coverage and source markup/CORS can limit success. Missing menus or
+unaffordable parties never substitute demo results. Explicit ?mode=demo is the
+only fictional route. Optional VITE_PHOTON_URL selects a compatible HTTPS
+Photon endpoint; normal operation needs no environment file.
 
-The first suitable complete meal wins. At most 24 candidates are tried and new
-attempts stop after 25 seconds (an in-flight city/menu request can finish later).
-A Google search is a bounded sample, not a complete nearby restaurant inventory.
+## Retained experimental Google mode
 
-Different order makes no network calls. Different restaurant reuses the active
-five-minute Google context and the 15-minute AllMenus caches. Indexes and
-resolutions are bounded to 64 entries each, deduplicate concurrent loads, and
-disappear on reload. Only actual candidate localities load lazily. Failures are
-not cached as coverage misses; 429 pauses requests for at least one minute,
-honoring longer Retry-After values.
+The earlier Google discovery/resolver architecture remains available only by
+explicit ?mode=google or VITE_DISCOVERY_MODE=google, with a configured public
+VITE_RESTAURANT_PROXY_URL. Its server key stays in the Worker secret. Normal
+Pages builds force VITE_DISCOVERY_MODE=live and therefore use AllMenus/Photon.
+There is no automatic switch to Google, or fallback from a failed Google mode.
+See [experimental setup](GOOGLE_PROVIDER.md) and its [uncertified verification
+record](HYBRID_VERIFICATION.md).
 
-## Trust boundaries
-
-Normalized name + house number + street + locality/state are required.
-ZIP, units and coordinates must not contradict the match. More than one
-plausible listing is ambiguous. Menu-page heading/address are rechecked
-independently, and published coordinates over 300m from Google reject.
-No fuzzy name-only joins, chain branch substitutions, or address geocoding via
-Photon occur in the production path.
-
-The conservative parser rejects ranges, from/plus/market prices, ambiguous
-multiple amounts, conflicting duplicates, configurable build-your-own meals,
-and special-restriction categories. No AI infers identity, price, quantities,
-tax or tip. Google price levels never substitute for actual menu prices.
-
-## Honest results and limitations
-
-No Google candidates: report no restaurants within that radius/location.
-Nearby venues but no verified menu: explain that priced menus could not be
-verified. Verified menus without an affordable complete order: explain the
-budget failure. Service outages and quotas produce retry messages.
-
-AllMenus currently limits price enrichment to US city indexes with usable
-public pages. Normalized names and municipal labels can differ legitimately;
-conservative matching intentionally misses those instead of guessing.
-Missing house numbers or localities, suite conflicts, moved venues, outdated
-listings, Brooklyn/New York naming differences, inaccessible source pages,
-and menus without usable meal anchors can all prevent a recommendation.
-Markup, CORS, quotas and published prices can change.
-
-The free OpenStreetMap/Photon adapters and original AllMenus provider remain
-available as code. They are neither live defaults nor silent fallbacks.
-Explicit `?mode=demo` remains the only fictional-data route.
-
-[Architecture](../ARCHITECTURE.md) -> [verification](HYBRID_VERIFICATION.md)
+[Party release and UI verification](PARTY_VARIETY.md)

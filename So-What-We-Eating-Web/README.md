@@ -1,8 +1,8 @@
 # So What We Eating?
 
 **A place, an exact order, and listed prices within your party budget.**
-Google discovers actual nearby restaurants; AllMenus verifies menu prices for
-the same physical venue; existing MealBuilder makes the budgeted decision.
+AllMenus supplies real menu listings and exact prices, Photon resolves your
+location, and MealBuilder composes a varied party order within budget.
 
 ## Run locally
 
@@ -14,18 +14,17 @@ npm ci
 npm run dev
 ```
 
-Live searches require the Google discovery Worker and a public
-`VITE_RESTAURANT_PROXY_URL` at build time.
-The Google API key stays in the Worker secret. Follow
-[production setup](docs/GOOGLE_PROVIDER.md). Missing setup produces a visible
-error. Explicit `?mode=demo` is available without services and is always labeled
-fictional; failed live searches never select it automatically.
+Normal live mode uses AllMenus + Photon with no API key, billing account or
+Worker setup. Optional VITE_PHOTON_URL selects a compatible HTTPS geocoder.
+Explicit ?mode=demo is always labeled fictional. Google discovery remains an
+experimental opt-in; see docs/GOOGLE_PROVIDER.md. Failed live searches never
+substitute demo data.
 
 ## Behavior
 
-- Google owns geography, canonical Place IDs, venue details and ratings.
-- Restaurant matching requires normalized name and branch-address evidence,
-  with an independent menu-page identity/coordinate check.
+- AllMenus supplies restaurant listings and menus; Photon resolves the origin.
+- Each selected restaurant must have usable exact menu prices and venue
+  coordinates inside the requested circle.
 - Every successful recommendation includes exact listed items, quantities,
   unit prices, subtotal, reserved buffer, planned total and remaining budget.
 - Parties use 100 bounded simulations with one anchor per diner, novelty
@@ -35,14 +34,14 @@ fictional; failed live searches never select it automatically.
   Same-restaurant rerolls preserve scroll and focus; reduced motion is supported.
 - Ranged, configurable, unpriced or ambiguous menu offers never become prices.
 - Different order reuses the menu with no network calls. Different restaurant
-  reuses the active Google candidate pool and AllMenus caches.
+  reuses the active candidate pool and AllMenus caches.
 - The selected 2 / 5 / 10 / 20 / 30-mile straight-line circle is authoritative,
   including venues across municipal boundaries.
-- Google attribution and linked AllMenus prices are displayed separately.
+- AllMenus source links and retrieval timestamps accompany the receipt.
   Retrieval time is not a claim that a restaurant updated its menu.
-- Browser GPS is requested only on click. Location text and Google content stay
-  transient. Completed orders save Place IDs and selected AllMenus order lines
-  locally; Google venue details are refreshed instead of persisted.
+- Browser GPS is requested only on click. Exact user coordinates and typed
+  addresses stay transient. Completed meals save restaurant and selected
+  AllMenus order details locally. Experimental Google content is not persisted.
 
 ## Commands
 
@@ -59,7 +58,7 @@ fictional; failed live searches never select it automatically.
 
 The portfolio builds this source into **/projects/what-we-eating/**.
 Old OSM/Photon adapters, the original AllMenus provider and fictional fixtures
-are retained outside the default live path.
+are retained available; production retains the working AllMenus/Photon path.
 
 [Architecture](ARCHITECTURE.md) | [live behavior and limits](docs/LIVE_PROVIDERS.md) |
 [Google setup](docs/GOOGLE_PROVIDER.md) | [verification](docs/HYBRID_VERIFICATION.md) |

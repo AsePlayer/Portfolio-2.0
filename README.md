@@ -64,7 +64,7 @@ Credentials require a `title` with optional `organization`, `date`, and professi
 
 `projects` has an eyebrow, headline, intro, and ordered `items`. Each item needs a unique ID, title, compact summary (up to 400 characters, supporting two sentences), technology tags, and a local project or HTTPS link. Optional `type` supports Web App, Desktop App, Game, Creator Project, Developer Tool, or Website; optional `highlight` adds a short source-supported fact such as the channel snapshot. `actionLabel` customizes the action. Type labels are plain subtle text, without filters.
 
-Keep professional examples in Selected Work and side projects in Independent Projects. Do not add an unfinished project to fill the grid or force every project into career language. Both app links lead to the full products; So What We Eating? uses Google discovery and verified AllMenus prices to build an order within the party budget. Live discovery requires a configured Google Worker; see the app's setup and hybrid verification documentation. Fictional data appears only in explicitly selected demo mode.
+Keep professional examples in Selected Work and side projects in Independent Projects. Do not add an unfinished project to fill the grid or force every project into career language. Both app links lead to the full products; So What We Eating? uses AllMenus and Photon to build varied party orders from exact listed prices, with no API key or Worker required. Experimental Google discovery is separate from normal production use. Fictional data appears only in explicitly selected demo mode.
 
 ### Scale in context
 

@@ -1,6 +1,11 @@
 # Google discovery Worker
 
-Google is the production discovery provider. AllMenus independently enriches
+Google is an experimental, explicitly selected discovery provider. The live
+portfolio keeps AllMenus/Photon and requires no Google setup. Select `?mode=google`
+or `VITE_DISCOVERY_MODE=google` only for deliberate testing with a configured
+public `VITE_RESTAURANT_PROXY_URL`. The Pages workflows force normal live mode.
+
+In experimental Google mode, AllMenus independently enriches
 verified venues with exact prices. This supersedes the previous optional /
 historical adapter activation scheme. `VITE_RESTAURANT_PROVIDER` is no longer
 needed; `VITE_RESTAURANT_PROXY_URL` is the public endpoint setting.
@@ -54,7 +59,10 @@ Variables**, set the public repository variable:
 VITE_RESTAURANT_PROXY_URL=https://<deployed-worker-host>/discover
 ```
 
-Both Pages workflows pass it through. Deploy using the existing workflow.
+Current Pages workflows deliberately select normal AllMenus/Photon live mode.
+A future Google deployment must explicitly select mode=google and pass that
+public endpoint into its Vite build; setting a repository variable alone does
+not activate it.
 For local use, copy `.env.example` to ignored `.env.local`, set the same
 public URL, add the local origin to the Worker allowlist, and restart Vite.
 Normal live mode does not need a provider selector. Missing configuration

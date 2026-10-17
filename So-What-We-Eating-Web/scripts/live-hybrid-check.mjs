@@ -51,7 +51,7 @@ try {
         const result = await page.evaluate(async ({ endpoint, location }) => {
             const { createRuntime, RecommendationEngine, emptyLearning, parseLocation, BrowserLocationService, AllMenusMenuProvider, assessIdentity, exactPrice } = window.harness;
             try {
-                window.liveRuntime ??= await createRuntime('live', endpoint);
+                window.liveRuntime ??= await createRuntime('google', endpoint);
                 window.liveEngine ??= new RecommendationEngine({
                     get resolvedLabel() { return window.liveRuntime.restaurants.resolvedLabel; },
                     searchNearby: async query => {

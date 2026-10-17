@@ -39,7 +39,7 @@ export function resultView(app: App): HTMLElement {
     favoriteButton.setAttribute('aria-pressed', String(favorite));
     favoriteButton.setAttribute('data-focus', 'favorite-restaurant');
     const header = el('section', { className: 'restaurant-intro' }, button('← Edit the basics', () => app.navigate('feed'), 'text-button back-button'), el('p', { className: 'eyebrow' }, 'DECISION MADE. WE’RE EATING AT'), el('h1', {}, r.name), el('p', { className: 'restaurant-meta' }, metadata.join(' · ')), r.rating !== undefined ? el('p', { className: 'rating' }, `★ ${r.rating.toFixed(1)}`, r.reviewCount ? el('span', {}, ` / 5 · ${r.reviewCount} ${r.isDemo ? 'sample ' : ''}reviews`) : null) : null, el('p', { className: 'address' }, r.address ?? 'Address unavailable'), r.isDemo ? el('p', { className: 'sample-note' }, 'Fictional demo restaurant · Sample prices, ratings, and distance') : null, favoriteButton, el('p', { className: 'result-context' }, `${p.location.label} · ${p.people} ${p.people === 1 ? 'person' : 'people'} · ${money(Math.round(p.budget * 100))} party budget`));
-    header.append(attribution(r) ?? el('span'));
+    if (r.source !== 'allmenus' || result.menu.provider !== 'allmenus') header.append(attribution(r) ?? el('span'));
     if (r.checkedAt)
         header.append(el('p', { className: 'sample-note' }, `Details retrieved ${new Date(r.checkedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}. Confirm availability before you go.`));
     header.append(el('p', { className: 'sample-note' }, `${radiusMiles(p.maxDistanceMeters)}-mile straight-line radius`));

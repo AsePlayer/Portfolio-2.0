@@ -34,7 +34,7 @@ await new Promise(r => server.listen(0, '127.0.0.1', r));
 const url = deployed || `http://127.0.0.1:${server.address().port}${base}`;
 const requests = [], errors = [];
 let scenario = 'normal', page, browser;
-const rows = [[100, 'Outside radius'], [101, 'No Prices'], [102, 'Expensive'], [105, 'Wrong Branch'], [103, 'Noodle Kitchen'], [104, 'Taco Kitchen']];
+const rows = [[100, 'Outside radius'], [101, 'No Prices'], [102, 'Expensive'], [103, 'Noodle Kitchen'], [104, 'Taco Kitchen']];
 const menuPath = (id, name) => `/ca/claremont/${id}-${name.toLowerCase().replaceAll(' ', '-')}/menu/`;
 const listing = `<ul>${rows.map(([id, name]) => `<li class="restaurant-list-item"><h4 class="name"><a href="${menuPath(id, name)}">${name}</a></h4><p class="address">100 Example Street</p><p class="address">Claremont, CA 91711</p></li>`).join('')}</ul>`;
 const point = { latitude: 34.10, longitude: -117.72 };
@@ -61,6 +61,7 @@ try {
     context.setDefaultTimeout(20_000);
     await context.addInitScript(() => { Math.random = () => 0; });
     if (!live) {
+        await context.route('https://photon.komoot.io/**', route => route.fulfill({ json: { features: [{ geometry: { type: 'Point', coordinates: [-117.72, 34.10] }, properties: { countrycode: 'US', city: 'Claremont', state: 'California', type: 'city', osm_value: 'city', name: 'Claremont' } }] } }));
         await context.route('https://discovery.invalid/discover', async route => {
             const response = await handleRequest(new Request(route.request().url(), { method: 'POST', headers: { origin: 'https://ryanscott.org', 'content-type': 'application/json' }, body: route.request().postData() }), env, upstream);
             await route.fulfill({ status: response.status, contentType: 'application/json', body: await response.text() });
@@ -116,7 +117,7 @@ try {
     await page.getByRole('button', { name: 'WE ATE HERE' }).click();
     await page.getByRole('link', { name: 'Recent meals', exact: true }).click();
     await page.reload();
-    await page.getByRole('heading', { name: 'Saved restaurant', exact: true }).waitFor();
+    await page.getByRole('heading', { name: live ? restaurant : 'Noodle Kitchen', exact: true }).waitFor();
     assert((await page.locator('.history-description').textContent()).includes('$'));
     assert(!/fictional|unpriced/i.test(await page.locator('.history-list').textContent()));
     report.history = true;

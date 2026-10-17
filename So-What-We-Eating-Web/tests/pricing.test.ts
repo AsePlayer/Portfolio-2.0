@@ -5,6 +5,7 @@ import { resolveMenuArea, DEFAULT_GEOCODER } from '../src/providers/allmenus/loc
 import { createRuntime } from '../src/providers/runtime.ts';
 import { GooglePlacesProvider } from '../src/providers/GooglePlacesProvider.ts';
 import { AllMenusMenuResolver } from '../src/menus/AllMenusMenuResolver.ts';
+import { AllMenusProvider } from '../src/providers/AllMenusProvider.ts';
 import { parseLocation } from '../src/location/LocationParser.ts';
 import { RecommendationEngine, RecommendationFailure } from '../src/recommendation/RecommendationEngine.ts';
 import { emptyLearning } from '../src/recommendation/RecommendationScorer.ts';
@@ -18,15 +19,20 @@ const preferences = { location: parseLocation('91711'), budget: 40, people: 2, b
 const restaurant = (id: string): Restaurant => ({ id: `allmenus:${id}`, name: id, source: 'allmenus', sourceId: id, cuisines: [] });
 const menu = (r: Restaurant, price = 9.75): Menu => ({ schemaVersion: 1, restaurantId: r.id, restaurantName: r.name, source: 'synthetic-test', updatedAt: new Date().toISOString(), currency: 'USD', items: [{ id: 'main', name: 'Noodle Bowl', price, role: 'main' }] });
 
-test('normal runtime separates Google discovery from AllMenus enrichment and exposes missing configuration', async () => {
+test('production keeps AllMenus/Photon; Google requires explicit opt-in and configuration', async () => {
     const runtime = await createRuntime(undefined);
     assert.equal(runtime.mode, 'live');
-    assert.equal(runtime.configured, false);
-    assert(runtime.restaurants instanceof GooglePlacesProvider);
-    assert(runtime.menus instanceof AllMenusMenuResolver);
+    assert.equal(runtime.configured, true);
+    assert(runtime.restaurants instanceof AllMenusProvider);
+    assert.equal(runtime.menus, runtime.restaurants);
     assert.deepEqual(runtime.catalog, []);
-    assert.equal((await createRuntime(undefined, 'http://insecure.example/')).configured, false);
-    assert.equal((await createRuntime(undefined, 'https://worker.example/discover')).configured, true);
+    await assert.rejects(createRuntime(undefined, 'http://insecure.example/'));
+    const google = await createRuntime('google');
+    assert.equal(google.configured, false);
+    assert(google.restaurants instanceof GooglePlacesProvider);
+    assert(google.menus instanceof AllMenusMenuResolver);
+    assert.equal((await createRuntime('google', 'https://worker.example/discover')).configured, true);
+    assert.equal((await createRuntime('google', 'http://insecure.example/')).configured, false);
 });
 test('prices are exact single amounts; ranges, from-prices, missing amounts, and invalid menu URLs are rejected', () => {
     for (const [text, value] of [['$12.49', 12.49], ['$1,234.56', 1234.56], ['$9', 9], ['$9.5', 9.5]] as const) assert.equal(exactPrice(text), value);

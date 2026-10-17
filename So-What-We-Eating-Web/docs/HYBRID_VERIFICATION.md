@@ -1,5 +1,10 @@
 # Hybrid discovery and pricing completion report
 
+Production release note: this architecture remains experimental behind explicit
+`mode=google`. The portfolio's normal live runtime retains AllMenus/Photon for
+the party-variety release. The implementation evidence below does not certify
+Google as the deployed production provider.
+
 October 17, 2026. **Implementation complete; live Google-to-AllMenus certification pending. This milestone is not PASS.**
 
 ## 1. Files changed

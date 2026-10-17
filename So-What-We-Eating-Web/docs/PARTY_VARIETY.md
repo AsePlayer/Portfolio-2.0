@@ -6,6 +6,12 @@ meaning, source links and history storage unchanged. The checkout already
 contained the previous hybrid-provider commit; this work does not replace or
 reconfigure that runtime.
 
+Publication correction: the earlier commits were local only. Before publishing,
+normal live mode was restored to the portfolio's working AllMenus/Photon flow.
+The Google resolver remains behind an explicit experimental opt-in. The party
+builder, logo, stable controls and exact-price behavior are included in the
+published release.
+
 ## Party generation
 
 MealBuilder now fills the party one diner at a time rather than multiplying

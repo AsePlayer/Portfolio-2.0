@@ -21,7 +21,6 @@ jobs:
       - run: npm run verify
         env:
           VITE_DISCOVERY_MODE: live
-          VITE_RESTAURANT_PROXY_URL: ${{ vars.VITE_RESTAURANT_PROXY_URL }}
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: ${{ vars.APP_DIRECTORY && format('{0}/dist', vars.APP_DIRECTORY) || 'dist' }}

@@ -13,7 +13,7 @@ export function historyView(app: App): HTMLElement {
             const favorite = app.preferences.restaurant(meal.restaurantId).favorite;
             const toggle = button(favorite ? '♥ Favorited' : '♡ Favorite', () => { app.preferences.updateRestaurant(meal.restaurantId, { favorite: !favorite }); app.render(); }, 'text-button');
             toggle.setAttribute('data-focus', `favorite-${meal.id}`);
-            const description = el('div', { className: 'history-description' }, el('h2', {}, fresh?.name ?? meal.restaurantName ?? 'Saved restaurant'), el('p', {}, live ? 'Visit recorded · place ID saved' : meal.order.length ? meal.order.join(' · ') : 'Restaurant only · order not recorded'), el('small', {}, `${meal.people} ${meal.people === 1 ? 'person' : 'people'}${meal.isDemo ? ' · fictional demo meal' : ''}`));
+            const description = el('div', { className: 'history-description' }, el('h2', {}, fresh?.name ?? meal.restaurantName ?? 'Saved restaurant'), el('p', {}, meal.order.length ? meal.order.join(' · ') : live ? 'Visit recorded · place ID saved' : 'Restaurant only · order not recorded'), el('small', {}, `${meal.people} ${meal.people === 1 ? 'person' : 'people'}${meal.isDemo ? ' · fictional demo meal' : ''}${meal.orderProvider === 'allmenus' ? ' · AllMenus listed prices' : ''}`));
             if (fresh)
                 description.append(attribution(fresh)!);
             if (live)

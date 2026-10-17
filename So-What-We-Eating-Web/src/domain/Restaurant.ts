@@ -2,6 +2,11 @@ export interface Restaurant {
     id: string;
     name: string;
     address?: string;
+    streetAddress?: string;
+    locality?: string;
+    regionCode?: string;
+    postalCode?: string;
+    countryCode?: string;
     latitude?: number;
     longitude?: number;
     cuisines: string[];

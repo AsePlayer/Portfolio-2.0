@@ -5,6 +5,11 @@ export interface Menu {
     restaurantName: string;
     source: string;
     sourceUrl?: string;
+    provider?: string;
+    providerRestaurantId?: string;
+    retrievedAt?: string;
+    matchedAt?: string;
+    matchConfidence?: number;
     updatedAt: string;
     currency: 'USD';
     items: MenuItem[];

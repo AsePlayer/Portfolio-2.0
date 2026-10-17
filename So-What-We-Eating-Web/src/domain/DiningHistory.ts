@@ -13,6 +13,7 @@ export interface CompletedMeal {
     restaurantId: string;
     restaurantName?: string;
     provider?: string;
+    orderProvider?: 'allmenus';
     sourceId?: string;
     cuisines: string[];
     order: string[];
@@ -21,11 +22,16 @@ export interface CompletedMeal {
     isDemo?: boolean;
 }
 export function completedMeal(result: MealRecommendation, at = new Date().toISOString()): CompletedMeal {
+    const pricedOrder = result.menu?.provider === 'allmenus' && result.meal ? {
+        orderProvider: 'allmenus' as const,
+        order: result.meal.lines.map(line => `${line.quantity} × ${line.item.name} · $${line.item.price.toFixed(2)} each`),
+        totalCents: result.meal.totalCents,
+    } : { order: [], totalCents: null };
     if (['google-places', 'openstreetmap'].includes(result.restaurant.source))
         return {
             id: result.id, recommendationId: result.id, at, restaurantId: result.restaurant.id,
             provider: result.restaurant.source, sourceId: result.restaurant.sourceId,
-            cuisines: [], order: [], totalCents: null, people: result.preferences.people,
+            cuisines: [], ...pricedOrder, people: result.preferences.people,
         };
     return {
         id: result.id, recommendationId: result.id, at, provider: result.restaurant.isDemo ? 'fixture' : result.restaurant.source,

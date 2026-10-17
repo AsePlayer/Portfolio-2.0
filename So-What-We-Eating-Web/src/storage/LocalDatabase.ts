@@ -44,7 +44,10 @@ function migrate(value: any): StoredData {
         const base = { id: h.id, recommendationId: typeof h.recommendationId === 'string' ? h.recommendationId : h.id, at: h.at, restaurantId: h.restaurantId, people: h.people };
         // Whitelist user-owned fields. Remove any Google snapshots, including legacy ones.
         if (h.restaurantId.startsWith('google:'))
-            return { ...base, provider: 'google-places', sourceId: h.restaurantId.slice(7), cuisines: [], order: [], totalCents: null };
+            return { ...base, provider: 'google-places', sourceId: h.restaurantId.slice(7), cuisines: [],
+                ...(h.orderProvider === 'allmenus' && strings(h.order) && Number.isSafeInteger(h.totalCents) && h.totalCents > 0
+                    ? { orderProvider: 'allmenus' as const, order: h.order, totalCents: h.totalCents }
+                    : { order: [], totalCents: null }) };
         if (h.restaurantId.startsWith('osm:'))
             return { ...base, provider: 'openstreetmap', sourceId: h.restaurantId.slice(4), cuisines: [], order: [], totalCents: null };
         if (typeof h.restaurantName !== 'string' || !strings(h.cuisines) || !strings(h.order) || (h.totalCents !== null && !Number.isSafeInteger(h.totalCents)))

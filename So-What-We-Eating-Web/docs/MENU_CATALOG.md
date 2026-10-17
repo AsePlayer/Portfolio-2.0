@@ -2,7 +2,7 @@
 
 ## Live menus
 
-`AllMenusProvider` restores the original application’s menu-first source flow. Public city and menu pages are read on user action in the browser. `src/providers/allmenus/parse.ts` extracts names, categories, and exact single USD prices into the shared Menu schema. It uses the dedicated restaurant heading and stable menu URL identity, not the first generic heading or a display-name join.
+`AllMenusMenuProvider` retrieves exact prices for branches verified by `AllMenusMenuResolver`; Google separately owns discovery and canonical identity. Public city and menu pages are read on user action in the browser. `src/providers/allmenus/parse.ts` extracts names, categories, and exact single USD prices into the shared Menu schema. It uses the dedicated restaurant heading and stable menu URL identity, not the first generic heading or a display-name join.
 
 The parser rejects missing prices, ranges, “from” prices, multiple prices in one row, conflicting same-item prices, age/time-limited offers, and build-your-own offers. Add-ons cannot anchor a meal. Shared servings are not inferred without documented counts. Pure `inferRole.ts` rules classify complete meal anchors and optional extras.
 

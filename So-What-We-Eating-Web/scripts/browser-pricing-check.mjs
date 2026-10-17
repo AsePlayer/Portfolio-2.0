@@ -2,13 +2,24 @@ import { chromium } from '@playwright/test';
 import { createServer } from 'node:http';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { resolve, sep, extname } from 'node:path';
 import assert from 'node:assert/strict';
+import { handleRequest } from '../worker/src/index.ts';
+import { buildWorker } from './build-sw.mjs';
 const live = process.argv.includes('--live');
 const searchLocation = process.env.PRICING_TEST_LOCATION || '91711';
 const deployed = process.env.PRICING_TEST_URL;
-const root = resolve('dist'), artifacts = resolve('artifacts');
+const artifacts = resolve('artifacts'), root = resolve(artifacts, 'pricing-browser-build');
 await mkdir(artifacts, { recursive: true });
+const endpoint = live ? process.env.VITE_RESTAURANT_PROXY_URL : 'https://discovery.invalid/discover';
+if (!deployed) {
+    const build = spawnSync(process.execPath, ['node_modules/vite/bin/vite.js', 'build', '--outDir', root], {
+        env: { ...process.env, VITE_DISCOVERY_MODE: 'live', VITE_RESTAURANT_PROXY_URL: endpoint ?? '' }, encoding: 'utf8',
+    });
+    if (build.status !== 0) throw new Error(build.stdout + build.stderr);
+    await buildWorker(root);
+}
 const base = '/projects/what-we-eating/';
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
 const server = createServer(async (req, res) => {
@@ -23,13 +34,23 @@ await new Promise(r => server.listen(0, '127.0.0.1', r));
 const url = deployed || `http://127.0.0.1:${server.address().port}${base}`;
 const requests = [], errors = [];
 let scenario = 'normal', page, browser;
-const rows = [[100, 'Outside radius'], [101, 'No Prices'], [102, 'Expensive'], [103, 'Noodle Kitchen'], [104, 'Taco Kitchen']];
+const rows = [[100, 'Outside radius'], [101, 'No Prices'], [102, 'Expensive'], [105, 'Wrong Branch'], [103, 'Noodle Kitchen'], [104, 'Taco Kitchen']];
 const menuPath = (id, name) => `/ca/claremont/${id}-${name.toLowerCase().replaceAll(' ', '-')}/menu/`;
 const listing = `<ul>${rows.map(([id, name]) => `<li class="restaurant-list-item"><h4 class="name"><a href="${menuPath(id, name)}">${name}</a></h4><p class="address">100 Example Street</p><p class="address">Claremont, CA 91711</p></li>`).join('')}</ul>`;
+const point = { latitude: 34.10, longitude: -117.72 };
+const env = { GOOGLE_MAPS_API_KEY: 'server-only-test-key', ALLOWED_ORIGINS: 'https://ryanscott.org', IP_LIMITER: { limit: async () => ({ success: true }) }, EDGE_LIMITER: { limit: async () => ({ success: true }) } };
+const component = (type, longText, shortText = longText) => ({ types: [type], longText, shortText });
+const upstream = async (input) => {
+    if (String(input).includes('/geocode/')) return Response.json({ status: 'OK', results: [{ geometry: { location: { lat: point.latitude, lng: point.longitude } },
+        address_components: [{ types: ['postal_code'], long_name: '91711' }], formatted_address: 'Claremont, CA 91711, USA' }] });
+    return Response.json({ places: rows.map(([id, name]) => ({ id: String(id), displayName: { text: name },
+        formattedAddress: '100 Example Street, Claremont, CA 91711', location: { ...point, latitude: id === 100 ? 36.10 : point.latitude },
+        addressComponents: [component('street_number', '100'), component('route', 'Example Street'), component('locality', 'Claremont'), component('administrative_area_level_1', 'California', 'CA'), component('postal_code', '91711'), component('country', 'United States', 'US')], types: ['restaurant'] })) });
+};
 const item = (name, price) => `<li class="menu-items"><span class="item-title">${name}</span><span class="item-price">${price}</span></li>`;
 function menuHtml(id, name) {
     const items = id === 101 || scenario === 'unpriced' ? item('No quote', 'Market price') : id === 102 ? item('Luxury Noodle Bowl', '$120.00') : `${item('Variable Bowl', '$2.00 - $8.00')}${item('From Bowl', '$2.00+')}${item('Conflicting Bowl', '$1.00')}${item('Conflicting Bowl', '$3.00')}${item('Noodle Bowl', '$9.50')}${item('Teriyaki Bowl', '$11.25')}`;
-    return `<h1>Unrelated popup headline</h1><div class="restaurant-summary"><h1>${name}</h1></div><a class="menu-address" href="https://www.google.com/maps/dir/${id === 100 ? '36.10' : '34.10'},-117.72">100 Example Street, Claremont, CA 91711</a><ul><li class="menu-category"><div class="category-name">Entrees</div><ul>${items}</ul></li><li class="menu-category"><div class="category-name">Side Orders</div><ul>${item('Edamame', '$3.00')}</ul></li><li class="menu-category"><div class="category-name">Beverages</div><ul>${item('Iced Tea', '$2.50')}</ul></li><li class="menu-category"><div class="category-name">Lunch Specials</div><ul>${item('Restricted Bowl', '$1.00')}</ul></li></ul>`;
+    return `<h1>Unrelated popup headline</h1><div class="restaurant-summary"><h1>${name}</h1></div><a class="menu-address" href="https://www.google.com/maps/dir/${id === 100 ? '36.10' : '34.10'},-117.72">${id === 105 ? '875' : '100'} Example Street, Claremont, CA 91711</a><ul><li class="menu-category"><div class="category-name">Entrees</div><ul>${items}</ul></li><li class="menu-category"><div class="category-name">Side Orders</div><ul>${item('Edamame', '$3.00')}</ul></li><li class="menu-category"><div class="category-name">Beverages</div><ul>${item('Iced Tea', '$2.50')}</ul></li><li class="menu-category"><div class="category-name">Lunch Specials</div><ul>${item('Restricted Bowl', '$1.00')}</ul></li></ul>`;
 }
 const cents = text => Math.round(Number(text.replace(/[^\d.]/g, '')) * 100);
 const report = { live, deployed: !!deployed, sourcePriceMatch: false, pricedOnly: false, budget: false, orderReroll: false, restaurantReroll: false, history: false, mobile: [], errors };
@@ -40,7 +61,10 @@ try {
     context.setDefaultTimeout(20_000);
     await context.addInitScript(() => { Math.random = () => 0; });
     if (!live) {
-        await context.route('https://photon.komoot.io/**', route => route.fulfill({ json: { features: [{ geometry: { type: 'Point', coordinates: [-117.72, 34.10] }, properties: { countrycode: 'US', city: 'Claremont', state: 'California', type: 'city', osm_value: 'city', name: 'Claremont' } }] } }));
+        await context.route('https://discovery.invalid/discover', async route => {
+            const response = await handleRequest(new Request(route.request().url(), { method: 'POST', headers: { origin: 'https://ryanscott.org', 'content-type': 'application/json' }, body: route.request().postData() }), env, upstream);
+            await route.fulfill({ status: response.status, contentType: 'application/json', body: await response.text() });
+        });
         await context.route('https://www.allmenus.com/**', async route => {
             const path = new URL(route.request().url()).pathname;
             if (path.endsWith('/-/')) return route.fulfill({ contentType: 'text/html', body: listing });
@@ -92,7 +116,7 @@ try {
     await page.getByRole('button', { name: 'WE ATE HERE' }).click();
     await page.getByRole('link', { name: 'Recent meals', exact: true }).click();
     await page.reload();
-    await page.getByRole('heading', { name: restaurant, exact: true }).waitFor();
+    await page.getByRole('heading', { name: 'Saved restaurant', exact: true }).waitFor();
     assert((await page.locator('.history-description').textContent()).includes('$'));
     assert(!/fictional|unpriced/i.test(await page.locator('.history-list').textContent()));
     report.history = true;
@@ -101,9 +125,13 @@ try {
     await page.getByRole('button', { name: 'FEED ME' }).click();
     await page.locator('.order-lines').waitFor({ timeout: 60_000 });
     const priorId = await page.evaluate(() => JSON.parse(localStorage.getItem(`swwe:v1:${location.pathname}`)).events[0].restaurantId);
+    const discoveryBeforeReroll = requests.filter(u => u.includes('/discover')).length;
+    const indexesBeforeReroll = requests.filter(u => new URL(u).pathname.endsWith('/-/')).length;
     await page.getByRole('button', { name: 'Different restaurant' }).click();
     await page.waitForFunction(id => { const e = JSON.parse(localStorage.getItem(`swwe:v1:${location.pathname}`)).events[0]; return e.type === 'shown' && e.restaurantId !== id; }, priorId, { timeout: 60_000 });
     assert(await page.locator('.order-lines').isVisible());
+    assert.equal(requests.filter(u => u.includes('/discover')).length, discoveryBeforeReroll);
+    if (!live) assert.equal(requests.filter(u => new URL(u).pathname.endsWith('/-/')).length, indexesBeforeReroll, 'City index is shared across candidates and rerolls');
     report.restaurantReroll = true;
     for (const width of [375, 390, 430]) { await page.setViewportSize({ width, height: 900 }); assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)); report.mobile.push(width); }
     await page.screenshot({ path: resolve(artifacts, live ? 'pricing-live-mobile.png' : 'pricing-mobile.png'), fullPage: true });
@@ -117,7 +145,7 @@ try {
         await page.reload();
         await page.getByLabel('Where are we eating?').fill('91711');
         await page.getByRole('button', { name: 'FEED ME' }).click();
-        await page.getByText('This search didn’t find a usable priced menu', { exact: false }).waitFor();
+        await page.getByText('We found restaurants nearby, but couldn’t verify a priced menu', { exact: false }).waitFor();
         assert.equal(await page.locator('.order-lines').count(), 0);
         scenario = 'normal';
         await page.reload();

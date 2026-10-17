@@ -119,7 +119,7 @@ test('client recomputes circular distance and keeps reroll inputs while the engi
     assert.equal(first.restaurant.id, 'google:one');
     const next = await engine.recommend(first.preferences, emptyLearning(), first.restaurant.id);
     assert.equal(next.restaurant.id, 'google:two');
-    assert.deepEqual(bodies[0], bodies[1]);
+    assert.equal(bodies.length, 1, 'Different restaurant reuses the active Google candidate context');
 });
 test('Google completed history and v1 migration never retain place snapshots or typed coordinates', () => {
     const records = new Map<string, string>();

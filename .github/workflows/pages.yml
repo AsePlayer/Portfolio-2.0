@@ -63,6 +63,7 @@ jobs:
         working-directory: So-What-We-Eating-Web
         env:
           VITE_DISCOVERY_MODE: live
+          VITE_RESTAURANT_PROXY_URL: ${{ vars.VITE_RESTAURANT_PROXY_URL }}
         run: |
           npm ci
           npm test

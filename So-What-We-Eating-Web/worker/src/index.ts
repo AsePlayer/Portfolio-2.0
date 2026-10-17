@@ -46,9 +46,10 @@ export async function handleRequest(request: Request, env: Env, upstream: typeof
         const signal = AbortSignal.timeout(18000);
         if ('placeIds' in input)
             return json({ schemaVersion: 2, restaurants: await lookupPlaces(input.placeIds, env.GOOGLE_MAPS_API_KEY, upstream, signal) });
-        const point = 'locationQuery' in input && input.locationQuery !== undefined ? await geocode(input.locationQuery, env.GOOGLE_MAPS_API_KEY, upstream, signal) : input.location!;
+        const resolved = 'locationQuery' in input && input.locationQuery !== undefined ? await geocode(input.locationQuery, env.GOOGLE_MAPS_API_KEY, upstream, signal) : input.location!;
+        const point = { latitude: resolved.latitude, longitude: resolved.longitude };
         const found = await searchPlaces(point, input.radiusMeters, input.openNow, env.GOOGLE_MAPS_API_KEY, upstream, signal);
-        return json({ schemaVersion: 2, origin: point, ...found });
+        return json({ schemaVersion: 2, origin: point, ...('resolvedLabel' in resolved ? { resolvedLabel: resolved.resolvedLabel } : {}), ...found });
     }
     catch (error) {
         const code = error instanceof DiscoveryError ? error.code : 'unavailable';

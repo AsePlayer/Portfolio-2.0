@@ -5,6 +5,7 @@ export interface RestaurantSearchQuery {
     maxDistanceMeters: number;
 }
 export interface RestaurantProvider {
+    readonly resolvedLabel?: string;
     searchNearby(query: RestaurantSearchQuery): Promise<Restaurant[]>;
     lookup?(placeIds: string[]): Promise<Restaurant[]>;
 }

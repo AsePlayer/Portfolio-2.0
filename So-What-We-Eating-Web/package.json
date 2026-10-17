@@ -15,7 +15,8 @@
     "verify": "npm test && npm run build && node scripts/verify-build.mjs",
     "content:validate": "node tools/menus/cli.ts validate",
     "content:import": "node tools/menus/cli.ts import",
-    "check:browser": "node scripts/browser-pricing-check.mjs"
+    "check:browser": "node scripts/browser-pricing-check.mjs",
+    "check:live": "node scripts/live-hybrid-check.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

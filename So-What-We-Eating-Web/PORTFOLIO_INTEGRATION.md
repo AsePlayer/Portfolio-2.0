@@ -2,11 +2,11 @@
 
 ## Current portfolio integration
 
-Live mode uses AllMenus menus and prices with Photon location resolution. Every successful result includes a complete priced order inside the party budget. No repository variable, API key, billing account, or backend deployment is required; see [provider details](docs/LIVE_PROVIDERS.md). `?mode=demo` explicitly selects fictional development data.
+Live mode uses Google discovery plus verified AllMenus menu enrichment. Every successful result contains a complete priced order inside the party budget. Configure the Google Worker secret and public Actions variable `VITE_RESTAURANT_PROXY_URL`; see [setup](docs/GOOGLE_PROVIDER.md) and [verification status](docs/HYBRID_VERIFICATION.md). `?mode=demo` explicitly selects fictional development data.
 
 The portfolio card opens **`/projects/what-we-eating/`**. App source stays in this folder, and `projects/what-we-eating/` contains only a generated snapshot. From this folder, run `npm run portfolio:sync` to build and refresh that snapshot. For another portfolio location, use `npm run portfolio:sync -- --portfolio "path/to/Portfolio 2.0"`.
 
-The sync script checks the configured card, confines its destination to the selected portfolio, rejects links and unmarked directories, stages the build, adds a `../../#projects` return link, and versions the worker against the modified HTML before replacing its owned directory. The parent portfolio's Pages workflow runs the app's tests and sync before building the complete portfolio. No separate app hosting or API configuration is needed.
+The sync script checks the configured card, confines its destination to the selected portfolio, rejects links and unmarked directories, stages the build, adds a `../../#projects` return link, and versions the worker against the modified HTML before replacing its owned directory. The parent portfolio's Pages workflow runs the app's tests and sync before building the complete portfolio. The frontend remains on GitHub Pages; discovery requires the separately configured Worker.
 
 ## Standalone repository / GitHub Pages
 

@@ -16,9 +16,19 @@ export function normalize(place: Record<string, any>, checkedAt: string, origin?
     directions.searchParams.set('destination', `${place.location.latitude},${place.location.longitude}`);
     directions.searchParams.set('destination_place_id', place.id);
     const attributions = (Array.isArray(place.attributions) ? place.attributions : []).filter((a: any) => typeof a.provider === 'string').map((a: any) => ({ name: a.provider, ...(isWebUrl(a.providerUri) ? { uri: a.providerUri } : {}) }));
+    const components = Array.isArray(place.addressComponents) ? place.addressComponents : [];
+    const component = (type: string, short = false): string | undefined => {
+        const entry = components.find((c: any) => Array.isArray(c.types) && c.types.includes(type));
+        const value = entry?.[short ? 'shortText' : 'longText'];
+        return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+    };
+    const number = component('street_number'), route = component('route');
     return {
         id: `google:${place.id}`, source: 'google-places', sourceId: place.id,
         name: place.displayName.text, address: typeof place.formattedAddress === 'string' ? place.formattedAddress : undefined,
+        streetAddress: number && route ? `${number} ${route}${component('subpremise') ? ` Suite ${component('subpremise')}` : ''}` : undefined,
+        locality: component('locality') ?? component('postal_town') ?? component('sublocality_level_1'),
+        regionCode: component('administrative_area_level_1', true), postalCode: component('postal_code'), countryCode: component('country', true),
         latitude: place.location.latitude, longitude: place.location.longitude, cuisines: cuisines.length ? cuisines : ['Restaurant'],
         rating: typeof place.rating === 'number' && place.rating >= 0 && place.rating <= 5 ? place.rating : undefined,
         reviewCount: Number.isInteger(place.userRatingCount) && place.userRatingCount >= 0 ? place.userRatingCount : undefined,

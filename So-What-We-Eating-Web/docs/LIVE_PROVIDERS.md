@@ -1,32 +1,76 @@
-# Live menu and price provider
+# Live discovery and menu enrichment
 
-The default follows the original app’s **AllMenus menu-first flow**. Normal use and GitHub Pages need **no API key, billing account, environment configuration, or backend deployment**.
+The default live runtime is **GooglePlacesProvider + AllMenusMenuResolver**.
+Google determines which physical restaurants are inside the requested circle;
+AllMenus supplies exact listed item prices only for a verified branch.
+AllMenus coverage never determines the restaurant search universe.
 
-## Search to receipt
+## Setup
 
-1. [Photon](https://github.com/komoot/photon) resolves a typed location or reverse-geocodes optional browser coordinates into a US city and state.
-2. The browser reads that city’s public [AllMenus](https://www.allmenus.com/) listing directly over HTTPS/CORS.
-3. The engine selects a weighted candidate and reads its menu. The parser takes named items with one exact USD price, normalizes categories/roles, and validates the result.
-4. Venue map coordinates, or full-address geocoding, must place it inside the selected circle.
-5. MealBuilder reserves the chosen buffer and builds a complete order for the party. If a menu has no usable prices or cannot fit, the next restaurant is tried.
-6. Success always contains named items, quantities, prices, food subtotal, buffer, planned total, budget, and remaining money. The source menu is linked.
+Set the public `VITE_RESTAURANT_PROXY_URL=https://<worker-host>/discover`
+at build time. The Google API key stays exclusively in the Worker secret
+`GOOGLE_MAPS_API_KEY`. Both portfolio and standalone Pages workflows pass the
+repository variable to Vite. See [Google setup](GOOGLE_PROVIDER.md).
+Missing setup produces a real configuration message.
 
-No ratings, menu prices, serving counts, or opening states are fabricated. A restaurant without a priced order is never the successful result. Opening-hours functionality remains suspended.
+Text queries, ZIPs and full addresses go through Google Geocoding in the Worker.
+Browser GPS and entered coordinates go directly to Places without geocoding.
+Corrected region-qualified city names, including Diamondbar, CA, can be accepted;
+unqualified localities such as Springfield and separated alternatives require
+clarification. A transient resolved label confirms the interpretation.
 
-## Bounded requests and caching
+## Calls in one recommendation
 
-Requests happen on action, sequentially, with a 10-second request timeout. Selection stops at the first affordable order or at 24 menus / a 25-second selection deadline. An in-flight request may finish after the deadline. Parsed responses reuse a bounded 15-minute in-memory cache, up to 64 entries; the cache disappears on reload. Same-restaurant rerolls do not fetch again.
+1. Browser -> one Worker POST.
+2. Worker -> one geocode request for text; none for GPS/coordinates.
+3. Worker -> up to two Google Text Search requests / 40 upstream places.
+4. For each promising candidate, browser -> its AllMenus city index if uncached.
+5. Only a unique strong branch match earns a menu-page request.
+6. After rechecking that page's identity and coordinates, existing MealBuilder
+   either returns an affordable receipt or selection tries another candidate.
 
-Rate-limit responses start a cooldown of at least a minute. There is no automated city crawl, background refresh, proxy bypass, server rotation, or build-time menu download. Public services and page markup can change or be unavailable.
+The first suitable complete meal wins. At most 24 candidates are tried and new
+attempts stop after 25 seconds (an in-flight city/menu request can finish later).
+A Google search is a bounded sample, not a complete nearby restaurant inventory.
 
-## Coverage and price meaning
+Different order makes no network calls. Different restaurant reuses the active
+five-minute Google context and the 15-minute AllMenus caches. Indexes and
+resolutions are bounded to 64 entries each, deduplicate concurrent loads, and
+disappear on reload. Only actual candidate localities load lazily. Failures are
+not cached as coverage misses; 429 pauses requests for at least one minute,
+honoring longer Retry-After values.
 
-The live source covers listed US cities and venues, not every restaurant or country. City-level listings can miss nearby venues across a municipal boundary. Radius expansion is explicit and cannot invent source coverage. Unsupported locations, missing menus, and budgets that cannot fit produce clear errors.
+## Trust boundaries
 
-Prices are **the exact numbers listed on the retrieved menu**, not verified current checkout quotes. Ranges, “from” prices, modifiers/add-ons, conflicting duplicates, limited-time categories, and customizable build-your-own offers are excluded. Restaurant prices, availability, tax, and tips can differ. Retrieval time does not establish the source menu’s freshness.
+Normalized name + house number + street + locality/state are required.
+ZIP, units and coordinates must not contradict the match. More than one
+plausible listing is ambiguous. Menu-page heading/address are rechecked
+independently, and published coordinates over 300m from Google reject.
+No fuzzy name-only joins, chain branch substitutions, or address geocoding via
+Photon occur in the production path.
 
-## Privacy and modes
+The conservative parser rejects ranges, from/plus/market prices, ambiguous
+multiple amounts, conflicting duplicates, configurable build-your-own meals,
+and special-restriction categories. No AI infers identity, price, quantities,
+tax or tip. Google price levels never substitute for actual menu prices.
 
-Photon receives typed queries or user-supplied coordinates; AllMenus receives city/menu page requests. Operators receive normal network-request data such as IP addresses. Source HTML and exact user locations are not saved. We ate here saves selected restaurant/item names, unit prices, planned total, party size, and time locally. See the public privacy page.
+## Honest results and limitations
 
-`VITE_PHOTON_URL` can select a compatible HTTPS/CORS geocoder. No variable is needed for normal use. Legacy Google/Worker and OSM adapters remain isolated source references; they are not active runtime options or fallbacks. Explicit `?mode=demo` loads original fictional sample data with visible notices and never substitutes for failed live searches.
+No Google candidates: report no restaurants within that radius/location.
+Nearby venues but no verified menu: explain that priced menus could not be
+verified. Verified menus without an affordable complete order: explain the
+budget failure. Service outages and quotas produce retry messages.
+
+AllMenus currently limits price enrichment to US city indexes with usable
+public pages. Normalized names and municipal labels can differ legitimately;
+conservative matching intentionally misses those instead of guessing.
+Missing house numbers or localities, suite conflicts, moved venues, outdated
+listings, Brooklyn/New York naming differences, inaccessible source pages,
+and menus without usable meal anchors can all prevent a recommendation.
+Markup, CORS, quotas and published prices can change.
+
+The free OpenStreetMap/Photon adapters and original AllMenus provider remain
+available as code. They are neither live defaults nor silent fallbacks.
+Explicit `?mode=demo` remains the only fictional-data route.
+
+[Architecture](../ARCHITECTURE.md) -> [verification](HYBRID_VERIFICATION.md)

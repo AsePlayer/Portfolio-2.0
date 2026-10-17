@@ -4,6 +4,7 @@ import type { MenuItem } from '../../domain/MenuItem.ts';
 import { assertMenu } from '../../catalog/validate.ts';
 import { isCoordinates } from '../../location/geo.ts';
 import { inferRole } from '../../../tools/menus/inferRole.ts';
+import { addressIdentity } from '../../menus/normalizeIdentity.ts';
 
 const clean = (value: string | null | undefined) => (value ?? '').replace(/\s+/g, ' ').trim();
 export function menuUrl(value: string, base = 'https://www.allmenus.com'): URL | null {
@@ -42,14 +43,25 @@ export function parseRestaurants(document: Document): Restaurant[] {
     }
     return [...found.values()];
 }
-export function parsePricedMenu(document: Document, restaurant: Restaurant, checkedAt: string): { restaurant: Restaurant; menu: Menu } | null {
+export function parseMenuRestaurant(document: Document, restaurant: Restaurant, checkedAt: string): Restaurant | null {
     const url = menuUrl(restaurant.menuUrl ?? '');
     const name = clean(document.querySelector('.restaurant-summary h1')?.textContent);
     if (!url || !name) return null;
     const addressNode = document.querySelector<HTMLAnchorElement>('a.menu-address');
-    const address = clean(addressNode?.textContent) || restaurant.address;
+    // The detail page must establish its own address. Never inherit index evidence.
+    const address = clean(addressNode?.textContent);
+    if (!address) return null;
     const coordinates = decodeURIComponent(addressNode?.getAttribute('href') ?? '').match(/(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/);
     const point = coordinates ? { latitude: Number(coordinates[1]), longitude: Number(coordinates[2]) } : undefined;
+    const identity = addressIdentity({ id: restaurant.id, source: 'allmenus', name, address, cuisines: [] });
+    return { ...restaurant, name, address, streetAddress: address.split(',')[0], locality: identity.locality,
+        regionCode: identity.regionCode, postalCode: identity.postalCode, countryCode: 'US',
+        latitude: undefined, longitude: undefined, ...(isCoordinates(point) ? point : {}), checkedAt };
+}
+export function parsePricedMenu(document: Document, restaurant: Restaurant, checkedAt: string): { restaurant: Restaurant; menu: Menu } | null {
+    const url = menuUrl(restaurant.menuUrl ?? '');
+    const detail = parseMenuRestaurant(document, restaurant, checkedAt);
+    if (!url || !detail) return null;
     const items = new Map<string, MenuItem>(), conflicts = new Set<string>();
     for (const section of document.querySelectorAll('.menu-category')) {
         const category = clean(section.querySelector('.category-name')?.textContent);
@@ -69,7 +81,7 @@ export function parsePricedMenu(document: Document, restaurant: Restaurant, chec
         }
     }
     if (!items.size) return null;
-    const menu: Menu = { schemaVersion: 1, restaurantId: restaurant.id, restaurantName: name, source: 'AllMenus', sourceUrl: url.href, updatedAt: checkedAt, currency: 'USD', items: [...items.values()] };
+    const menu: Menu = { schemaVersion: 1, restaurantId: restaurant.id, restaurantName: detail.name, source: 'AllMenus', provider: 'allmenus', providerRestaurantId: restaurant.sourceId, sourceUrl: url.href, updatedAt: checkedAt, retrievedAt: checkedAt, currency: 'USD', items: [...items.values()] };
     assertMenu(menu);
-    return { menu, restaurant: { ...restaurant, name, address, ...(isCoordinates(point) ? point : {}), checkedAt } };
+    return { menu, restaurant: detail };
 }

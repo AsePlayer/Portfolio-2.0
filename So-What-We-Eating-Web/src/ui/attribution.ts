@@ -6,7 +6,7 @@ export function attribution(restaurant: Restaurant): HTMLElement | null {
         return null;
     const base = new URL(import.meta.env.BASE_URL, document.baseURI);
     const node = el('div', { className: 'provider-attribution' });
-    if (restaurant.source === 'google-places') node.append(el('img', { src: new URL('attribution/google-maps.svg', base).href, alt: 'Google Maps', height: 18 }));
+    if (restaurant.source === 'google-places') node.append(el('span', {}, 'Restaurant details: '), el('img', { src: new URL('attribution/google-maps.svg', base).href, alt: 'Google Maps', height: 18 }));
     for (const credit of restaurant.attributions ?? []) {
         const link = safeLink(credit.name, credit.uri);
         if (link) {

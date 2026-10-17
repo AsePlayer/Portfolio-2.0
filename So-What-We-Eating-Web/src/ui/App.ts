@@ -152,7 +152,7 @@ export class App {
     private async search(preferences: SearchPreferences, excludeId?: string) {
         this.busy = true;
         this.render();
-        this.notice('Reading menu prices… finding an order inside your budget.');
+        this.notice('Finding nearby restaurants and checking menu prices…');
         try {
             this.result = await this.engine.recommend(preferences, this.learning(), excludeId);
             this.remember(this.result.restaurant);
@@ -255,7 +255,7 @@ export class App {
         this.history.record('menu', this.result.restaurant.id);
         const menu = this.result.menu;
         const content = menu ? el('ul', { className: 'menu-list' }, ...menu.items.map(item => el('li', {}, el('span', {}, item.name, item.serves ? ` · serves ${item.serves}` : ''), el('strong', {}, money(Math.round(item.price * 100)))))) : el('p', {}, 'Detailed menu data isn’t available for this spot. Check its website or ask the restaurant for current options and prices.');
-        this.showDialog(menu ? `${menu.restaurantName}${this.result.restaurant.isDemo ? ' · sample menu' : ' · menu'}` : 'The menu is off the grid.', el('p', { className: 'sample-note' }, this.result.restaurant.isDemo ? 'Original fictional sample · not a real restaurant menu' : menu ? `Source: ${menu.source}. Updated ${new Date(menu.updatedAt).toLocaleDateString()}.` : ''), content);
+        this.showDialog(menu ? `${menu.restaurantName}${this.result.restaurant.isDemo ? ' · sample menu' : ' · menu'}` : 'The menu is off the grid.', el('p', { className: 'sample-note' }, this.result.restaurant.isDemo ? 'Original fictional sample · not a real restaurant menu' : menu ? `Source: ${menu.source}. Retrieved at ${new Date(menu.retrievedAt ?? menu.updatedAt).toLocaleString()}. Restaurant pricing may differ.` : ''), content);
     }
     confirmClear() {
         this.showDialog('Start with a clean plate?', el('p', {}, 'This removes your completed meals, interaction history, favorites, exclusions, and settings from this browser.'), button('Clear my local data', () => {

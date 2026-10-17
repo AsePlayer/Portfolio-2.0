@@ -1,5 +1,7 @@
 import type { RestaurantProvider } from '../providers/RestaurantProvider.ts';
 import type { MenuProvider } from '../providers/MenuProvider.ts';
+import type { MenuResolver } from '../menus/MenuResolver.ts';
+import type { Restaurant } from '../domain/Restaurant.ts';
 import type { PricedMealRecommendation } from '../domain/MealRecommendation.ts';
 import type { SearchPreferences } from '../domain/SearchPreferences.ts';
 import { validatePreferences } from '../domain/Budget.ts';
@@ -18,17 +20,25 @@ export class RecommendationFailure extends Error {
 }
 export class RecommendationEngine {
     private restaurants: RestaurantProvider;
-    private menus: MenuProvider;
+    private menus: MenuProvider | MenuResolver;
     private random: Random;
-    constructor(restaurants: RestaurantProvider, menus: MenuProvider, random: Random = Math.random) { this.restaurants = restaurants; this.menus = menus; this.random = random; }
+    private context?: { key: string; expires: number; candidates: Restaurant[]; resolvedLabel?: string };
+    constructor(restaurants: RestaurantProvider, menus: MenuProvider | MenuResolver, random: Random = Math.random) { this.restaurants = restaurants; this.menus = menus; this.random = random; }
     async recommend(preferences: SearchPreferences, learning: LearningContext, excludeId?: string): Promise<PricedMealRecommendation> {
         validatePreferences(preferences);
         let discovered;
+        const location = 'query' in preferences.location ? preferences.location.query : [preferences.location.latitude, preferences.location.longitude];
+        const key = JSON.stringify([location, preferences.maxDistanceMeters]);
         try {
-            discovered = await this.restaurants.searchNearby({ location: preferences.location, maxDistanceMeters: preferences.maxDistanceMeters });
+            if (excludeId && this.context?.key === key && this.context.expires > Date.now()) discovered = this.context.candidates;
+            else {
+                this.context = undefined;
+                discovered = await this.restaurants.searchNearby({ location: preferences.location, maxDistanceMeters: preferences.maxDistanceMeters });
+                this.context = { key, candidates: discovered, expires: Date.now() + 5 * 60000, resolvedLabel: this.restaurants.resolvedLabel };
+            }
         } catch (error) {
             if (error instanceof DiscoveryError) throw error;
-            throw new RecommendationFailure('unavailable', 'The menu source is unavailable right now. Try again in a moment.');
+            throw new RecommendationFailure('unavailable', 'Restaurant discovery is unavailable right now. Try again in a moment.');
         }
         const remaining = discovered.filter(r => isEligible(r, preferences, learning, excludeId));
         if (!remaining.length) throw new RecommendationFailure('empty', `No ${excludeId ? 'other ' : ''}restaurants found in this search within ${radiusMiles(preferences.maxDistanceMeters)} miles. Try another area or expand the distance.`);
@@ -41,7 +51,11 @@ export class RecommendationEngine {
             remaining.splice(remaining.indexOf(restaurant), 1);
             let menu;
             try {
-                menu = await this.menus.getMenu(restaurant);
+                if ('resolveMenu' in this.menus) {
+                    const resolution = await this.menus.resolveMenu(restaurant);
+                    if (resolution.status !== 'matched') continue;
+                    menu = resolution.menu;
+                } else menu = await this.menus.getMenu(restaurant);
                 if (!menu) continue;
                 assertMenu(menu);
                 if (menu.restaurantId !== restaurant.id) continue;
@@ -49,16 +63,18 @@ export class RecommendationEngine {
                 if (error instanceof DiscoveryError) throw error;
                 continue;
             }
-            // Menu loading can resolve the venue's precise coordinates; recheck the requested circle.
+            // Every final recommendation must still be inside the authoritative circle.
             if (!isEligible(restaurant, preferences, learning, excludeId)) continue;
             if (!menu.items.some(item => ['main', 'combo', 'shared'].includes(item.role))) continue;
             pricedMeals++;
             const meal = buildMeal(menu, preferences, this.random);
             if (!meal) continue;
-            return { id: crypto.randomUUID(), restaurant, menu, meal, menuStatus: 'available', preferences: structuredClone(preferences) };
+            const resolvedPreferences = structuredClone(preferences);
+            if (this.context?.resolvedLabel) resolvedPreferences.location.label = this.context.resolvedLabel;
+            return { id: crypto.randomUUID(), restaurant, menu, meal, menuStatus: 'available', preferences: resolvedPreferences };
         }
         if (pricedMeals) throw new RecommendationFailure('budget', 'No complete order in the menus we checked fits this party budget. Try a higher budget, fewer people, or another area.');
-        throw new RecommendationFailure('menus', `This search didn’t find a usable priced menu within ${radiusMiles(preferences.maxDistanceMeters)} miles. Try another area or expand the distance.`);
+        throw new RecommendationFailure('menus', 'We found restaurants nearby, but couldn’t verify a priced menu for one yet. Try another area or expand the distance.');
     }
     differentOrder(result: PricedMealRecommendation): PricedMealRecommendation {
         const meal = buildMeal(result.menu, result.preferences, this.random, result.meal.signature);

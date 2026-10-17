@@ -23,6 +23,10 @@ export function resultView(app: App): HTMLElement {
         const row = (name: string, value: number, className = '') => el('div', { className: `total-row ${className}` }, el('dt', {}, name), el('dd', {}, money(value)));
         order.append(list, el('dl', { className: 'totals' }, row('Food subtotal', meal.subtotalCents), row(`Budget buffer (${Math.round(p.bufferPercent * 100)}%)`, meal.bufferCents), row('Planned total', meal.totalCents, 'grand-total'), row('Party budget', meal.budgetCents), row('Left in your pocket', meal.budgetCents - meal.totalCents, 'remaining')), el('p', { className: 'receipt-disclaimer' }, 'Item prices come from the linked menu. Your buffer is reserved separately; final tax, tips, and restaurant prices can differ.'));
     }
+    if (result.menu.provider === 'allmenus') {
+        order.append(el('div', { className: 'provider-attribution' }, safeLink('Menu & listed prices: AllMenus ↗', result.menu.sourceUrl)),
+            el('p', { className: 'sample-note' }, `Listed menu prices retrieved at ${new Date(result.menu.retrievedAt ?? result.menu.updatedAt).toLocaleString()}. Restaurant pricing may differ. Tax and tip are not included in item prices.`));
+    }
     const reroll = button('↻  Different order here', () => app.differentOrder(), 'button secondary');
     const accepted = app.history.isAccepted(result.id);
     const accept = button(accepted ? '✓  Saved to recent meals' : 'WE ATE HERE  ✓', () => app.accept(), 'button primary');
@@ -30,7 +34,8 @@ export function resultView(app: App): HTMLElement {
     const directions = safeLink('Directions ↗', r.isDemo ? undefined : r.directionsUrl ?? (r.address ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(r.address)}` : undefined));
     if (directions)
         directions.addEventListener('click', () => app.history.record('directions', r.id));
-    const menuLink = safeLink(r.menuUrl ? 'View menu ↗' : 'Website / Menu ↗', r.isDemo ? undefined : r.menuUrl ?? r.websiteUrl);
+    const sourceMenu = result.menu.sourceUrl ?? r.menuUrl;
+    const menuLink = safeLink(sourceMenu ? 'View menu ↗' : 'Website / Menu ↗', r.isDemo ? undefined : sourceMenu ?? r.websiteUrl);
     if (menuLink)
         menuLink.addEventListener('click', () => app.history.record('menu', r.id));
     const actions = el('div', { className: 'result-actions' }, el('div', { className: 'reroll-actions' }, reroll, button('↻  Different restaurant', () => void app.differentRestaurant(), 'button dark')), el('div', { className: 'handoff-actions' }, directions ?? button('Directions ↗', () => app.directions()), menuLink ?? button('View menu ↗', () => app.menu())), accept, el('p', { className: 'form-note' }, 'Only “We ate here” adds a completed meal to your history.'), button('Skip this spot in future', () => app.excludeCurrent(), 'text-button muted'));

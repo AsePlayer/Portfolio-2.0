@@ -1,4 +1,4 @@
-const VERSION='4f6987d33ed5ed35',FILES=["assets/FixtureProviders-CRu6Nib5.js","assets/geo-K99YKHcp.js","assets/index-DYLwZp1i.js","assets/index-uIcvVuI_.css","assets/loader-CJ6_dbsl.js","assets/validate-CJC5HXRt.js","attribution/README.txt","attribution/google-maps.svg","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable.png","icons/icon.svg","index.html","manifest.webmanifest","privacy.html","terms.html"];
+const VERSION='e6a86b6542c09c1d',FILES=["assets/FixtureProviders-B_qTiTLA.js","assets/geo-BCA3IVKE.js","assets/index-H7Mzbtq9.js","assets/index-uIcvVuI_.css","assets/loader-BtPjv5AR.js","assets/validate-CgjPoj-K.js","attribution/README.txt","attribution/google-maps.svg","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable.png","icons/icon.svg","index.html","manifest.webmanifest","privacy.html","terms.html"];
 const ROOT=new URL('./',self.location.href);
 const PREFIX=`swwe:${ROOT.pathname}:`,CACHE=`${PREFIX}${VERSION}`;
 const SHELL=new Set(FILES);

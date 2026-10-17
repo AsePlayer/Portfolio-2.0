@@ -3,7 +3,7 @@ import type { Coordinates } from '../../../src/location/geo.ts';
 import { boundingBox } from '../../../src/location/geo.ts';
 import { normalize } from './normalize.ts';
 import { googleJson } from './client.ts';
-const FIELDS = ['id', 'displayName', 'formattedAddress', 'location', 'types', 'businessStatus', 'currentOpeningHours.openNow', 'rating', 'userRatingCount', 'priceLevel', 'websiteUri', 'attributions'];
+const FIELDS = ['id', 'displayName', 'formattedAddress', 'addressComponents', 'location', 'types', 'businessStatus', 'currentOpeningHours.openNow', 'rating', 'userRatingCount', 'priceLevel', 'websiteUri', 'attributions'];
 export async function searchPlaces(origin: Coordinates, radius: number, openNow: boolean, key: string, request: typeof fetch, signal: AbortSignal) {
     const restaurants = new Map<string, Restaurant>(), checkedAt = new Date().toISOString();
     let token: string | undefined, partial = false;

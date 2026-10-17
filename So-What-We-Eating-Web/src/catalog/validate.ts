@@ -19,6 +19,11 @@ export function assertMenu(value: unknown): asserts value is Menu {
         throw new Error('Invalid menu identity, provenance, currency, date, or items.');
     if (value.sourceUrl !== undefined && !isWebUrl(value.sourceUrl))
         throw new Error('Invalid menu source URL.');
+    for (const field of ['provider', 'providerRestaurantId'])
+        if (value[field] !== undefined && !text(value[field])) throw new Error(`Invalid menu ${field}.`);
+    for (const field of ['retrievedAt', 'matchedAt'])
+        if (value[field] !== undefined && (!text(value[field]) || !Number.isFinite(Date.parse(value[field])))) throw new Error(`Invalid menu ${field}.`);
+    if (value.matchConfidence !== undefined && (!finite(value.matchConfidence) || value.matchConfidence < 0 || value.matchConfidence > 100)) throw new Error('Invalid menu match confidence.');
     const ids = new Set<string>();
     for (const item of value.items) {
         if (!record(item) || !text(item.id) || !text(item.name) || !finite(item.price) || item.price <= 0 || !Number.isSafeInteger(Math.round(item.price * 100)) || Math.abs(item.price * 100 - Math.round(item.price * 100)) > 0.000001 || !MENU_ROLES.includes(item.role as never))
@@ -41,6 +46,8 @@ export function assertRestaurants(value: unknown): asserts value is Restaurant[]
         if (!record(r) || !text(r.id) || !text(r.name) || !text(r.source) || !Array.isArray(r.cuisines) || !r.cuisines.every(text) || ids.has(r.id))
             throw new Error('Invalid or duplicate restaurant.');
         ids.add(r.id);
+        for (const key of ['streetAddress', 'locality', 'regionCode', 'postalCode', 'countryCode'])
+            if (r[key] !== undefined && !text(r[key])) throw new Error(`Invalid restaurant ${key}.`);
         for (const key of ['latitude', 'longitude', 'rating', 'reviewCount', 'priceLevel', 'distanceMeters'])
             if (r[key] !== undefined && !finite(r[key]))
                 throw new Error(`Invalid restaurant ${key}.`);

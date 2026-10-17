@@ -1,6 +1,10 @@
 # Verification
 
-Current checks use Node 24 and Chrome. No API key, billing account, or Worker deployment is required.
+Current hybrid architecture results are recorded in [HYBRID_VERIFICATION.md](docs/HYBRID_VERIFICATION.md). The current Google-to-AllMenus milestone is **not live verified** until a configured Google Worker produces an independently verified priced order.
+
+## Historical menu-first milestone
+
+The results below belong to the previous AllMenus/Photon architecture. They do not verify the new Google discovery path. That earlier version required no API key or Worker deployment.
 
 - `npm run verify`: 33 app tests, content validation, browser/retained-Worker type checks, production build, and static/PWA artifact checks.
 - Portfolio: 21 tests, build, and artifact validation.

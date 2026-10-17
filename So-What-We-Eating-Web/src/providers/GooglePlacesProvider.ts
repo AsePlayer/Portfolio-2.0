@@ -6,6 +6,7 @@ import type { DiscoverRequest } from '../domain/Discovery.ts';
 import { isCoordinates, distanceMeters } from '../location/geo.ts';
 /** All Google calls stay behind our Worker. Responses remain transient. */
 export class GooglePlacesProvider implements RestaurantProvider {
+    resolvedLabel?: string;
     private endpoint: string;
     private request: typeof fetch;
     constructor(endpoint = '', request: typeof fetch = fetch) {
@@ -19,6 +20,7 @@ export class GooglePlacesProvider implements RestaurantProvider {
         this.request = request.bind(globalThis);
     }
     async searchNearby(query: RestaurantSearchQuery): Promise<Restaurant[]> {
+        this.resolvedLabel = undefined;
         const target = isCoordinates(query.location) ? { location: { latitude: query.location.latitude, longitude: query.location.longitude } } : { locationQuery: query.location.query };
         const body: DiscoverRequest = { schemaVersion: 2, ...target, radiusMeters: query.maxDistanceMeters, openNow: false };
         const value = await this.post(body);
@@ -26,6 +28,7 @@ export class GooglePlacesProvider implements RestaurantProvider {
             throw new DiscoveryError('unavailable');
         if (isCoordinates(query.location) && distanceMeters(query.location, value.origin) > 1)
             throw new DiscoveryError('unavailable');
+        if (typeof value.resolvedLabel === 'string' && value.resolvedLabel.length <= 400) this.resolvedLabel = value.resolvedLabel;
         return this.restaurants(value.restaurants).map(r => ({ ...r, distanceMeters: distanceMeters(value.origin as {
                 latitude: number;
                 longitude: number;

@@ -14,6 +14,7 @@ export type DiscoverRequest = {
 export interface DiscoverResponse {
     schemaVersion: 2;
     origin: Coordinates;
+    resolvedLabel?: string;
     searchedAt: string;
     partial: boolean;
     restaurants: Restaurant[];

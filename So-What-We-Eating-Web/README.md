@@ -1,10 +1,12 @@
 # So What We Eating?
 
-**A place, an order, and the price.** A free, open-source meal decision app. Give it your location, party size, budget, and radius; get real named menu items, unit prices, and an itemized order within the whole party budget.
+**A place, an exact order, and listed prices within your party budget.**
+Google discovers actual nearby restaurants; AllMenus verifies menu prices for
+the same physical venue; existing MealBuilder makes the budgeted decision.
 
-## Run it
+## Run locally
 
-Use Node.js 24:
+Use Node 24:
 
 ```sh
 cd So-What-We-Eating-Web
@@ -12,38 +14,51 @@ npm ci
 npm run dev
 ```
 
-Use `npm.cmd` if PowerShell blocks npm.ps1. **No API key, billing account, environment file, or backend deployment is required.** The browser reads public AllMenus city listings and menus directly, restoring the original app’s menu-first approach. Photon resolves locations. See [live provider behavior and limits](docs/LIVE_PROVIDERS.md).
+Live searches require the Google discovery Worker and a public
+`VITE_RESTAURANT_PROXY_URL` at build time.
+The Google API key stays in the Worker secret. Follow
+[production setup](docs/GOOGLE_PROVIDER.md). Missing setup produces a visible
+error. Explicit `?mode=demo` is available without services and is always labeled
+fictional; failed live searches never select it automatically.
 
 ## Behavior
 
-- Feed me succeeds only with a complete, priced order inside your party budget, including the separately reserved buffer.
-- Missing prices, ambiguous price ranges, unusable menus, and orders over budget cause that restaurant to be skipped. No invented prices or restaurant-only success.
-- Quantities, unit prices, food subtotal, buffer, planned total, and money remaining are shown together with the source menu.
-- Different order here reuses the loaded menu. Different restaurant keeps your submitted settings and finds another priced order.
-- Choose 2 / 5 / 10 / 20 / 30 miles, default 5. Actual venue coordinates must fit the chosen straight-line radius. Expansion requires your click.
-- Opening-hours controls and status labels remain removed until their reliability is established.
-- Location permission is requested on your click. Exact user coordinates and typed addresses stay out of persistent storage.
-- We ate here saves the actual selected items, unit prices, restaurant name, and planned total on this browser.
-- Explicit `?mode=demo` loads original fictional Pasadena restaurants/menus. Failed live searches never substitute demo data.
+- Google owns geography, canonical Place IDs, venue details and ratings.
+- Restaurant matching requires normalized name and branch-address evidence,
+  with an independent menu-page identity/coordinate check.
+- Every successful recommendation includes exact listed items, quantities,
+  unit prices, subtotal, reserved buffer, planned total and remaining budget.
+- Ranged, configurable, unpriced or ambiguous menu offers never become prices.
+- Different order reuses the menu with no network calls. Different restaurant
+  reuses the active Google candidate pool and AllMenus caches.
+- The selected 2 / 5 / 10 / 20 / 30-mile straight-line circle is authoritative,
+  including venues across municipal boundaries.
+- Google attribution and linked AllMenus prices are displayed separately.
+  Retrieval time is not a claim that a restaurant updated its menu.
+- Browser GPS is requested only on click. Location text and Google content stay
+  transient. Completed orders save Place IDs and selected AllMenus order lines
+  locally; Google venue details are refreshed instead of persisted.
 
 ## Commands
 
 | Command | Purpose |
 | --- | --- |
-| `npm test` | Budget, menu, provider, storage, and retained adapter contract tests |
-| `npm run verify` | Tests, content/type validation, build, and artifact checks |
-| `npm run check:browser` | Full menu-first browser acceptance with controlled source pages |
-| `node scripts/browser-pricing-check.mjs --live` | Unmocked live menu/price verification |
+| `npm test` | Provider, identity, geography, pricing, budget and storage boundaries |
+| `npm run verify` | Tests, type/content checks, build and shell/secret checks |
+| `npm run check:browser` | Controlled Worker + menu-page browser integration |
+| `npm run check:live` | Unmocked Google/AllMenus matrix; records unconfigured cases |
 | `npm run preview` | Production preview |
 | `npm run portfolio:sync` | Build and refresh the generated portfolio snapshot |
-| `npm run content:import -- input.json candidate.json` | Validate a manual menu without overwriting |
 
-Old Google/Worker and OSM discovery adapters remain as isolated source references and contract tests. They are not composed into the app, required by deployment, or fallback providers.
+The portfolio builds this source into **/projects/what-we-eating/**.
+Old OSM/Photon adapters, the original AllMenus provider and fictional fixtures
+are retained outside the default live path.
 
-## Structure and deployment
+[Architecture](ARCHITECTURE.md) | [live behavior and limits](docs/LIVE_PROVIDERS.md) |
+[Google setup](docs/GOOGLE_PROVIDER.md) | [verification](docs/HYBRID_VERIFICATION.md) |
+[portfolio integration](PORTFOLIO_INTEGRATION.md)
 
-Browser source is in `src/`; normalized menu tooling is independent. Vite’s relative base supports standalone and portfolio subpaths. The portfolio publishes the generated app at **/projects/what-we-eating/**. See [architecture](ARCHITECTURE.md), [portfolio integration](PORTFOLIO_INTEGRATION.md), [menu normalization](docs/MENU_CATALOG.md), and [verification](VERIFICATION.md).
-
-## Limits
-
-Live coverage depends on usable US city listings, public menu pages, and geocoding. The app checks a bounded candidate sample, not every nearby restaurant. Published prices may be stale and are not a final checkout quote; actual prices, tax, and tips can differ. Direct page access and markup can change. Rate limits and outages produce visible errors, never fictional replacements. No real menu dataset is bundled or collected during builds. Live searches need a connection; the installed shell and explicitly selected demo can work offline.
+AllMenus coverage, exact-name/address compatibility, source availability,
+outdated menus and usable meal anchors limit success. A missing trustworthy
+menu is an honest failure. No price inference, nationwide crawl, arbitrary
+website scraping, or fictional fallback occurs.

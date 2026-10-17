@@ -11,13 +11,14 @@ import { RecommendationEngine, RecommendationFailure } from '../src/recommendati
 import { FixtureRestaurantProvider, FixtureMenuProvider } from '../src/providers/FixtureProviders.ts';
 import { GooglePlacesProvider } from '../src/providers/GooglePlacesProvider.ts';
 import { assertMenu } from '../src/catalog/validate.ts';
-import { parseLocation, DEMO_CENTER } from '../src/location/LocationParser.ts';
+import { parseLocation } from '../src/location/LocationParser.ts';
+import { DEMO_CENTER } from '../src/providers/FixtureProviders.ts';
 import { ManualJsonImporter } from '../tools/menus/normalize.ts';
 import { inferRole } from '../tools/menus/inferRole.ts';
 const restaurants: Restaurant[] = JSON.parse(await readFile('content/restaurants/fixtures.json', 'utf8'));
 const menus: Menu[] = await Promise.all((await readdir('content/menus/restaurants')).map(async (path) => JSON.parse(await readFile(`content/menus/restaurants/${path}`, 'utf8'))));
 const menuMap = new Map(menus.map(m => [m.restaurantId, m]));
-const preferences = (budget = 35, people = 1): SearchPreferences => ({ location: parseLocation('91101'), budget, people, bufferPercent: 0.2, diningMode: 'unknown', adventure: 'balanced', maxDistanceMeters: 20000 });
+const preferences = (budget = 35, people = 1): SearchPreferences => ({ location: parseLocation('91101'), budget, people, bufferPercent: 0.2, diningMode: 'unknown', adventure: 'balanced', maxDistanceMeters: 8047, openNow: true });
 const engine = (seed = 1) => new RecommendationEngine(new FixtureRestaurantProvider(restaurants), new FixtureMenuProvider(menuMap), seededRandom(seed));
 test('all generated meal templates respect cents, the reserved buffer, and servings for budgets $10–100 and parties 1–8', () => {
     let checked = 0;
@@ -81,7 +82,7 @@ test('closed, excluded, avoided, far-away, and unaffordable restaurants cannot w
         assert(!result.restaurant.cuisines.includes('Italian'));
     }
     await assert.rejects(engine().recommend(preferences(10, 8), emptyLearning()), (e: unknown) => e instanceof RecommendationFailure && e.code === 'budget');
-    await assert.rejects(engine().recommend({ ...preferences(), location: { ...DEMO_CENTER, latitude: 0, longitude: 0, label: 'Far away', source: 'manual' } }, emptyLearning()), /No spots found/);
+    await assert.rejects(engine().recommend({ ...preferences(), location: { ...DEMO_CENTER, latitude: 0, longitude: 0, label: 'Far away', source: 'manual' } }, emptyLearning()), /No suitable spots/);
 });
 test('missing, malformed, and failed menus preserve restaurant-only discovery with no invented total', async () => {
     const only = [restaurants.find(r => r.id === 'basil-street')!];
@@ -137,21 +138,23 @@ test('manual importer infers missing roles, preserves overrides, and never guess
     input.items[0].price = '$5' as unknown as number;
     assert.throws(() => new ManualJsonImporter().import(input));
 });
-test('location parsing supports local ZIP/city and manual coordinates without pretending nationwide discovery', () => {
-    assert.equal(parseLocation('  Pasadena, CA ').source, 'city');
+test('location parsing keeps arbitrary typed locations for server-side geocoding', () => {
+    for (const input of ['Claremont, CA', '91711', 'Ontario, CA', 'Los Angeles, CA', 'Las Vegas, NV', '10001', '123 Main Street, Paris, France'])
+        assert.equal(parseLocation(input).query, input);
     assert.equal(parseLocation('91101').source, 'zip');
     assert.equal(parseLocation('34.1478,-118.1445').source, 'manual');
-    for (const input of ['', '99999', 'New York, NY', '91,181'])
+    for (const input of ['', 'x', '91,181', 'a'.repeat(241)])
         assert.throws(() => parseLocation(input));
 });
-test('future Google client sends only normalized coordinates to a proxy and validates its response', async () => {
+test('Google client sends typed intent to the normalized proxy and rejects malformed responses', async () => {
     let body = '';
-    const request = (async (_url: unknown, init: RequestInit) => { body = String(init.body); return new Response(JSON.stringify({ schemaVersion: 1, restaurants })); }) as typeof fetch;
-    const provider = new GooglePlacesProvider('https://proxy.example/nearby', request);
-    assert.equal((await provider.searchNearby({ location: parseLocation('91101'), maxDistanceMeters: 20000 })).length, 8);
-    assert.deepEqual(JSON.parse(body), { schemaVersion: 1, location: DEMO_CENTER, radiusMeters: 20000 });
+    const live = restaurants.map(r => ({ ...r, id: `google:${r.id}`, sourceId: r.id, source: 'google-places' }));
+    const request = (async (_url: unknown, init: RequestInit) => { body = String(init.body); return new Response(JSON.stringify({ schemaVersion: 2, origin: DEMO_CENTER, searchedAt: new Date().toISOString(), restaurants: live })); }) as typeof fetch;
+    const provider = new GooglePlacesProvider('https://proxy.example/discover', request);
+    assert.equal((await provider.searchNearby({ location: parseLocation('91101'), maxDistanceMeters: 8047, openNow: true })).length, 7);
+    assert.deepEqual(JSON.parse(body), { schemaVersion: 2, locationQuery: '91101', radiusMeters: 8047, openNow: true });
     assert(!body.includes('key'));
-    assert.throws(() => new GooglePlacesProvider('http://insecure.example/nearby'));
-    const bad = new GooglePlacesProvider('https://proxy.example/nearby', (async () => new Response('{"schemaVersion":1,"restaurants":[{}]}')) as typeof fetch);
-    await assert.rejects(bad.searchNearby({ location: parseLocation('91101'), maxDistanceMeters: 20000 }));
+    assert.throws(() => new GooglePlacesProvider('http://insecure.example/discover'));
+    const bad = new GooglePlacesProvider('https://proxy.example/discover', (async () => new Response('{"schemaVersion":2,"restaurants":[{}]}')) as typeof fetch);
+    await assert.rejects(bad.searchNearby({ location: parseLocation('91101'), maxDistanceMeters: 8047, openNow: true }));
 });

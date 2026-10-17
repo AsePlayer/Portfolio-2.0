@@ -1,28 +1,36 @@
-# CB01 verification
+# CB02 verification
 
-Executed locally with Node **24.16.0**, npm **11.13.0**, and installed headless Google Chrome. No remote deployment or real restaurant API was used.
+Verified locally using Node 24.16.0, npm 11.13.0, installed Google Chrome, and Wrangler 4.151.1. Real Google credentials and Cloudflare deployment were not used.
 
-## Automated checks actually run
+## Checks
 
-- `npm run dev -- --port 5173 --strictPort`: Vite started successfully and its HTML returned **HTTP 200**. The owned development server was stopped after verification.
-- `npm run verify`: **14 tests passed**, catalog validation, TypeScript check, Vite production build, asset/manifest/icon/subpath verification.
-- Meal tests enumerate all fixture templates for **$10/$20/$35/$60/$100** and **1–8 people**: food allowance, full buffer, party servings, safe cents, no unrelated entrées, no combo accompaniment duplication.
-- Other domain checks: reroll alternatives, no immediate restaurant repeat, fixed request on order reroll, closed/excluded/avoided/far/over-budget eligibility, missing/malformed/failed menus, recent rejection expiry/favorites, invalid catalog rejection, manual import inference/overrides, location parsing, proxy request/response validation.
-- Storage checks: interaction signals never create completed meals, acceptance idempotency, refresh persistence, origin-path namespace separation, no coordinate persistence, preferences/settings, denied/full/malformed storage fallback.
-- `npm run check:browser`: desktop and **375/390/430 px** viewport acceptance, screenshots, form/error flow, both rerolls, menu/directions dialogs, favorites, We ate here/history after refresh, saved settings, keyboard skip link, no-menu restaurant-only result, no horizontal overflow, offline reopen and new recommendation, worker update and old-cache cleanup, host-root scope isolation, a portfolio app subpath, denied geolocation, unavailable browser storage. **No page or console errors captured.**
+- `npm run verify`: 23 domain/storage/provider/Worker tests, content validation, browser/Worker TypeScript check, Vite build, and production artifact checks.
+- `npm run build` inside worker: Wrangler deploy **dry-run** succeeds with both rate-limit bindings. No deployment or paid request occurs.
+- Domain tests retain party-wide cent/buffer/serving/template/reroll coverage across $10/$20/$35/$60/$100 and 1–8 diners.
+- New tests cover supported radius conversion/expansion/max, polar/antimeridian math, hard circle filtering, open/closed/unknown states, a mocked 11:30 PM search-time scenario, geocoding failures/ambiguity/quotas/timeouts, bounded pagination, stable-ID deduplication, attribution normalization, CORS/size/version/rate/secret validation, live-without-menu, preserved reroll inputs, live-mode configuration failures, and privacy-safe history/migration.
 
-Browser verification serves the built artifact under `/So-What-We-Eating-Web/` and `/projects/what-we-eating/`. It changes only the served worker version to simulate an update, not the project source or built worker file. A deterministic random function makes UI assertions repeatable. Normal runtime still uses native randomness. The test closes its browser and HTTP server after completion.
+## Browser acceptance
 
-Screenshots and machine-readable results are generated into ignored `artifacts/`; run the command again to reproduce them. Desktop feed/result and 375px feed screenshots were visually inspected.
+`npm run check:browser` builds a separate ignored artifact with a reserved test endpoint. Chrome uses the actual frontend and actual Worker handler; **only Google's upstream responses are mocked**. Normal dist/config is untouched. No credential-backed Google request is made.
 
-## Limits of these checks
+Passed:
 
-Viewport checks are Chrome emulation, not physical phones. Manifest/icon/install prerequisites and service-worker lifecycle passed, but actual Add to Home Screen/install prompts on iOS/Android were not exercised. GitHub Pages Actions and public hosting were prepared, not run. There is no live discovery, geocoding endpoint, source acquisition job, dietary validation, or external provider attribution implementation. The future proxy client was tested against a mock only. Full assistive-technology auditing and iframe behavior were not performed.
+- Desktop and 375/390/430px layout, with no horizontal overflow; screenshots visually inspected.
+- No automatic geolocation request. User-action success with controlled browser coordinates, and denial followed by typed input.
+- Claremont, CA; 91711; Ontario, CA; Los Angeles, CA; Las Vegas, NV; 10001; and a street-address query all reach server-side geocoding in the mock.
+- 2-mile and 30-mile requests, default Open Now, unknown-hours handling when disabled, saved radius/Open Now after refresh.
+- No-result 5→10→20→30 expansion, stopping at the cap.
+- Real-mode restaurant-only UI, required logo/provider credit, directions handoff, same-request restaurant reroll.
+- Completed visit only after We ate here; Google display fields/coordinates absent from saved data; fresh detail lookup after reload.
+- Friendly bad-location/service failures with no fixture substitution.
+- Offline shell and honest live-connectivity message, worker replacement, scope isolation, portfolio repository subpath, and temporary storage fallback.
+- Explicit demo mode loads fixtures with no Worker requests; order reroll still works.
+- No page errors or unexpected console errors. Expected HTTP 422/503 from deliberate failure scenarios are excluded from the unexpected-error list.
 
-## Portfolio integration follow-up
+Results and screenshots: ignored artifacts/cb02-browser-acceptance.json and artifacts/cb02-*.png. The acceptance server/browser close after completion.
 
-The app was built and synced into `projects/what-we-eating/`, with an owned-directory marker and a Portfolio return link. The portfolio's 20 existing tests, content build, and artifact validation passed. Chrome checked the four-card project grid at 1440 px (four columns), 800 px (two), and 390/375 px (one), in light and dark themes. The integrated card opened the app, generated an order, registered its worker only under the app path, and returned to `/#projects`. Project links remained available with JavaScript disabled. No page or console errors were captured. Temporary screenshots/results were stored under the portfolio's ignored `.tmp/portfolio-qa/`.
+## Not verified
 
-## Next bounded CB
+No deployed Worker, real Google API key/billing/quota/CORS configuration, actual nationwide results, or live late-night availability has been exercised. Browser coordinates and upstream opening states were controlled test inputs. Physical iOS/Android installation and a full screen-reader audit remain manual checks. Straight-line radius is not drive time. Menu coverage for real places remains absent by design.
 
-**CB02: activate one real discovery provider in one area.** Implement and deploy a small explicitly authorized serverless proxy, production ZIP/city geocoding, attribution/privacy/retention handling, quotas, and a narrow live acceptance check. Keep restaurant-only fallback working before adding a separate permissioned menu source. Portfolio card/sync integration can then be a small independent change.
+Follow [activation instructions](docs/LIVE_PROVIDERS.md), then perform the small credential-backed acceptance check before claiming real live availability.

@@ -1,60 +1,70 @@
 # Architecture
 
-## Data flow and boundaries
+## Boundaries and flow
 
 ```text
-typed location / browser geolocation
-                  ↓
-views → App controller → RecommendationEngine
-                            ↓
-                 RestaurantProvider.searchNearby
-                            ↓
-                 normalized Restaurant[]
-                            ↓
-                   MenuProvider.getMenu
-                            ↓
-          normalized Menu | null + local learning context
-                            ↓
-             eligibility → meal templates → weighted pick
-                            ↓
-                  one MealRecommendation → view
+UI → App → RecommendationEngine → RestaurantProvider
+                                       ↓
+                          GooglePlacesProvider client
+                                       ↓
+                       HTTPS Worker POST /discover
+                         ↙                     ↘
+                 typed query              coordinates
+                      ↓                        │
+                  geocoding ───────────────────┘
+                                       ↓
+                      Text Search (New), ≤2 pages
+                                       ↓
+                  normalize, dedupe, circular distance,
+                 business/open status, attribution
+                                       ↓
+                         normalized Restaurant[]
+                                       ↓
+                eligibility + separate MenuProvider
+                                       ↓
+                   meal templates + weighted pick
+                                       ↓
+                         one recommendation
 ```
 
-`src/main.ts` is the composition root: it injects providers, a location service, and a database. UI code imports no fixture provider, scraper, fetch client, or catalog loader. Sample-data presentation is controlled by the normalized `isDemo` data flag. Recommendation modules use only interfaces, domain models, and an injected random function. Importers never run in the browser or control rendering.
+`src/main.ts` composes runtime providers. Default live mode never falls back to fixtures, including when configuration, network, or quotas fail. Only explicit demo mode loads fixture providers/catalog via lazy imports. UI modules do not import either provider implementation. The frontend has zero runtime package dependencies.
 
-## Domain and budget
+`worker/src/` owns Google calls and secrets. It shares pure domain/math helpers with the browser, never UI/storage code. TypeScript checks both source trees; Wrangler separately validates bundling and bindings. No Worker deployment happens during a frontend build.
 
-Restaurant discovery and priced menus have separate interfaces. A restaurant without a menu is valid. `MenuItem.role` is explicit; manual roles override importer inference. `serves` represents shared entrée capacity, not an assumption based on the item's name. All prices are USD in schema v1. Catalog validation rejects non-finite, zero, negative, sub-cent, and unsafe-cent prices.
+## Location, radius, and opening status
 
-`Budget.ts` converts dollars to cents and reserves `ceil(total budget cents × buffer percent)` before any order is built. A $35 budget at 20% leaves $28 for food and reserves $7. The displayed planned total is food subtotal plus the **full reserved allowance**, which can be higher than actual incidental costs. It is always at or below the party budget. A budget does not become per-person when party size changes. Dining mode is part of the request; the demo does not infer different tax/tip rules from it.
+LocationParser validates intent, not geography. A typed location carries its user's query to the Worker; coordinates carry a browser/manual source. Only explicit fixture mode has a small demo-location mapping. Browser permission is requested on action, with high accuracy and a one-minute position maximum age. Typed input remains available after denial.
 
-## Restaurant choice
+Radius is a supported meter value for 2/5/10/20/30 miles (3219/8047/16093/32187/48280 m), safely below 50 km. Default is 5 miles. Spherical bounding-box math includes polar/antimeridian cases; Haversine filtering turns Google's rectangle into the chosen circle. The client recomputes distances independently. No-results expansion is explicit and capped.
 
-`RestaurantPicker` excludes closed, distant, explicitly excluded, avoided-cuisine, and immediately rejected restaurants. Known menus must yield a complete affordable meal. Missing/failed/malformed menus use a conservative price-level screen ($6/$14/$25/$40 per main); that is an eligibility estimate, never a promise or a total shown to the user. Unknown hours are allowed and displayed as unknown.
+Open Now is sent upstream and defaults true. Both layers require a true current-opening-state field when enabled. Unknown is not open. When disabled, unknown-hours candidates can qualify; known-closed/non-operational places remain excluded. No local-time weekday schedule guesses are used. Result timestamps make the search-time nature of hours visible.
 
-`RecommendationScorer` starts at 6, adds modest rating and menu bonuses, favorites (+3), cuisine likes (+2), and an adventure adjustment. It subtracts distance (up to 3), completed meals in the last seven days (3 each), and restaurant rejections in the last two days (2 each). A floor of 0.25 keeps eligible choices possible. Familiar mode favors past accepted restaurants/cuisines; surprise mode adds weight to untried places. Balanced mode applies a small acceptance bonus. Directions/menu/order-reroll events are retained as signals, but do not independently imply a successful meal or a dislike.
+## Worker and contract
 
-`weightedPick` uses these positive weights directly. There is no always-highest-rated winner. Randomness is injectable; `seededRandom` makes tests reproducible. A failed discovery provider produces a retry message. A failed menu provider produces restaurant-only discovery.
+`POST /discover` v2 takes either coordinates or locationQuery, plus radius and openNow. Geocoding resolves ordinary queries on the server; coordinates avoid that call. Text Search (New) supplies up to 40 upstream candidates with a bounded field mask. Stable IDs normalize as google:<place-id>; duplicates disappear. Empty discovery is valid. A failed later page can retain its already valid first-page pool with partial=true. Errors expose only our own codes/messages.
 
-## Meal choice
+The same endpoint accepts a disjoint placeIds request (max three) for explicit current-detail refresh, using Place Details (New). No bulk background history hydration occurs.
 
-`MealBuilder` enumerates a small readable template set for each main/combo/shared anchor:
+The server validates method, path, origin, size (2 KiB), version, fields, coordinates, and supported radius; it applies per-IP/shared-edge rate limits and an 18-second deadline. All Google URLs are fixed by code. Responses are no-store, application/request logs are disabled, and nothing writes an upstream cache. CORS and edge limits are not a global quota or general authentication system; owner-configured Google quotas remain necessary.
 
-- Enough units of one main or combo for the whole party, or `ceil(people / serves)` shared items.
-- Main/shared anchor alone, with a side per diner, a drink per diner, or both.
-- Anchor with one starter per two diners, or a dessert per diner.
-- Combos never get duplicate side/drink accompaniments.
+## Recommendation and menus
 
-No unrelated second entrée is added to use spare money. Every template must fit the food allocation and provide an anchor for everyone. Higher use of the food budget and a side modestly improve a meal's weight. It is acceptable to leave money unspent. A canonical item-ID/quantity signature guarantees that a same-restaurant reroll excludes the previous meal if any other template fits. When only one fits, the UI says so. Restaurant rerolls retain the original submitted request, rather than reading potentially changed settings. A no-alternative restaurant reroll retains the displayed result and explains the constraint.
+The existing engine still discovers, filters eligibility, obtains an independent menu, builds a meal if possible, scores, and randomly chooses one suitable candidate. Missing/failed menus are a normal restaurant-only state. CB02 live menus return null until a separately permissioned catalog can join stable provider IDs. Fixture menus still exercise complete orders.
 
-## Storage and privacy
+Budget arithmetic uses integer cents and reserves the buffer from the full party budget first. Templates cover one main/combo per diner or enough shared servings, with optional sides/drinks or a starter/dessert. No unrelated extra mains are added. Known price levels give a rough affordability screen; unknown price is not proof of unaffordability. No priced total is invented without menu data.
 
-Only `LocalDatabase` reads/writes localStorage. `HistoryStore`, `PreferenceStore`, and `SettingsStore` own their operations. One versioned record is namespaced by the deployment path (`swwe:v1:<path>`), avoiding collisions with the portfolio/stretch finder or another app deployment. Origin/path changes create separate data. Settings retain a supported city label; exact browser/manual coordinates are never stored. Completed snapshots retain restaurant identity/name/cuisines, order names/quantities, planned total, party size, and time, without exact location.
+Restaurant weights retain ratings, distance, favorites, cuisine tastes, recent rejection, completed-repeat, and adventure components. A positive floor preserves surprise. Randomness is injectable. Order rerolls exclude the immediate meal signature when another fits; restaurant rerolls preserve the complete submitted request and exclude the immediate restaurant. API results are a sample, not an exhaustive city inventory.
 
-`shown`, `reject`, `reroll-order`, `directions`, `menu`, and `accepted` events are separate from completed meals. Only the explicit accept method creates completed history, once per recommendation ID. Storage denial/quota failure keeps an in-memory session and displays a notice. Unreadable/unknown-version records are left intact rather than silently overwritten. There is no analytics, cloud persistence, login, or background geolocation. A secondary control clears local data after a native dialog confirmation.
+## Persistence and provider content
 
-## Shell and updates
+LocalDatabase is the sole localStorage boundary. The existing swwe:v1:<deployment-path> key stays stable, while payload schema migrates to version 2. Migration whitelists settings/events/preferences and removes stored location labels or Google snapshots. Unsupported/corrupt records remain untouched in temporary mode; explicit Clear can reset an accessible record.
 
-Vite bundles the small fixture catalog, so the complete demo is available with its shell offline. `build-sw.mjs` hashes file names, all built bytes, and the worker template to version the precache. Install succeeds only after all shell files are cached. Activate removes only old caches bearing this app's exact scope prefix, then claims clients. Navigation uses a bounded network-first attempt with the installed index as fallback; hashed assets are cache-first. APIs and unrelated resources never enter the shell cache. An updated controller offers a reload; returning to the tab checks for a worker update. Hash routes avoid server rewrites.
+Settings include budget, party size, radius, Open Now, adventure, dining mode, and buffer. No coordinates or typed addresses are saved. Events record IDs, action, and timestamp. Only explicit acceptance creates completed history, once per recommendation. Google-backed visits store stable place IDs plus the user's party size/action/time, with no names, addresses, cuisines, ratings, hours, URLs, or provider coordinates. Original fictional meals may retain their own original snapshots. User-selected favorites, exclusions, and cuisine opinions remain user state.
 
-The stronger source/runtime separation, relative Vite base, scoped cache naming, local persistence boundary, and validation-before-build workflow follow patterns inspected in Back-Fixer-Upper-Web. Its YouTube-specific catalog, IndexedDB migration, and scheduled acquisition systems were not needed for this small original fixture catalog.
+Current Google display details live in memory. A saved visit can refresh one restaurant on action; this does not persist returned content. History/preferences render the official Google Maps asset and third-party credits wherever current Google content appears. Public privacy and terms pages are linked. Refer to docs/LIVE_PROVIDERS.md for the official policy sources and activation details.
+
+## PWA and portfolio
+
+The shell and original demo catalog are build-owned static assets. Cache versions hash all built bytes and the worker template. Install precaches a complete shell; activation removes only caches under this exact app scope. Hashed assets are cache-first; navigation is network-first with cached page/shell fallback. Live discovery/lookup are POST requests and never enter shell caches; no provider data is written to IndexedDB or CacheStorage. Offline live mode explains the connection requirement. Explicit demo works offline after shell installation.
+
+Hash routes need no server rewrites. Relative Vite/assets/manifest/worker URLs support standalone and portfolio subpaths. The portfolio sync adds its return link and includes that modified HTML in its shell version. Source remains independent of generated projects/what-we-eating/. The portfolio workflow passes only the public endpoint URL and forces live mode.

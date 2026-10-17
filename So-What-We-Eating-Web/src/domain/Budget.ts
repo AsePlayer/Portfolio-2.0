@@ -1,5 +1,6 @@
 import { CONFIG } from './config.ts';
 import type { SearchPreferences } from './SearchPreferences.ts';
+import { validRadius } from './Radius.ts';
 export const cents = (dollars: number) => Math.round(dollars * 100);
 export function budgetAllocation(budget: number, bufferPercent: number) {
     if (!Number.isFinite(budget) || budget < CONFIG.minBudget || budget > CONFIG.maxBudget)
@@ -11,6 +12,8 @@ export function budgetAllocation(budget: number, bufferPercent: number) {
     return { budgetCents, bufferCents, foodBudgetCents: budgetCents - bufferCents };
 }
 export function validatePreferences(preferences: SearchPreferences) {
+    if (!validRadius(preferences.maxDistanceMeters) || typeof preferences.openNow !== 'boolean')
+        throw new Error('Choose a supported distance and opening-hours preference.');
     budgetAllocation(preferences.budget, preferences.bufferPercent);
     if (!Number.isInteger(preferences.people) || preferences.people < 1 || preferences.people > CONFIG.maxPeople)
         throw new Error('Choose 1–8 people. The budget covers everyone.');

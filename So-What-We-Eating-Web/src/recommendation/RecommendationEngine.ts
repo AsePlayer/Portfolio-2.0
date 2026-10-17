@@ -10,6 +10,8 @@ import { restaurantWeight } from './RecommendationScorer.ts';
 import type { LearningContext } from './RecommendationScorer.ts';
 import { weightedPick } from './random.ts';
 import type { Random } from './random.ts';
+import { DiscoveryError } from '../domain/Discovery.ts';
+import { radiusMiles } from '../domain/Radius.ts';
 export class RecommendationFailure extends Error {
     code: 'unavailable' | 'empty' | 'budget';
     constructor(code: RecommendationFailure['code'], message: string) { super(message); this.code = code; }
@@ -23,14 +25,16 @@ export class RecommendationEngine {
         validatePreferences(preferences);
         let discovered;
         try {
-            discovered = await this.restaurants.searchNearby({ location: preferences.location, maxDistanceMeters: preferences.maxDistanceMeters });
+            discovered = await this.restaurants.searchNearby({ location: preferences.location, maxDistanceMeters: preferences.maxDistanceMeters, openNow: preferences.openNow });
         }
-        catch {
+        catch (error) {
+            if (error instanceof DiscoveryError)
+                throw error;
             throw new RecommendationFailure('unavailable', 'The restaurant provider is taking a break. Try again in a moment.');
         }
         const restaurants = discovered.filter(r => isEligible(r, preferences, learning, excludeId));
         if (!restaurants.length)
-            throw new RecommendationFailure('empty', excludeId ? 'No other spots fit right now. Edit your budget or restore an excluded restaurant in Preferences.' : 'No spots found here. Try the Pasadena demo, or check your exclusions in Preferences.');
+            throw new RecommendationFailure('empty', `${excludeId ? 'No other suitable spots' : 'No suitable spots'}${preferences.openNow ? ' confirmed open' : ''} within ${radiusMiles(preferences.maxDistanceMeters)} miles. ${preferences.maxDistanceMeters >= 48280 ? 'Try another location or check your preferences.' : 'Try expanding the distance.'}`);
         const candidates = await Promise.all(restaurants.map(async (restaurant) => {
             let menu = null;
             try {
@@ -53,7 +57,7 @@ export class RecommendationEngine {
         const eligible = candidates.filter(c => c !== null);
         if (!eligible.length)
             throw new RecommendationFailure('budget', 'Nothing makes a full meal for everyone at this budget. Raise the party budget or try fewer people.');
-        return weightedPick(eligible, this.random);
+        return { ...weightedPick(eligible, this.random), candidateCount: eligible.length };
     }
     differentOrder(result: MealRecommendation): MealRecommendation {
         const meal = result.menu ? buildMeal(result.menu, result.preferences, this.random, result.meal?.signature) : null;

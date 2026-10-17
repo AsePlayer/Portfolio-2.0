@@ -16,6 +16,7 @@ export interface Meal {
     foodBudgetCents: number;
 }
 export interface MealRecommendation {
+    candidateCount?: number;
     id: string;
     restaurant: Restaurant;
     menu: Menu | null;

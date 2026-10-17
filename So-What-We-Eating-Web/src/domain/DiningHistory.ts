@@ -11,7 +11,9 @@ export interface CompletedMeal {
     recommendationId: string;
     at: string;
     restaurantId: string;
-    restaurantName: string;
+    restaurantName?: string;
+    provider?: string;
+    sourceId?: string;
     cuisines: string[];
     order: string[];
     totalCents: number | null;
@@ -19,8 +21,14 @@ export interface CompletedMeal {
     isDemo?: boolean;
 }
 export function completedMeal(result: MealRecommendation, at = new Date().toISOString()): CompletedMeal {
+    if (result.restaurant.source === 'google-places')
+        return {
+            id: result.id, recommendationId: result.id, at, restaurantId: result.restaurant.id,
+            provider: 'google-places', sourceId: result.restaurant.sourceId,
+            cuisines: [], order: [], totalCents: null, people: result.preferences.people,
+        };
     return {
-        id: result.id, recommendationId: result.id, at,
+        id: result.id, recommendationId: result.id, at, provider: 'fixture',
         restaurantId: result.restaurant.id, restaurantName: result.restaurant.name,
         cuisines: result.restaurant.cuisines,
         order: result.meal?.lines.map(line => `${line.quantity} × ${line.item.name}`) ?? [],

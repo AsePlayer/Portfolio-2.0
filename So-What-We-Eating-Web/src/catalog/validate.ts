@@ -50,8 +50,18 @@ export function assertRestaurants(value: unknown): asserts value is Restaurant[]
             throw new Error('Invalid price level.');
         if (r.isOpen !== undefined && typeof r.isOpen !== 'boolean')
             throw new Error('Invalid open status.');
+        if (r.rating !== undefined && ((r.rating as number) < 0 || (r.rating as number) > 5))
+            throw new Error('Invalid rating.');
+        if (r.reviewCount !== undefined && (!Number.isInteger(r.reviewCount) || (r.reviewCount as number) < 0))
+            throw new Error('Invalid review count.');
+        if (r.distanceMeters !== undefined && (r.distanceMeters as number) < 0)
+            throw new Error('Invalid distance.');
         if (r.isDemo !== undefined && typeof r.isDemo !== 'boolean')
             throw new Error('Invalid sample-data flag.');
+        if (r.checkedAt !== undefined && (!text(r.checkedAt) || !Number.isFinite(Date.parse(r.checkedAt))))
+            throw new Error('Invalid freshness timestamp.');
+        if (r.attributions !== undefined && (!Array.isArray(r.attributions) || !r.attributions.every(a => record(a) && text(a.name) && (a.uri === undefined || isWebUrl(a.uri)))))
+            throw new Error('Invalid source attribution.');
         for (const key of ['websiteUrl', 'menuUrl', 'directionsUrl'])
             if (r[key] !== undefined && !isWebUrl(r[key]))
                 throw new Error('Invalid restaurant URL.');

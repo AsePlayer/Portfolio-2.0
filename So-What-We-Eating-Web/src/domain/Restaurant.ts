@@ -16,4 +16,9 @@ export interface Restaurant {
     source: string;
     sourceId?: string;
     isDemo?: boolean;
+    checkedAt?: string;
+    attributions?: {
+        name: string;
+        uri?: string;
+    }[];
 }

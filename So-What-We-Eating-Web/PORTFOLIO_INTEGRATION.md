@@ -2,6 +2,8 @@
 
 ## Current portfolio integration
 
+CB02 adds live discovery. Set the portfolio repository variable `VITE_RESTAURANT_PROXY_URL` to the deployed Worker's full `/discover` URL, then rerun the portfolio workflow. The workflow forces live mode; an unset endpoint displays a setup message and never silently uses fixtures. Google secrets belong only in the Worker. Follow [live activation instructions](docs/LIVE_PROVIDERS.md) before expecting real results. `?mode=demo` remains an explicit local/demo option.
+
 The portfolio card opens **`/projects/what-we-eating/`**. App source stays in this folder, and `projects/what-we-eating/` contains only a generated snapshot. From this folder, run `npm run portfolio:sync` to build and refresh that snapshot. For another portfolio location, use `npm run portfolio:sync -- --portfolio "path/to/Portfolio 2.0"`.
 
 The sync script checks the configured card, confines its destination to the selected portfolio, rejects links and unmarked directories, stages the build, adds a `../../#projects` return link, and versions the worker against the modified HTML before replacing its owned directory. The parent portfolio's Pages workflow runs the app's tests and sync before building the complete portfolio. No separate app hosting or API configuration is needed.

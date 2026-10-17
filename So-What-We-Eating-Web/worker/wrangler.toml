@@ -1,0 +1,25 @@
+name = "so-what-we-eating-discovery"
+main = "src/index.ts"
+compatibility_date = "2026-10-16"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://ryanscott.org,https://www.ryanscott.org,https://aseplayer.github.io"
+
+# Google response/location data must not enter platform request logs.
+[observability]
+enabled = false
+
+[[ratelimits]]
+name = "IP_LIMITER"
+namespace_id = "240201"
+[ratelimits.simple]
+limit = 12
+period = 60
+
+[[ratelimits]]
+name = "EDGE_LIMITER"
+namespace_id = "240202"
+[ratelimits.simple]
+limit = 120
+period = 60

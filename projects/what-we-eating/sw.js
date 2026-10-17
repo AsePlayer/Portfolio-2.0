@@ -1,4 +1,4 @@
-const VERSION='d82b7cedeedb11e7',FILES=["assets/index-CSEeD_PM.css","assets/index-DpbHRKJz.js","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable.png","icons/icon.svg","index.html","manifest.webmanifest"];
+const VERSION='882da6959a24c7fd',FILES=["assets/FixtureProviders-zJ30RVGc.js","assets/geo-BDZfoXyQ.js","assets/index-C7r6O2tO.js","assets/index-CxEnXugt.css","assets/loader-CJ6_dbsl.js","assets/validate-CJC5HXRt.js","attribution/README.txt","attribution/google-maps.svg","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable.png","icons/icon.svg","index.html","manifest.webmanifest","privacy.html","terms.html"];
 const ROOT=new URL('./',self.location.href);
 const PREFIX=`swwe:${ROOT.pathname}:`,CACHE=`${PREFIX}${VERSION}`;
 const SHELL=new Set(FILES);
@@ -21,7 +21,8 @@ self.addEventListener('fetch',event=>{
   const local=url.pathname.slice(ROOT.pathname.length);
   if(request.mode==='navigate'){
     // Keep the installed index paired with its complete precached assets for offline use.
-    event.respondWith(network(request).then(response=>response.ok?response:caches.match(new URL('index.html',ROOT))).catch(()=>caches.match(new URL('index.html',ROOT))));return;
+    const fallback=async()=>await caches.match(request,{ignoreSearch:true})||await caches.match(new URL('index.html',ROOT));
+    event.respondWith(network(request).then(response=>response.ok?response:fallback()).catch(fallback));return;
   }
   if(!SHELL.has(local))return; // Live APIs and unrelated resources never enter the shell cache.
   if(local.startsWith('assets/'))event.respondWith(caches.match(request,{ignoreSearch:true}).then(cached=>cached||network(request)));

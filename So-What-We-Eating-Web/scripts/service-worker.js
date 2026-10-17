@@ -21,7 +21,8 @@ self.addEventListener('fetch',event=>{
   const local=url.pathname.slice(ROOT.pathname.length);
   if(request.mode==='navigate'){
     // Keep the installed index paired with its complete precached assets for offline use.
-    event.respondWith(network(request).then(response=>response.ok?response:caches.match(new URL('index.html',ROOT))).catch(()=>caches.match(new URL('index.html',ROOT))));return;
+    const fallback=async()=>await caches.match(request,{ignoreSearch:true})||await caches.match(new URL('index.html',ROOT));
+    event.respondWith(network(request).then(response=>response.ok?response:fallback()).catch(fallback));return;
   }
   if(!SHELL.has(local))return; // Live APIs and unrelated resources never enter the shell cache.
   if(local.startsWith('assets/'))event.respondWith(caches.match(request,{ignoreSearch:true}).then(cached=>cached||network(request)));

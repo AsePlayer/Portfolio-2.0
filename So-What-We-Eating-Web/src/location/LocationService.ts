@@ -9,10 +9,10 @@ export class BrowserLocationService implements LocationService {
     current(): Promise<DiningLocation> {
         return new Promise((resolve, reject) => {
             if (!navigator.geolocation) {
-                reject(new Error('Location is unavailable in this browser. Type Pasadena or 91101 instead.'));
+                reject(new Error('Location is unavailable in this browser. Type a city, ZIP, or address instead.'));
                 return;
             }
-            navigator.geolocation.getCurrentPosition(({ coords }) => resolve({ latitude: coords.latitude, longitude: coords.longitude, source: 'browser', label: 'Current location' }), () => reject(new Error('Couldn’t use your location. You can still type Pasadena or 91101 to try the demo.')), { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
+            navigator.geolocation.getCurrentPosition(({ coords }) => resolve({ latitude: coords.latitude, longitude: coords.longitude, source: 'browser', label: 'Current location' }), () => reject(new Error('Couldn’t use your location. Type a city, ZIP, or address instead.')), { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
         });
     }
 }

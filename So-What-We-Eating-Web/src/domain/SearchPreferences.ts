@@ -1,10 +1,17 @@
 export type LocationSource = 'browser' | 'zip' | 'city' | 'manual';
-export interface DiningLocation {
+export type DiningLocation = {
     label: string;
-    source: LocationSource;
+} & ({
+    source: 'browser' | 'manual';
     latitude: number;
     longitude: number;
-}
+    query?: never;
+} | {
+    source: 'zip' | 'city';
+    query: string;
+    latitude?: never;
+    longitude?: never;
+});
 export type DiningMode = 'dine-in' | 'takeout' | 'unknown';
 export type Adventure = 'familiar' | 'balanced' | 'surprise';
 export interface SearchPreferences {
@@ -15,4 +22,5 @@ export interface SearchPreferences {
     diningMode: DiningMode;
     adventure: Adventure;
     maxDistanceMeters: number;
+    openNow: boolean;
 }

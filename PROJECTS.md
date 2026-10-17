@@ -64,7 +64,7 @@ node scripts/validate-site.mjs
 
 The source stays in `So-What-We-Eating-Web/`. The sync command builds it, stages the generated app, adds a return link to `/#projects`, versions the modified offline shell, and replaces only its marked `projects/what-we-eating/` directory. It refuses an unmarked or linked destination. Do not edit generated files by hand.
 
-The portfolio's existing Pages workflow now builds this checked-in app source on every deployment. It needs no additional repository variable, account, or API key. The source and a generated snapshot are committed together so the normal local portfolio preview also works. The demo currently uses fictional restaurants near Pasadena, CA; the project card labels that clearly. Its scoped worker cannot control the portfolio or the stretch finder.
+The portfolio's Pages workflow builds this checked-in app source on every deployment and validates the separate discovery Worker bundle. Live discovery needs a deployed Worker with its server-side Google key and the public repository variable `VITE_RESTAURANT_PROXY_URL`; follow `So-What-We-Eating-Web/docs/LIVE_PROVIDERS.md`. Normal mode reports setup unavailable until that is configured. `?mode=demo` explicitly selects fictional development data. Source and a generated snapshot are committed together for local portfolio previews. The app's scoped service worker cannot control the portfolio or stretch finder.
 
 ## Add another app
 

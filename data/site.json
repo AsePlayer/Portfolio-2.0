@@ -280,7 +280,7 @@
       {
         "id": "what-we-eating",
         "title": "So What We Eating?",
-        "summary": "Skip the food debate with a budget-aware restaurant pick and a sensible order in a fictional demo.",
+        "summary": "A location-aware restaurant picker with distance, open-now controls, and budget-aware meal planning.",
         "technologies": ["TypeScript", "Vite", "PWA"],
         "href": "/projects/what-we-eating/"
       },

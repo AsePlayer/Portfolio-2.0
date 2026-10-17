@@ -1,3 +1,5 @@
+> Current application note: opening-hours UI and filtering are suspended. The browser always sends `openNow: false`. The optional Worker retains the legacy request contract below for compatibility; it is not required by normal free discovery.
+
 # Optional Google discovery
 
 **Google is optional and can incur charges.** The normal app uses free OpenStreetMap discovery without this setup. Follow these steps only if you deliberately choose Google. No Google account or Worker is needed by the default provider.

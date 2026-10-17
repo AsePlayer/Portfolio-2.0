@@ -110,9 +110,8 @@ export class App {
         const budget = document.querySelector<HTMLInputElement>('#budget')!, people = document.querySelector<HTMLInputElement>('#people')!;
         this.draftLocation = document.querySelector<HTMLInputElement>('#location')?.value ?? this.draftLocation;
         const radius = Number(document.querySelector<HTMLSelectElement>('#radius')?.value);
-        const openNow = document.querySelector<HTMLInputElement>('#open-now')?.checked ?? true;
         if (validRadius(radius))
-            this.settings.update({ radiusMeters: radius, openNow });
+            this.settings.update({ radiusMeters: radius });
         if (budget.validity.valid && people.validity.valid)
             this.settings.update({ budget: Number(budget.value), people: Number(people.value) });
         this.busy = true;
@@ -132,7 +131,7 @@ export class App {
         }
     }
     private learning() { return { preferences: this.preferences.value, history: this.history.meals, events: this.history.events }; }
-    async feed(rawLocation: string, budget: number, people: number, radiusMeters: number, openNow: boolean) {
+    async feed(rawLocation: string, budget: number, people: number, radiusMeters: number) {
         if (this.busy)
             return;
         let location: DiningLocation;
@@ -146,8 +145,8 @@ export class App {
         }
         const s = this.settings.value;
         this.draftLocation = rawLocation;
-        const preferences: SearchPreferences = { location, budget, people, bufferPercent: s.bufferPercent, adventure: s.adventure, diningMode: s.diningMode, maxDistanceMeters: radiusMeters, openNow };
-        this.settings.update({ budget, people, radiusMeters, openNow });
+        const preferences: SearchPreferences = { location, budget, people, bufferPercent: s.bufferPercent, adventure: s.adventure, diningMode: s.diningMode, maxDistanceMeters: radiusMeters };
+        this.settings.update({ budget, people, radiusMeters });
         await this.search(preferences);
     }
     private async search(preferences: SearchPreferences, excludeId?: string) {
@@ -158,7 +157,7 @@ export class App {
             this.result = await this.engine.recommend(preferences, this.learning(), excludeId);
             this.remember(this.result.restaurant);
             this.history.record('shown', this.result.restaurant.id);
-            this.notice(preferences.openNow && (this.result.candidateCount ?? 0) < 4 ? `Our search found a few suitable places listed as open within ${radiusMiles(preferences.maxDistanceMeters)} miles. We picked one.` : 'Decision made. Your next spot is ready.');
+            this.notice('Decision made. Your next spot is ready.');
             this.navigate('result');
         }
         catch (error) {
@@ -167,8 +166,6 @@ export class App {
                 const expanded = nextRadius(preferences.maxDistanceMeters);
                 if (expanded)
                     document.querySelector('#notice')!.append(button(`Expand to ${radiusMiles(expanded)} miles`, () => { this.settings.update({ radiusMeters: expanded }); void this.search({ ...preferences, maxDistanceMeters: expanded }, excludeId); }, 'text-button'));
-                if (preferences.openNow)
-                    document.querySelector('#notice')!.append(button('Include places with unknown hours', () => { this.settings.update({ openNow: false }); void this.search({ ...preferences, openNow: false }, excludeId); }, 'text-button'));
             }
             if (error instanceof RecommendationFailure && error.code === 'budget') {
                 const next = Math.min(CONFIG.maxBudget, Math.ceil(preferences.budget * 1.4 / 5) * 5);

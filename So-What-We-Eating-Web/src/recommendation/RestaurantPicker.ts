@@ -3,7 +3,7 @@ import type { SearchPreferences } from '../domain/SearchPreferences.ts';
 import { budgetAllocation } from '../domain/Budget.ts';
 import type { LearningContext } from './RecommendationScorer.ts';
 export function isEligible(restaurant: Restaurant, preferences: SearchPreferences, learning: LearningContext, excludeId?: string): boolean {
-    return restaurant.id !== excludeId && restaurant.isOpen !== false && (!preferences.openNow || restaurant.isOpen === true)
+    return restaurant.id !== excludeId
         && (restaurant.distanceMeters === undefined || restaurant.distanceMeters <= preferences.maxDistanceMeters)
         && !learning.preferences.restaurants.some(p => p.restaurantId === restaurant.id && p.excluded)
         && !restaurant.cuisines.some(c => learning.preferences.avoidedCuisines.includes(c));

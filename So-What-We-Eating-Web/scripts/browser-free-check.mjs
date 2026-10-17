@@ -60,18 +60,14 @@ try {
     assert.equal(await page.evaluate(() => window.geoCalls), 0);
     assert.equal(calls.length, 0);
     assert.equal(await page.locator('.configuration-note').count(), 0);
+    assert.equal(await page.getByLabel('Open now', { exact: true }).count(), 0);
     await page.getByLabel('Where are we eating?').fill('91711');
     const started = Date.now();
     await page.getByRole('button', { name: 'FEED ME' }).click();
     await page.waitForFunction(() => document.querySelector('.restaurant-intro h1') || /discovery (?:is|took)|No suitable spots/.test(document.querySelector('#notice')?.textContent ?? ''), {}, { timeout: 60_000 });
-    let includedUnknownHours = false;
-    if (live && !await page.locator('.restaurant-intro h1').isVisible() && await page.getByRole('button', { name: 'Include places with unknown hours' }).isVisible()) {
-        includedUnknownHours = true;
-        await page.getByRole('button', { name: 'Include places with unknown hours' }).click();
-        await page.locator('.restaurant-intro h1').waitFor();
-    }
     assert(await page.locator('.restaurant-intro h1').isVisible(), await page.locator('#notice').textContent());
     const realName = await page.locator('.restaurant-intro h1').textContent();
+    assert(!/hours|closed|\bopen\b/i.test(await page.locator('.restaurant-meta').textContent()));
     assert(await page.getByRole('link', { name: /OpenStreetMap contributors/ }).isVisible());
     assert.equal(await page.locator('.grand-total').count(), 0);
     const before = external.length;
@@ -103,9 +99,8 @@ try {
         await page.reload();
         await page.getByLabel('Where are we eating?').fill('Claremont, CA');
         await page.getByRole('button', { name: 'FEED ME' }).click();
-        await page.getByRole('button', { name: 'Include places with unknown hours' }).click();
         await page.getByRole('heading', { name: 'Open-data diner 3', exact: true }).waitFor();
-        await page.getByText('Hours unknown', { exact: false }).waitFor();
+        assert(!/hours|closed|\bopen\b/i.test(await page.locator('.restaurant-meta').textContent()));
         for (const width of [375, 430]) {
             await page.setViewportSize({ width, height: 850 });
             assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
@@ -115,10 +110,8 @@ try {
         await page.getByRole('link', { name: 'Feed me', exact: true }).click();
         await page.reload();
         await page.getByLabel('Where are we eating?').fill('91711');
-        await page.getByLabel('Open now', { exact: true }).check();
         await page.getByLabel('How far?', { exact: true }).selectOption('48280');
         await page.getByRole('button', { name: 'FEED ME' }).click();
-        await page.getByRole('button', { name: 'Include places with unknown hours' }).click();
         await page.getByRole('heading', { name: 'Indexed venue 10', exact: true }).waitFor();
         const reverse = new URL(calls.findLast(x => x.includes('/reverse?')));
         assert.equal(reverse.searchParams.get('radius'), '48.28');
@@ -129,7 +122,7 @@ try {
     }
     await page.screenshot({ path: resolve(artifacts, live ? 'free-live-result.png' : 'free-result.png'), fullPage: true });
     assert.deepEqual(errors, []);
-    const report = { live, normalProductionArtifact: true, firstRestaurant: realName, includedUnknownHours, elapsedMs: Date.now() - started, externalRequests: external.length, noKeyOrBilling: true, cachedReroll: true, errors };
+    const report = { live, normalProductionArtifact: true, firstRestaurant: realName, hoursFeatureRemoved: true, elapsedMs: Date.now() - started, externalRequests: external.length, noKeyOrBilling: true, cachedReroll: true, errors };
     await writeFile(resolve(artifacts, live ? 'free-live-check.json' : 'free-browser-check.json'), JSON.stringify(report, null, 2));
     console.log(JSON.stringify(report, null, 2));
 } catch (error) {

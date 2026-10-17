@@ -10,7 +10,6 @@ export interface Settings {
     adventure: Adventure;
     diningMode: DiningMode;
     radiusMeters: number;
-    openNow: boolean;
 }
 export interface StoredData {
     version: 2;
@@ -25,7 +24,7 @@ export interface StorageAdapter {
 }
 const defaults = (): StoredData => ({
     version: 2, history: [], events: [], preferences: { restaurants: [], favoriteCuisines: [], avoidedCuisines: [] },
-    settings: { budget: CONFIG.defaultBudget, people: 1, bufferPercent: CONFIG.bufferPercent, adventure: 'balanced', diningMode: 'unknown', radiusMeters: CONFIG.defaultRadiusMeters, openNow: true },
+    settings: { budget: CONFIG.defaultBudget, people: 1, bufferPercent: CONFIG.bufferPercent, adventure: 'balanced', diningMode: 'unknown', radiusMeters: CONFIG.defaultRadiusMeters },
 });
 const strings = (value: unknown): value is string[] => Array.isArray(value) && value.every(v => typeof v === 'string');
 function migrate(value: any): StoredData {
@@ -37,7 +36,7 @@ function migrate(value: any): StoredData {
     if (!Array.isArray(p.restaurants) || !p.restaurants.every((r: any) => r && typeof r.restaurantId === 'string' && typeof r.favorite === 'boolean' && typeof r.excluded === 'boolean') || !strings(p.favoriteCuisines) || !strings(p.avoidedCuisines))
         throw new Error('Invalid preferences');
     const data = defaults();
-    data.settings = { budget: s.budget, people: s.people, bufferPercent: s.bufferPercent, adventure: s.adventure, diningMode: s.diningMode, radiusMeters: validRadius(s.radiusMeters) ? s.radiusMeters : CONFIG.defaultRadiusMeters, openNow: typeof s.openNow === 'boolean' ? s.openNow : true };
+    data.settings = { budget: s.budget, people: s.people, bufferPercent: s.bufferPercent, adventure: s.adventure, diningMode: s.diningMode, radiusMeters: validRadius(s.radiusMeters) ? s.radiusMeters : CONFIG.defaultRadiusMeters };
     data.preferences = { restaurants: p.restaurants.map((r: any) => ({ restaurantId: r.restaurantId, favorite: r.favorite, excluded: r.excluded })), favoriteCuisines: p.favoriteCuisines, avoidedCuisines: p.avoidedCuisines };
     data.history = value.history.slice(0, CONFIG.historyLimit).map((h: any) => {
         if (!h || typeof h.id !== 'string' || typeof h.restaurantId !== 'string' || !Number.isFinite(Date.parse(h.at)) || !Number.isInteger(h.people) || h.people < 1 || h.people > 8)

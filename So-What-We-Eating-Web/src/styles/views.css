@@ -3,23 +3,7 @@
   align-items: end;
 }
 
-.open-now {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 54px;
-  font-size: 14px;
-  font-weight: 700;
-}
 
-.open-now input {
-  width: 23px;
-  height: 23px;
-  min-height: 23px;
-  margin: 0;
-  padding: 0;
-  accent-color: var(--accent);
-}
 
 .provider-attribution {
   display: flex;

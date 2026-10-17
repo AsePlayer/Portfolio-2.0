@@ -1,12 +1,12 @@
 # Ryan Scott | Data Operations & Business Systems Portfolio
 
-A recruiter-focused portfolio built with semantic HTML, responsive CSS, and plain JavaScript. Three capability areas show how Ryan translates business rules and disconnected data into reliable workflows, improves CRM reliability, and supports decisions through analysis. The hero, experience, and JSON-LD retain his actual current role, Data Operations Coordinator, with a visible foundation in QA and software development.
+A recruiter-focused portfolio built with semantic HTML, responsive CSS, and plain JavaScript. Selected Work presents three professional areas showing how Ryan translates business rules and disconnected data into reliable workflows, improves CRM reliability, and supports decisions through analysis. The hero, experience, and JSON-LD retain his actual current role, Data Operations Coordinator, with a visible foundation in QA and software development.
 
 Live site: [ryanscott.org](https://ryanscott.org/)
 
 Live project: [Back-Fixer-Upper stretch finder](https://ryanscott.org/projects/stretch-finder/) · App source: [AsePlayer/Back-Fixer-Upper-Web](https://github.com/AsePlayer/Back-Fixer-Upper-Web)
 
-Projects appear in a compact card grid after Experience: Back-Fixer-Upper, So What We Eating?, the AsePlayer YouTube channel, and this portfolio's source. The grid shows four columns on desktop, two on tablet, and one on phones. The stretch finder opens at `/projects/stretch-finder/`, and the food-decision app opens at `/projects/what-we-eating/`; external projects open in a new tab. **[PROJECTS.md](PROJECTS.md) is the guide to where each project is edited and how to refresh its generated files.** Edit these cards in `data/site.json`; edit the food app in `So-What-We-Eating-Web/` and the stretch finder in the separate **Health Stretch App** project. Channel stats are a public snapshot from October 16, 2026 (59.9K subscribers, 31,690,902 views, 770 videos, retrieved through vidIQ), rounded down where shown with a plus sign.
+Independent Projects appears after Experience with three compact cards: Back-Fixer-Upper and So What We Eating? as Web Apps, and AsePlayer as a Creator Project. Each keeps its own product or creative story. The portfolio's self-referential card is omitted; its source remains accessible through GitHub. The grid shows three columns on desktop, two on tablet, and one on phones. The stretch finder opens at `/projects/stretch-finder/`, and the food-decision app opens at `/projects/what-we-eating/`; external projects open in a new tab. **[PROJECTS.md](PROJECTS.md) is the guide to where each project is edited and how to refresh its generated files.** Edit these cards in `data/site.json`; edit the food app in `So-What-We-Eating-Web/` and the stretch finder in the separate **Health Stretch App** project. Channel stats are a public snapshot from October 16, 2026 (59.9K subscribers, 31,690,902 views, 770 videos, retrieved through vidIQ), rounded down where shown with a plus sign.
 
 ## Build and local preview
 
@@ -34,9 +34,9 @@ All sections, navigation, professional links, and the configured resume PDF are 
 - Presentation lives in `css/styles.css`; interactions live in `js/script.js`.
 - The theme follows system preferences and saves manual selections in local storage.
 
-### Capability areas and compact examples
+### Selected Work and compact professional examples
 
-`capabilities` contains a `headline` and exactly three `categories`:
+`capabilities` retains its internal name and stable anchors. Its visible eyebrow is **Selected Work**, headline is **Operational problems solved with data.**, and intro identifies real professional examples. It contains exactly three `categories`:
 
 1. **Business Data Systems & Automation:** Magazine Circulation Automation, Email Suppression Framework, and Event Data Integration.
 2. **CRM Data Quality & Migration:** CRM Migration Validation, Council Affiliation Reconciliation, and Data-Quality Monitoring.
@@ -52,13 +52,19 @@ Each category requires a unique lowercase `id`, `title`, a one-sentence `intro` 
 }
 ```
 
-Categories and examples appear in JSON order before Experience. Stable anchors such as `#capability-crm-data-quality` and `#work-council-affiliations` remain available for direct links. The page flows from Hero to Capabilities, Experience, Projects, Credentials, Toolkit, and Contact; there is no category table of contents, headline impact band, or resume section. Proof examples use three open columns on desktop, two on tablet with the final example spanning the row, and one on mobile. Subtle dividers separate capability groups. Technologies appear once beneath each capability.
+Categories and examples appear in JSON order before Experience. Stable anchors such as `#capability-crm-data-quality` and `#work-council-affiliations` remain available for direct links. The page flows from Hero to Selected Work, Experience, Independent Projects, Credentials, Toolkit, and Contact; there is no category table of contents, headline impact band, or resume section. Proof examples use three open columns on desktop, two on tablet with the final example spanning the row, and one on mobile. Subtle dividers separate capability groups. Technologies appear once beneath each capability.
 
 Per-example impact lists, technologies, and deep dives have been removed from both content and rendering. Retired case-study fields, including `metric`, `impact`, `technologies`, and `details`, fail validation. JSON-LD still groups CreativeWork entries beneath three category ItemLists and links every example to Ryan's Person entry; it does not assign the shared toolkit to individual examples.
 
-`hero.approach` replaces the retired methodology panel with four strings: Understand, Trace, Build, Validate. It renders as a compact inline sequence. The hero has no keyword strip; `person.currentEmployer` supplies context beside the actual `currentRole`, without changing the structured job title. QA and software-development experience remain visible in Experience.
+`hero.approach` replaces the retired methodology panel with four strings: Understand, Trace, Build, Validate. It renders as a compact inline sequence. Credentials marked `featured: true` supply the compact hero credential line from the same source used by the Credentials section. The hero has no keyword strip; `person.currentEmployer` supplies context beside the actual `currentRole`, without changing the structured job title. QA and software-development experience remain visible in Experience.
 
-Credentials require a `title` with optional `organization`, `date`, and professional `link`; optional boolean `secondary` gives Trailhead restrained emphasis after the certification, degree, and CSM. Explanatory labels and paragraphs are retired. Skills use four plain text groups with at most seven items each.
+Credentials require a `title` with optional `organization`, `date`, and professional `link`; optional booleans `featured` and `secondary` support the compact hero line and give Trailhead restrained emphasis after the certification, degree, and CSM. Explanatory labels and paragraphs are retired. Skills use four plain text groups with at most seven items each.
+
+### Independent Project content
+
+`projects` has an eyebrow, headline, intro, and ordered `items`. Each item needs a unique ID, title, compact summary (up to 400 characters, supporting two sentences), technology tags, and a local project or HTTPS link. Optional `type` supports Web App, Desktop App, Game, Creator Project, Developer Tool, or Website; optional `highlight` adds a short source-supported fact such as the channel snapshot. `actionLabel` customizes the action. Type labels are plain subtle text, without filters.
+
+Keep professional examples in Selected Work and side projects in Independent Projects. Do not add an unfinished project to fill the grid or force every project into career language. Both app links lead to the full products; So What We Eating? uses real free discovery by default, with fictional data only in explicitly selected demo mode.
 
 ### Scale in context
 
@@ -84,6 +90,8 @@ Validation checks exactly three capability areas, three one-sentence examples pe
 
 External URL syntax is checked locally; remote profiles require live verification. Before publishing, also check mobile/tablet/desktop layouts, light/dark themes, keyboard navigation, JavaScript-disabled reading, and browser console errors.
 
+The independent-projects positioning pass passed 21 portfolio tests plus 28 restaurant-app tests, both app browser suites, and a local portfolio browser pass at 375–1440px in light/dark themes. Both embedded apps, navigation, theme persistence, no-JavaScript content, and all three résumé links passed. GitHub, YouTube, and Trailhead responded successfully to live checks; LinkedIn returned its automated-access status 999, so that profile page still needs a normal manual visit. Its existing URL was retained.
+
 ## Replacing the résumé
 
 The revised general analytics résumé is bundled at `data/Ryan Scott Resume.pdf`, configured by `person.resume`. For future replacements:
@@ -94,7 +102,7 @@ The revised general analytics résumé is bundled at `data/Ryan Scott Resume.pdf
 
 The build publishes only the configured résumé, so other variants are not bundled automatically. Keep job-specific variants separate from the public portfolio. Setting `person.resume` to an empty string removes the Contact resume link; remove its direct navigation link and hero action at the same time.
 
-**Accuracy note:** The revised résumé and portfolio both use “Software Developer” with the confirmed Knights of Creation dates of 2022–2025, and both include the Salesforce Certified Data 360 Consultant credential. SEMA’s June 2025 start and the paid QA role title match the revised résumé. The volunteer QA dates remain supported by the earlier résumé and repositioning brief.
+**Title discrepancy to resolve:** The portfolio retains **Knights of Creation — Software Developer**. Ryan reports LinkedIn currently uses **Solutions Architect**; reconcile the canonical title across the portfolio, LinkedIn, and résumé. This pass does not guess or change the employment title. The portfolio and revised résumé include the Salesforce Certified Data 360 Consultant credential. SEMA’s June 2025 start and the paid QA role title match the revised résumé. The volunteer QA dates remain supported by the earlier résumé and repositioning brief.
 
 The public website's headline describes the scope of work; the current role remains Data Operations Coordinator. Migration copy describes support, validation, and reconciliation rather than ownership of the full migration. Membership relationship work describes monitoring and configuration findings without claiming deployed Apex remediation. Data 360 appears in credentials and the toolkit without implying an implemented enterprise CDP. Apex remains part of the automation toolkit. No architecture title, management authority, or financial/time-saving estimate is added.
 

@@ -25,7 +25,7 @@ export class RecommendationEngine {
         validatePreferences(preferences);
         let discovered;
         try {
-            discovered = await this.restaurants.searchNearby({ location: preferences.location, maxDistanceMeters: preferences.maxDistanceMeters, openNow: preferences.openNow });
+            discovered = await this.restaurants.searchNearby({ location: preferences.location, maxDistanceMeters: preferences.maxDistanceMeters });
         }
         catch (error) {
             if (error instanceof DiscoveryError)
@@ -34,7 +34,7 @@ export class RecommendationEngine {
         }
         const restaurants = discovered.filter(r => isEligible(r, preferences, learning, excludeId));
         if (!restaurants.length)
-            throw new RecommendationFailure('empty', `${excludeId ? 'No other suitable spots' : 'No suitable spots'}${preferences.openNow ? ' listed as open' : ''} within ${radiusMiles(preferences.maxDistanceMeters)} miles. ${preferences.maxDistanceMeters >= 48280 ? 'Try another location or check your preferences.' : 'Try expanding the distance.'}`);
+            throw new RecommendationFailure('empty', `${excludeId ? 'No other suitable spots' : 'No suitable spots'} within ${radiusMiles(preferences.maxDistanceMeters)} miles. ${preferences.maxDistanceMeters >= 48280 ? 'Try another location or check your preferences.' : 'Try expanding the distance.'}`);
         const candidates = await Promise.all(restaurants.map(async (restaurant) => {
             let menu = null;
             try {

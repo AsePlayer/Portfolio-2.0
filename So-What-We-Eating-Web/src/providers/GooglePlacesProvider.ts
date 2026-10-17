@@ -20,7 +20,7 @@ export class GooglePlacesProvider implements RestaurantProvider {
     }
     async searchNearby(query: RestaurantSearchQuery): Promise<Restaurant[]> {
         const target = isCoordinates(query.location) ? { location: { latitude: query.location.latitude, longitude: query.location.longitude } } : { locationQuery: query.location.query };
-        const body: DiscoverRequest = { schemaVersion: 2, ...target, radiusMeters: query.maxDistanceMeters, openNow: query.openNow };
+        const body: DiscoverRequest = { schemaVersion: 2, ...target, radiusMeters: query.maxDistanceMeters, openNow: false };
         const value = await this.post(body);
         if (!isCoordinates(value.origin) || typeof value.searchedAt !== 'string' || !Number.isFinite(Date.parse(value.searchedAt)))
             throw new DiscoveryError('unavailable');
@@ -30,7 +30,7 @@ export class GooglePlacesProvider implements RestaurantProvider {
                 latitude: number;
                 longitude: number;
             }, { latitude: r.latitude!, longitude: r.longitude! }) }))
-            .filter(r => r.distanceMeters <= query.maxDistanceMeters && r.isOpen !== false && (!query.openNow || r.isOpen === true));
+            .filter(r => r.distanceMeters <= query.maxDistanceMeters);
     }
     async lookup(placeIds: string[]): Promise<Restaurant[]> {
         return this.restaurants((await this.post({ schemaVersion: 2, placeIds })).restaurants);

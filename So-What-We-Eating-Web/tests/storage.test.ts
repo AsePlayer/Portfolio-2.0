@@ -5,7 +5,7 @@ import { HistoryStore } from '../src/storage/HistoryStore.ts';
 import { PreferenceStore } from '../src/storage/PreferenceStore.ts';
 import { SettingsStore } from '../src/storage/SettingsStore.ts';
 import type { MealRecommendation } from '../src/domain/MealRecommendation.ts';
-const result: MealRecommendation = { id: 'recommendation-1', restaurant: { id: 'sample', name: 'Sample', cuisines: ['Thai'], source: 'fixture' }, menu: null, meal: null, menuStatus: 'unavailable', preferences: { location: { latitude: 34.123456, longitude: -118.123456, source: 'browser', label: 'Current location' }, budget: 35, people: 1, bufferPercent: 0.2, diningMode: 'unknown', adventure: 'balanced', maxDistanceMeters: 8047, openNow: true } };
+const result: MealRecommendation = { id: 'recommendation-1', restaurant: { id: 'sample', name: 'Sample', cuisines: ['Thai'], source: 'fixture' }, menu: null, meal: null, menuStatus: 'unavailable', preferences: { location: { latitude: 34.123456, longitude: -118.123456, source: 'browser', label: 'Current location' }, budget: 35, people: 1, bufferPercent: 0.2, diningMode: 'unknown', adventure: 'balanced', maxDistanceMeters: 8047 } };
 function memory() { const items = new Map<string, string>(); return { getItem: (key: string) => items.get(key) ?? null, setItem: (key: string, value: string) => { items.set(key, value); }, items }; }
 test('viewing, rejecting, directions, menus, and rerolls do not create completed meals; acceptance is idempotent and survives reload', () => {
     const adapter = memory(), db = new LocalDatabase('/demo/', adapter), history = new HistoryStore(db);
@@ -32,6 +32,9 @@ test('favorites, exclusions, cuisine preferences and settings persist independen
     assert.deepEqual(restored.data.preferences, db.data.preferences);
     assert.equal(restored.data.settings.people, 4);
     assert.equal(restored.data.settings.budget, 80);
+    adapter.setItem('swwe:v1:/demo/', JSON.stringify({ ...db.data, settings: { ...db.data.settings, openNow: true } }));
+    const migrated = new LocalDatabase('/demo/', adapter);
+    assert.equal(Object.hasOwn(migrated.data.settings, 'openNow'), false, 'A saved legacy toggle must not keep filtering restaurants');
     preferences.setCuisine('Thai', 'avoid');
     assert(!preferences.value.favoriteCuisines.includes('Thai'));
     assert(preferences.value.avoidedCuisines.includes('Thai'));

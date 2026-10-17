@@ -1,29 +1,15 @@
 # Verification
 
-Verified October 16, 2026 with Node 24.16.0, npm 11.13.0, and installed Chrome.
+Current checks use Node 24 and Chrome. No Google key, billing account, or Worker deployment is required.
 
-## Current checks
+- `npm run verify`: 28 app tests, menu/content validation, browser/optional-Worker type checks, production build, and static/PWA artifact checks.
+- Portfolio: 21 tests, build, and validation, including Selected Work versus Independent Projects, optional type labels, safe text, compact credentials, and retained professional metadata.
+- `npm run check:browser`: free-default and optional-Google browser suites cover location success/denial, typed input, 2/30-mile radius, explicit expansion, privacy-safe saved visits, cached rerolls, no fabricated menu totals, external handoffs, mobile overflow, explicit demo, temporary storage, offline shell, updates, and subpath isolation.
+- Hours regression checks confirm no Open now input, no open/closed/unknown-hours result labels, no extra include-unknown action, and no persisted legacy toggle. Photon outage fallback returns a restaurant on the first search without schedule data.
+- The optional Worker v2 opening-status contract still has compatibility tests, but the current browser always sends false. The free schedule parser and timezone package have been removed.
 
-- `npm run verify`: 29 app tests, menu validation, browser/optional-Worker TypeScript checks, Vite build, and relative-path/manifest/PNG/offline-shell artifact checks.
-- Parent portfolio: 20 tests, build, and publication validation.
-- Free-provider tests cover default configuration without keys (including a leftover Google URL), coordinate/ZIP geocoding, normalization/deduplication, node/way identity, circle enforcement, opening states, venue time zones, midnight/split schedules, unsupported hours, memory caching, real-data outage fallback, quota cooldown, friendly errors, and privacy-safe history migration.
-- Existing menu/budget/party/reroll and optional Google Worker contract tests remain covered. The separate Google Worker is not required by normal builds or deployment.
+Browser reports/screenshots live in ignored `artifacts/`. The live smoke check is `node scripts/browser-free-check.mjs --live`, which uses the ordinary production build and real public services. Public Overpass availability can vary; Photon can supply real OSM venues without hours data. No live opening-hours claim is made.
 
-## Browser acceptance
+The current unmocked ZIP 91711 search returned a real restaurant directly, without a second hours-related action. A reroll reused the cached venue pool. The portfolio preview also passed 375–1440px light/dark layout checks, keyboard/menu/theme behavior, no-JavaScript content, résumé PDF delivery, both embedded app launches, and return links with no page errors.
 
-`npm run check:browser` runs two suites:
-
-1. The ordinary production artifact with free public endpoints intercepted only for deterministic response scenarios: no setup note or automatic location prompt, typed ZIP, GPS without geocoding, restaurant-only result, ODbL attribution, preserved/cached reroll, history refresh, 2/30-mile controls, explicit unknown-hours choice, and Overpass-outage discovery through Photon's real-data response format. Desktop/mobile screenshots are inspected for overflow.
-2. The optional Google integration, using a separate test artifact and real Worker handler with mocked Google responses: arbitrary typed locations, location success/denial, radius expansion, opening states, directions, storage/migration, explicit demo, offline shell, scope, and updates.
-
-Neither automated fixture suite needs a credential or makes a paid Google request. Reports/screenshots are ignored under `artifacts/`.
-
-## Unmocked free-service check
-
-`node scripts/browser-free-check.mjs --live` uses the normal production artifact and real public services. Photon resolved ZIP 91711 and returned real nearby restaurant records. Private.coffee's Overpass API was returning HTTP 500 without CORS headers during this check; the app used Photon's OpenStreetMap restaurant index. The browser explicitly selected **Include places with unknown hours** before receiving a real result (Domino's). A reroll selected another stable venue ID from the same cached pool with no additional external request. The run made three external requests, needed no credentials/billing/backend, and completed in roughly two seconds. This verifies free restaurant discovery, not real-time open status.
-
-A direct bounded Overpass query also returned restaurant records earlier in the session, before public service timeouts. Public service health varies; no availability guarantee is implied.
-
-## Limits and remaining manual checks
-
-No Google key/account/Worker was activated. Live nationwide coverage and actual late-night availability have not been exhaustively checked. OpenStreetMap hours may be absent or stale; unsupported/conditional schedules remain unknown. Time-zone lookup is approximate. Physical mobile installation and full screen-reader auditing remain manual. Menus/prices are not invented for real venues. Live discovery needs a connection; the explicit fictional demo remains available offline.
+Physical mobile installation, exhaustive nationwide coverage, and a full screen-reader audit remain manual checks. Real restaurant menus/prices are not bundled; the explicit fictional demo remains separate and works offline after shell installation.

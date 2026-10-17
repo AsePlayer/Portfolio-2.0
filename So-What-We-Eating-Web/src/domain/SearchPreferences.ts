@@ -22,5 +22,4 @@ export interface SearchPreferences {
     diningMode: DiningMode;
     adventure: Adventure;
     maxDistanceMeters: number;
-    openNow: boolean;
 }

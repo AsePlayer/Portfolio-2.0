@@ -9,7 +9,7 @@ The portfolio is the home page and project launcher. Each app keeps its own sour
 | Stretch finder screens, body selector, history or storage | **Health Stretch App** → `src/` |
 | Creator configuration, classifications or catalog update logic | **Health Stretch App** → `content/`, `tools/`, `scripts/` |
 | Generated app published by the portfolio | **Portfolio 2.0** → `projects/stretch-finder/` — regenerate it from the app |
-| Food-decision demo screens, menus, recommendations, or storage | **Portfolio 2.0** → `So-What-We-Eating-Web/` |
+| Food-decision app screens, menus, recommendations, or storage | **Portfolio 2.0** → `So-What-We-Eating-Web/` |
 | Generated food-decision app | **Portfolio 2.0** → `projects/what-we-eating/` — regenerate with the food app's `portfolio:sync` |
 
 ## Update the stretch finder
@@ -68,6 +68,6 @@ The portfolio's Pages workflow builds/tests this checked-in app source on every 
 
 ## Add another app
 
-Give it its own source project and generated directory under `projects/`. Add one item to `projects.items` in `data/site.json` with a unique `id`, `title`, one-sentence `summary`, `technologies`, and `/projects/project-name/` `href`. The portfolio build copies that directory into `dist/`; validation requires its `index.html` to exist.
+Give it its own source project and generated directory under `projects/`. Add one item to `projects.items` in `data/site.json` with a unique `id`, `title`, compact one- or two-sentence `summary`, `technologies`, and `/projects/project-name/` `href`. The portfolio build copies that directory into `dist/`; validation requires its `index.html` to exist.
 
-For externally hosted projects, use a complete `https://` URL instead; these open in a new tab and are not copied into the build. Optional `actionLabel` changes the card's link text (for example, “Watch channel” or “View source”).
+For externally hosted projects, use a complete `https://` URL instead; these open in a new tab and are not copied into the build. Optional `type` gives context (Web App, Desktop App, Game, Creator Project, Developer Tool, or Website); `highlight` adds a short supported fact. Optional `actionLabel` changes the card's link text (for example, “Watch channel” or “View source”).

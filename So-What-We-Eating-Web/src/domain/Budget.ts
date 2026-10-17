@@ -12,8 +12,8 @@ export function budgetAllocation(budget: number, bufferPercent: number) {
     return { budgetCents, bufferCents, foodBudgetCents: budgetCents - bufferCents };
 }
 export function validatePreferences(preferences: SearchPreferences) {
-    if (!validRadius(preferences.maxDistanceMeters) || typeof preferences.openNow !== 'boolean')
-        throw new Error('Choose a supported distance and opening-hours preference.');
+    if (!validRadius(preferences.maxDistanceMeters))
+        throw new Error('Choose a supported distance.');
     budgetAllocation(preferences.budget, preferences.bufferPercent);
     if (!Number.isInteger(preferences.people) || preferences.people < 1 || preferences.people > CONFIG.maxPeople)
         throw new Error('Choose 1–8 people. The budget covers everyone.');

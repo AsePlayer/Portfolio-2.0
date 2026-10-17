@@ -75,12 +75,12 @@ test('Worker geocodes arbitrary input server-side, pages a bounded pool, dedupli
     assert.deepEqual(value.restaurants[0].attributions, [{ name: 'Example credit', uri: 'https://credit.example/' }]);
     assert(!JSON.stringify(value).includes(env.GOOGLE_MAPS_API_KEY));
 });
-test('late-night search at 11:30 PM requires confirmed open status; Open Now off still never picks known-closed places', async () => {
+test('legacy Worker opening-status contract remains opt-in; the current app sends false', async () => {
     const upstream = (async () => Response.json({ places: [place('late-night', { currentOpeningHours: { openNow: true } }), place('closed', { rating: 5, currentOpeningHours: { openNow: false } }), place('unknown', { currentOpeningHours: {} })] })) as typeof fetch;
     for (const openNow of [true, false]) {
         const response = await handleRequest(discover({ ...query, openNow }), env, upstream);
         const result = await response.json();
-        assert.deepEqual(result.restaurants.map((r: any) => r.sourceId), openNow ? ['late-night'] : ['late-night', 'unknown']);
+        assert.deepEqual(result.restaurants.map((r: any) => r.sourceId), openNow ? ['late-night'] : ['late-night', 'closed', 'unknown']);
     }
     // Google currentOpeningHours/openNow is search-time data; no device-time-zone inference.
     assert.equal(new Date('2026-10-17T06:30:00Z').toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour: '2-digit', minute: '2-digit' }), '11:30 PM');

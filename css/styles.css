@@ -501,6 +501,29 @@ h3 {
   line-height: 1.4;
 }
 
+.project-type {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.project-highlight {
+  margin: 12px 0 0;
+  color: var(--heading);
+  font-size: .8rem;
+  line-height: 1.6;
+}
+
+.hero-credentials {
+  margin: 8px 0 20px;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.7;
+}
+
 .project-summary {
   margin: 0;
   color: var(--muted);
@@ -528,7 +551,7 @@ h3 {
 
 @media (min-width: 1050px) {
   .project-list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

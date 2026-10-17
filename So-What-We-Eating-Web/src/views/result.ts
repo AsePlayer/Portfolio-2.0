@@ -5,7 +5,7 @@ import { radiusMiles } from '../domain/Radius.ts';
 export function resultView(app: App): HTMLElement {
     const result = app.result!;
     const { restaurant: r, meal, preferences: p } = result;
-    const metadata = [r.cuisines.join(' / '), r.priceLevel ? '$'.repeat(r.priceLevel) : '', r.distanceMeters !== undefined ? `${(r.distanceMeters / 1609.344).toFixed(1)} mi away` : '', r.isOpen === undefined ? 'Hours unknown' : `${r.isOpen ? 'Open' : 'Closed'}${r.isDemo ? ' (sample)' : ''}`].filter(Boolean);
+    const metadata = [r.cuisines.join(' / '), r.priceLevel ? '$'.repeat(r.priceLevel) : '', r.distanceMeters !== undefined ? `${(r.distanceMeters / 1609.344).toFixed(1)} mi away` : ''].filter(Boolean);
     const favorite = app.preferences.restaurant(r.id).favorite;
     const favoriteButton = button(favorite ? '♥  Favorited' : '♡  Favorite this spot', () => { app.preferences.updateRestaurant(r.id, { favorite: !favorite }); app.render(); }, 'text-button');
     favoriteButton.setAttribute('aria-pressed', String(favorite));
@@ -13,8 +13,8 @@ export function resultView(app: App): HTMLElement {
     const header = el('section', { className: 'restaurant-intro' }, button('← Edit the basics', () => app.navigate('feed'), 'text-button back-button'), el('p', { className: 'eyebrow' }, 'DECISION MADE. WE’RE EATING AT'), el('h1', {}, r.name), el('p', { className: 'restaurant-meta' }, metadata.join(' · ')), r.rating !== undefined ? el('p', { className: 'rating' }, `★ ${r.rating.toFixed(1)}`, r.reviewCount ? el('span', {}, ` / 5 · ${r.reviewCount} ${r.isDemo ? 'sample ' : ''}reviews`) : null) : null, el('p', { className: 'address' }, r.address ?? 'Address unavailable'), r.isDemo ? el('p', { className: 'sample-note' }, 'Fictional demo restaurant · Sample prices, ratings, and distance') : null, favoriteButton, el('p', { className: 'result-context' }, `${p.location.label} · ${p.people} ${p.people === 1 ? 'person' : 'people'} · ${money(Math.round(p.budget * 100))} party budget`));
     header.append(attribution(r) ?? el('span'));
     if (r.checkedAt)
-        header.append(el('p', { className: 'sample-note' }, `${r.isOpen === undefined ? 'Details checked' : r.source === 'openstreetmap' ? 'Based on community-listed hours, evaluated' : 'Hours checked'} ${new Date(r.checkedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}. Confirm availability before you go.`));
-    header.append(el('p', { className: 'sample-note' }, `${radiusMiles(p.maxDistanceMeters)}-mile straight-line radius · ${p.openNow ? 'Listed as open only' : 'Unknown hours allowed'}`));
+        header.append(el('p', { className: 'sample-note' }, `Details retrieved ${new Date(r.checkedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}. Confirm availability before you go.`));
+    header.append(el('p', { className: 'sample-note' }, `${radiusMiles(p.maxDistanceMeters)}-mile straight-line radius`));
     const order = el('section', { className: 'order-receipt', 'aria-labelledby': 'order-title' }, el('div', { className: 'receipt-heading' }, el('h2', { id: 'order-title' }, meal ? 'HERE’S YOUR ORDER.' : 'THE SPOT IS SORTED.'), el('span', { 'aria-hidden': true }, '✳')), el('p', { className: 'receipt-caption' }, `FOR ${p.people === 1 ? 'ONE HUNGRY HUMAN' : `${p.people} HUNGRY HUMANS`}`));
     if (meal) {
         const list = el('ul', { className: 'order-lines' });

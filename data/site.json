@@ -14,7 +14,7 @@
   },
   "nav": [
     {
-      "label": "Capabilities",
+      "label": "Selected Work",
       "href": "#work"
     },
     {
@@ -22,7 +22,7 @@
       "href": "#experience"
     },
     {
-      "label": "Projects",
+      "label": "Independent Projects",
       "href": "#projects"
     },
     {
@@ -101,11 +101,13 @@
       "items": [
         {
           "title": "Salesforce Certified Data 360 Consultant",
-          "date": "September 2026"
+          "date": "September 2026",
+          "featured": true
         },
         {
           "title": "B.S. Computer Science, Cum Laude",
-          "organization": "Grand Canyon University"
+          "organization": "Grand Canyon University",
+          "featured": true
         },
         {
           "title": "Certified ScrumMaster (CSM)",
@@ -121,7 +123,8 @@
           "secondary": true
         }
       ]
-    }
+    },
+    "intro": "Across QA, software development, and data operations, I’ve kept the same approach: trace discrepancies to their cause, validate the fix, and improve the process."
   },
   "skills": {
     "headline": "Toolkit",
@@ -177,7 +180,7 @@
     "text": "Interested in opportunities across data operations, business systems, CRM, automation, and analytics."
   },
   "capabilities": {
-    "headline": "Capabilities",
+    "headline": "Operational problems solved with data.",
     "categories": [
       {
         "id": "business-data-systems",
@@ -265,40 +268,52 @@
           }
         ]
       }
-    ]
+    ],
+    "eyebrow": "Selected Work",
+    "intro": "A selection of real work involving data quality, automation, migration, reconciliation, reporting, and operational analysis."
   },
   "projects": {
-    "headline": "Projects",
+    "eyebrow": "Independent Projects",
+    "headline": "Things I build outside of work.",
+    "intro": "I like turning problems and ideas into usable software. These projects range from personal tools to experiments and creative work, and give me room to explore product design, automation, APIs, data, and software engineering beyond my day-to-day role.",
     "items": [
       {
         "id": "stretch-finder",
         "title": "Back-Fixer-Upper",
-        "summary": "Find stretch videos by body area, save useful finds, and revisit your history.",
-        "technologies": ["JavaScript", "IndexedDB", "GitHub Actions"],
-        "href": "/projects/stretch-finder/"
+        "summary": "A personal stretch-finding tool for moments when you know where something hurts but not what to try. Browse stretches by body area, save useful finds, and build a history of what you return to over time.",
+        "technologies": [
+          "JavaScript",
+          "IndexedDB",
+          "GitHub Actions"
+        ],
+        "href": "/projects/stretch-finder/",
+        "type": "Web App"
       },
       {
         "id": "what-we-eating",
         "title": "So What We Eating?",
-        "summary": "A location-aware restaurant picker with distance, open-now controls, and budget-aware meal planning.",
-        "technologies": ["TypeScript", "Vite", "PWA"],
-        "href": "/projects/what-we-eating/"
+        "summary": "A location-aware restaurant decision tool for when nobody wants to decide where to eat. Use your current location, search radius, budget, and preferences to narrow nearby choices and get a practical recommendation.",
+        "technologies": [
+          "TypeScript",
+          "Vite",
+          "PWA"
+        ],
+        "href": "/projects/what-we-eating/",
+        "type": "Web App"
       },
       {
         "id": "aseplayer",
-        "title": "AsePlayer YouTube Channel",
-        "summary": "Gaming videos and strategy guides with 59.9K subscribers, 31.6M+ views, and 770 published videos.",
-        "technologies": ["Video Editing", "SEO", "Community Building"],
+        "title": "AsePlayer",
+        "summary": "A long-running gaming channel built through hundreds of published videos, combining editing, search/discovery strategy, audience feedback, and iterative content development.",
+        "technologies": [
+          "Video Editing",
+          "SEO",
+          "Community Building"
+        ],
         "href": "https://www.youtube.com/channel/UCSFw0TyBxyYj2CvZOsq9RCQ",
-        "actionLabel": "Watch channel"
-      },
-      {
-        "id": "portfolio",
-        "title": "Portfolio Website",
-        "summary": "A responsive portfolio with accessible navigation, light and dark themes, and automated publishing to GitHub Pages.",
-        "technologies": ["HTML", "CSS", "JavaScript", "GitHub Actions"],
-        "href": "https://github.com/AsePlayer/Portfolio-2.0",
-        "actionLabel": "View source"
+        "actionLabel": "Watch channel",
+        "type": "Creator Project",
+        "highlight": "59.9K subscribers · 31.6M+ views · 770 published videos"
       }
     ]
   },

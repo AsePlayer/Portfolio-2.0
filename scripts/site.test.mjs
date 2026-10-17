@@ -229,6 +229,8 @@ test('the simplified hero shows employer context while preserving the actual str
   const html = renderDocument(data,template,2026);
   const hero = html.match(/<section id="home"[\s\S]*?<\/section>/)[0];
   assert.ok(hero.includes('Data Operations Coordinator · SEMA'));
+  assert.ok(hero.includes('Salesforce Certified Data 360 Consultant · B.S. Computer Science, Cum Laude'));
+  assert.ok(html.includes('class="credential-list"'));
   assert.ok(!hero.includes('class="eyebrow"'));
   assert.equal(structuredData(html)[0].jobTitle, 'Data Operations Coordinator');
   const copy = structuredClone(data);
@@ -355,4 +357,27 @@ test('the production share PNG exists, matches its dimensions, and ships correct
   assert.ok(validateContent(copy,root).some((error) => error.includes('dimensions')));
   copy.seo.image.width = '1200';
   assert.ok(validateContent(copy,root).some((error) => error.includes('positive integers')));
+});
+
+test('Selected Work and Independent Projects preserve distinct framing, optional types, safe copy, and useful links', () => {
+  const html = renderDocument(data, template, 2026);
+  const work = html.match(/<section id="work"[\s\S]*?(?=<section id="experience")/)[0];
+  const projects = html.match(/<section id="projects"[\s\S]*?(?=<section id="education")/)[0];
+  assert.ok(work.includes('Selected Work') && work.includes(data.capabilities.intro));
+  assert.ok(projects.includes('Independent Projects') && projects.includes(data.projects.intro));
+  assert.equal((projects.match(/class="project-card"/g) || []).length, 3);
+  assert.ok(projects.includes('Creator Project') && projects.includes('Web App'));
+  assert.ok(projects.includes('59.9K subscribers') && projects.includes('31.6M+ views'));
+  assert.ok(!/fictional|open-now|project-portfolio-heading/.test(projects));
+  assert.ok(!work.includes('Back-Fixer-Upper') && !work.includes('So What We Eating?'));
+  const copy = structuredClone(data);
+  delete copy.projects.items[0].type;
+  delete copy.projects.items[2].highlight;
+  assert.deepEqual(validateContent(copy, root), []);
+  copy.projects.items[0].summary = '<script>untrusted()</script>';
+  copy.projects.items[2].highlight = '<img src=x onerror=bad()>';
+  const escaped = renderDocument(copy, template, 2026);
+  assert.ok(!escaped.includes('<script>untrusted()') && !escaped.includes('<img src=x'));
+  copy.projects.items[0].type = 'Invalid category';
+  assert.ok(validateContent(copy, root).some(message => message.includes('.type')));
 });

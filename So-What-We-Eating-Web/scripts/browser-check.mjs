@@ -83,7 +83,7 @@ const waitFor = async (fn) => { const start = Date.now(); while (!await fn()) {
         throw new Error('Browser acceptance wait timed out');
     await new Promise(r => setTimeout(r, 100));
 } };
-const report = { liveWorkerPath: false, currentLocation: false, typedLocations: [], mobileWidths: [], radius: false, openNow: false, expansion: false, noSilentFallback: false, historyPrivacy: false, directions: false, reroll: false, offlineShell: false, workerUpdate: false, scope: false, portfolioPath: false, deniedLocation: false, temporaryStorage: false, explicitDemo: false, errors: [] };
+const report = { liveWorkerPath: false, currentLocation: false, typedLocations: [], mobileWidths: [], radius: false, hoursFeatureRemoved: false, expansion: false, noSilentFallback: false, historyPrivacy: false, directions: false, reroll: false, offlineShell: false, workerUpdate: false, scope: false, portfolioPath: false, deniedLocation: false, temporaryStorage: false, explicitDemo: false, errors: [] };
 let browser;
 try {
     const chrome = process.env.CHROME_PATH ?? (existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe') ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : undefined);
@@ -146,7 +146,7 @@ try {
     await page.getByRole('heading', { name: 'Night Owl Diner', exact: true }).waitFor();
     assert.deepEqual(requests.at(-1).location, point);
     assert.equal(requests.at(-1).radiusMeters, 3219);
-    assert.equal(requests.at(-1).openNow, true);
+    assert.equal(requests.at(-1).openNow, false);
     report.currentLocation = true;
     assert.equal((await snapshot(page)).settings.radiusMeters, 3219);
     assert(!JSON.stringify(await snapshot(page)).includes(String(point.latitude)));
@@ -164,21 +164,23 @@ try {
     await page.getByRole('button', { name: 'Expand to 10 miles' }).click();
     await page.getByRole('button', { name: 'Expand to 20 miles' }).click();
     await page.getByRole('button', { name: 'Expand to 30 miles' }).click();
-    await page.getByText('No suitable spots listed as open within 30 miles.', { exact: false }).waitFor();
+    await page.getByText('No suitable spots within 30 miles.', { exact: false }).waitFor();
     assert.equal(await page.getByRole('button', { name: /Expand to/ }).count(), 0);
     assert.equal(requests.at(-1).radiusMeters, 48280);
     report.expansion = true;
     report.radius = true;
     scenario = 'unknown';
-    await page.getByLabel('Open now', { exact: true }).uncheck();
     await page.getByRole('button', { name: 'FEED ME' }).click();
-    await page.getByText('Hours unknown', { exact: false }).waitFor();
+    await page.locator('.restaurant-intro h1').waitFor();
+    assert(!/hours|closed|\bopen\b/i.test(await page.locator('.restaurant-meta').textContent()));
+    assert.equal(await page.getByLabel('Open now', { exact: true }).count(), 0);
     assert.equal(requests.at(-1).openNow, false);
-    report.openNow = true;
+    report.hoursFeatureRemoved = true;
     await page.getByRole('link', { name: 'Feed me', exact: true }).click();
     await page.reload();
     assert.equal(await page.getByLabel('How far?', { exact: true }).inputValue(), '48280');
-    assert(!await page.getByLabel('Open now', { exact: true }).isChecked());
+    assert.equal(await page.getByLabel('Open now', { exact: true }).count(), 0);
+    assert(!Object.hasOwn((await snapshot(page)).settings, 'openNow'));
     scenario = 'failure';
     await page.getByLabel('Where are we eating?').fill('Claremont, CA');
     await page.getByRole('button', { name: 'FEED ME' }).click();

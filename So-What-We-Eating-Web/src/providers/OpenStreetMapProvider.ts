@@ -5,7 +5,6 @@ import { distanceMeters, isCoordinates } from '../location/geo.ts';
 import type { Coordinates } from '../location/geo.ts';
 import { validRadius } from '../domain/Radius.ts';
 import { isWebUrl } from '../catalog/validate.ts';
-import { osmOpenNow } from './osmHours.ts';
 
 export const OSM_CREDIT = { name: '© OpenStreetMap contributors · ODbL', uri: 'https://www.openstreetmap.org/copyright' };
 export const DEFAULT_OVERPASS = 'https://overpass.private.coffee/api/interpreter';
@@ -20,11 +19,9 @@ export class OpenStreetMapProvider implements RestaurantProvider {
     private overpassUnavailableUntil = 0;
     private overpass: string;
     private photon: string;
-    private clock: () => Date;
-    constructor(overpass = DEFAULT_OVERPASS, photon = DEFAULT_PHOTON, request = fetch, clock = () => new Date()) {
+    constructor(overpass = DEFAULT_OVERPASS, photon = DEFAULT_PHOTON, request = fetch) {
         this.overpass = overpass;
         this.photon = photon;
-        this.clock = clock;
         for (const endpoint of [overpass, photon]) {
             const url = new URL(endpoint);
             if (url.protocol !== 'https:' || url.username || url.password) throw new Error('Invalid open-data endpoint');
@@ -74,10 +71,10 @@ export class OpenStreetMapProvider implements RestaurantProvider {
         if (!validRadius(query.maxDistanceMeters)) throw new DiscoveryError('invalid');
         const origin = await this.origin(query);
         const radius = query.maxDistanceMeters;
-        // Bounded, user-triggered query. Prefer records with hours before filling the pool.
+        // Bounded, user-triggered query; opening-hours data is deliberately unused.
         const area = `(around:${radius},${origin.latitude},${origin.longitude})`;
         const filter = '["amenity"~"^(restaurant|fast_food|cafe|food_court)$"]["name"]';
-        const data = `[out:json][timeout:20][maxsize:33554432];nwr${area}${filter}->.spots;nwr.spots["opening_hours"];out center tags 100;.spots out center tags 100;`;
+        const data = `[out:json][timeout:20][maxsize:33554432];nwr${area}${filter};out center tags 200;`;
         let restaurants: Restaurant[];
         try {
             if (Date.now() < this.overpassUnavailableUntil) throw new DiscoveryError('unavailable');
@@ -86,13 +83,13 @@ export class OpenStreetMapProvider implements RestaurantProvider {
             restaurants = this.normalize(response.elements);
         } catch (error) {
             // A second open-data index can still locate real venues during an Overpass outage.
-            // Never route around a quota response, and never infer that missing hours mean open.
+            // Never route around a quota response.
             if (error instanceof DiscoveryError && error.code === 'quota') throw error;
             this.overpassUnavailableUntil = Date.now() + 60_000;
             restaurants = await this.photonNearby(origin, radius);
         }
         return restaurants.map(r => ({ ...r, distanceMeters: distanceMeters(origin, { latitude: r.latitude!, longitude: r.longitude! }) }))
-            .filter(r => r.distanceMeters <= radius && r.isOpen !== false && (!query.openNow || r.isOpen === true));
+            .filter(r => r.distanceMeters <= radius);
     }
     private async photonNearby(origin: Coordinates, radius: number): Promise<Restaurant[]> {
         const url = new URL('../reverse', this.photon);
@@ -111,7 +108,7 @@ export class OpenStreetMapProvider implements RestaurantProvider {
             const type = ({ N: 'node', W: 'way', R: 'relation' } as Record<string, string>)[p.osm_type];
             const tags: Record<string, string> = { amenity: p.osm_value, name: p.name };
             for (const key of ['housenumber', 'street', 'city', 'state', 'postcode']) if (typeof p[key] === 'string') tags[`addr:${key}`] = p[key];
-            for (const key of ['opening_hours', 'website', 'cuisine']) if (typeof p.extra?.[key] === 'string') tags[key] = p.extra[key];
+            for (const key of ['website', 'cuisine']) if (typeof p.extra?.[key] === 'string') tags[key] = p.extra[key];
             elements.push({ type, id: p.osm_id, lat: coords[1], lon: coords[0], tags });
         }
         return this.normalize(elements);
@@ -139,10 +136,9 @@ export class OpenStreetMapProvider implements RestaurantProvider {
                 id: `osm:${sourceId}`, source: 'openstreetmap', sourceId, name: tags.name.trim(),
                 latitude, longitude, address: address || undefined,
                 cuisines: (tags.cuisine ?? '').split(';').filter(Boolean).map(c => c.replaceAll('_', ' ')),
-                isOpen: osmOpenNow(tags.opening_hours, latitude!, longitude!, this.clock()),
                 websiteUrl: isWebUrl(website) ? website : undefined, menuUrl: isWebUrl(menu) ? menu : undefined,
                 directionsUrl: `https://www.openstreetmap.org/directions?to=${latitude}%2C${longitude}`,
-                checkedAt: this.clock().toISOString(), attributions: [OSM_CREDIT],
+                checkedAt: new Date().toISOString(), attributions: [OSM_CREDIT],
             });
         }
         return [...unique.values()];

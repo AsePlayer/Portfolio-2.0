@@ -18,7 +18,7 @@ import { inferRole } from '../tools/menus/inferRole.ts';
 const restaurants: Restaurant[] = JSON.parse(await readFile('content/restaurants/fixtures.json', 'utf8'));
 const menus: Menu[] = await Promise.all((await readdir('content/menus/restaurants')).map(async (path) => JSON.parse(await readFile(`content/menus/restaurants/${path}`, 'utf8'))));
 const menuMap = new Map(menus.map(m => [m.restaurantId, m]));
-const preferences = (budget = 35, people = 1): SearchPreferences => ({ location: parseLocation('91101'), budget, people, bufferPercent: 0.2, diningMode: 'unknown', adventure: 'balanced', maxDistanceMeters: 8047, openNow: true });
+const preferences = (budget = 35, people = 1): SearchPreferences => ({ location: parseLocation('91101'), budget, people, bufferPercent: 0.2, diningMode: 'unknown', adventure: 'balanced', maxDistanceMeters: 8047 });
 const engine = (seed = 1) => new RecommendationEngine(new FixtureRestaurantProvider(restaurants), new FixtureMenuProvider(menuMap), seededRandom(seed));
 test('all generated meal templates respect cents, the reserved buffer, and servings for budgets $10–100 and parties 1–8', () => {
     let checked = 0;
@@ -71,13 +71,12 @@ test('different-restaurant avoids immediate repeat; different-order preserves re
     assert.equal(reroll.restaurant.id, first.restaurant.id);
     assert.deepEqual(reroll.preferences, first.preferences);
 });
-test('closed, excluded, avoided, far-away, and unaffordable restaurants cannot win', async () => {
+test('excluded, avoided, far-away, and unaffordable restaurants cannot win', async () => {
     const learning = emptyLearning();
     learning.preferences.avoidedCuisines = ['Italian'];
     learning.preferences.restaurants.push({ restaurantId: 'citrus-taco', favorite: true, excluded: true });
     for (let i = 0; i < 12; i++) {
         const result = await engine(i).recommend(preferences(20), learning);
-        assert(result.restaurant.isOpen !== false);
         assert.notEqual(result.restaurant.id, 'citrus-taco');
         assert(!result.restaurant.cuisines.includes('Italian'));
     }
@@ -151,10 +150,10 @@ test('Google client sends typed intent to the normalized proxy and rejects malfo
     const live = restaurants.map(r => ({ ...r, id: `google:${r.id}`, sourceId: r.id, source: 'google-places' }));
     const request = (async (_url: unknown, init: RequestInit) => { body = String(init.body); return new Response(JSON.stringify({ schemaVersion: 2, origin: DEMO_CENTER, searchedAt: new Date().toISOString(), restaurants: live })); }) as typeof fetch;
     const provider = new GooglePlacesProvider('https://proxy.example/discover', request);
-    assert.equal((await provider.searchNearby({ location: parseLocation('91101'), maxDistanceMeters: 8047, openNow: true })).length, 7);
-    assert.deepEqual(JSON.parse(body), { schemaVersion: 2, locationQuery: '91101', radiusMeters: 8047, openNow: true });
+    assert.equal((await provider.searchNearby({ location: parseLocation('91101'), maxDistanceMeters: 8047 })).length, 8);
+    assert.deepEqual(JSON.parse(body), { schemaVersion: 2, locationQuery: '91101', radiusMeters: 8047, openNow: false });
     assert(!body.includes('key'));
     assert.throws(() => new GooglePlacesProvider('http://insecure.example/discover'));
     const bad = new GooglePlacesProvider('https://proxy.example/discover', (async () => new Response('{"schemaVersion":2,"restaurants":[{}]}')) as typeof fetch);
-    await assert.rejects(bad.searchNearby({ location: parseLocation('91101'), maxDistanceMeters: 8047, openNow: true }));
+    await assert.rejects(bad.searchNearby({ location: parseLocation('91101'), maxDistanceMeters: 8047 }));
 });

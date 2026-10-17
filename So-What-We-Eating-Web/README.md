@@ -18,8 +18,8 @@ Use `npm.cmd` if PowerShell blocks npm.ps1. **Normal live discovery needs no API
 
 - Location permission is requested only on your click. Coordinates and typed queries stay out of persistent storage.
 - Choose 2 / 5 / 10 / 20 / 30 miles, default 5. Distances are straight-line.
-- Open now defaults on. Community-listed weekly hours are evaluated in the restaurant's estimated time zone. Missing, unsupported, or conditional hours stay unknown; known-closed places are excluded.
-- If Overpass is unavailable, Photon can still locate real restaurants; its missing hours stay unknown. No-results actions explicitly expand the radius or include unknown hours. The app never quietly relaxes either choice.
+- Opening-hours controls, status labels, and filtering are currently removed because live coverage is too unreliable. Saved legacy toggles are discarded; missing hours never block a recommendation.
+- If Overpass is unavailable, Photon can still locate real restaurants. No-results actions expand the radius only after your click.
 - Restaurant rerolls retain the submitted settings and reuse a five-minute in-memory discovery cache.
 - Missing menus/prices produce an honest restaurant-only result. No ratings or price levels are invented.
 - History stores provider IDs and your actions. Favorites, exclusions, budgets, and preferences stay on this browser.
@@ -44,4 +44,4 @@ Browser source is in `src/`; menus and import tooling are independent. Vite's re
 
 ## Limits
 
-OpenStreetMap restaurant, address, and hours coverage varies. Public services can be slow, throttle requests, or be unavailable; they have no uptime guarantee and are unsuitable as an unlimited large-scale backend. The app makes bounded searches on action, caches repeated requests in memory, and does not retry or rotate servers after errors. Running a busy service may require your own open-source infrastructure. Hours are listed schedules, not real-time availability. Special holiday/seasonal rules remain unknown. Time-zone lookup is approximate near boundaries. Confirm details before traveling. Real menus are not currently bundled; the offline shell cannot discover real places. Physical mobile home-screen installation remains a manual check.
+OpenStreetMap restaurant, address, and hours coverage varies. Public services can be slow, throttle requests, or be unavailable; they have no uptime guarantee and are unsuitable as an unlimited large-scale backend. The app makes bounded searches on action, caches repeated requests in memory, and does not retry or rotate servers after errors. Running a busy service may require your own open-source infrastructure. The app currently makes no open/closed claim or opening-hours recommendation. Check current details with the restaurant before traveling. Confirm details before traveling. Real menus are not currently bundled; the offline shell cannot discover real places. Physical mobile home-screen installation remains a manual check.

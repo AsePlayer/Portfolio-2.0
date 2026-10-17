@@ -28,7 +28,7 @@ export async function searchPlaces(origin: Coordinates, radius: number, openNow:
             throw new Error('Invalid upstream shape');
         for (const place of data.places ?? []) {
             const restaurant = place && normalize(place, checkedAt, origin);
-            if (restaurant && restaurant.distanceMeters! <= radius && restaurant.isOpen !== false && (!openNow || restaurant.isOpen === true))
+            if (restaurant && restaurant.distanceMeters! <= radius && (!openNow || restaurant.isOpen === true))
                 restaurants.set(restaurant.id, restaurant);
         }
         token = typeof data.nextPageToken === 'string' ? data.nextPageToken : undefined;

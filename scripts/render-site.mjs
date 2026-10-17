@@ -85,7 +85,8 @@ export function renderDocument(data, template, year = new Date().getUTCFullYear(
 function capabilitiesSection(section) {
   return `<section id="work" class="section work-section" aria-labelledby="work-heading">
     <div class="container">
-      ${sectionHeading('', section.headline, 'work-heading')}
+      ${sectionHeading(section.eyebrow || '', section.headline, 'work-heading')}
+      ${section.intro ? `<p class="section-intro">${section.intro}</p>` : ''}
       <div class="capability-list">
         ${section.categories.map((category) => `<section id="capability-${category.id}" class="capability-area" aria-labelledby="capability-${category.id}-heading">
           <header class="capability-heading">
@@ -106,7 +107,8 @@ function projectsSection(section) {
   if (!section) return '';
   return `<section id="projects" class="section projects-section" aria-labelledby="projects-heading">
     <div class="container">
-      ${sectionHeading('', section.headline, 'projects-heading')}
+      ${sectionHeading(section.eyebrow || '', section.headline, 'projects-heading')}
+      ${section.intro ? `<p class="section-intro">${section.intro}</p>` : ''}
       <ul class="project-list">
         ${section.items.map(project => `<li>
           <a class="project-card" href="${project.href}"${newTabAttributes(project.href)} aria-labelledby="project-${project.id}-heading">
@@ -120,8 +122,10 @@ function projectsSection(section) {
                   : '<path d="m13 12-8 8 8 8m14-16 8 8-8 8M23 8l-6 24"/>'}</svg>
             </span>
             <div class="project-copy">
+              ${project.type ? `<p class="project-type">${project.type}</p>` : ''}
               <h3 id="project-${project.id}-heading">${project.title}</h3>
               <p class="project-summary">${project.summary}</p>
+              ${project.highlight ? `<p class="project-highlight">${project.highlight}</p>` : ''}
               <p class="project-technologies">${project.technologies.join(' &middot; ')}</p>
             </div>
             <span class="project-action">${project.actionLabel || 'Open project'} <span aria-hidden="true">&rarr;</span></span>
@@ -161,6 +165,7 @@ function heroSection(data) {
           <h1>${data.person.name}</h1>
           <p class="headline">${data.person.title}</p>
           <p class="hero-role">${data.person.currentRole} · ${data.person.currentEmployer}</p>
+          ${data.experience.development.items.some(item => item.featured) ? `<p class="hero-credentials">${data.experience.development.items.filter(item => item.featured).map(item => item.title).join(' · ')}</p>` : ''}
           <p class="subheadline">${data.hero.subheadline}</p>
           <ol class="approach-sequence" aria-label="How I work">
             ${data.hero.approach.map((step, index) => `<li>${step}${index < data.hero.approach.length - 1 ? '<span aria-hidden="true"> →</span>' : ''}</li>`).join('')}

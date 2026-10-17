@@ -79,6 +79,7 @@ export function validateContent(data, root) {
     }
     if (item?.label !== undefined || item?.text !== undefined) fail(`experience.development.items[${i}] must use a title and optional organization/date without explanatory paragraphs.`);
     optionalBoolean(item?.secondary, `experience.development.items[${i}].secondary`);
+    optionalBoolean(item?.featured, `experience.development.items[${i}].featured`);
     if (item?.link) {
       text(item.link.label, `credential[${i}].link.label`);
       if (item.link.href !== '') https(item.link.href, `credential[${i}].link.href`);
@@ -86,6 +87,7 @@ export function validateContent(data, root) {
   });
   if (data.selectedWork !== undefined) fail('selectedWork is retired; use capabilities.categories with compact examples.');
   fields(data.capabilities, 'capabilities', ['headline']);
+  for (const field of ['eyebrow', 'intro']) if (data.capabilities?.[field] !== undefined) text(data.capabilities[field], `capabilities.${field}`);
   const categoryIds = new Set();
   const exampleIds = new Set();
   const categories = array(data.capabilities?.categories, 'capabilities.categories');
@@ -116,13 +118,20 @@ export function validateContent(data, root) {
   const projectIds = new Set();
   if (data.projects !== undefined) {
     fields(data.projects, 'projects', ['headline']);
+    for (const field of ['eyebrow', 'intro']) if (data.projects?.[field] !== undefined) text(data.projects[field], `projects.${field}`);
     array(data.projects?.items, 'projects.items').forEach((item, i) => {
       const label = `projects.items[${i}]`;
       fields(item, label, ['id', 'title', 'summary', 'href']);
       identifier(item?.id, `${label}.id`);
       if (projectIds.has(item?.id)) fail(`Duplicate project identifier: ${item?.id}`);
       projectIds.add(item?.id);
-      sentence(item?.summary, `${label}.summary`);
+      text(item?.summary, `${label}.summary`);
+      if (typeof item?.summary === 'string' && item.summary.length > 400) fail(`${label}.summary must stay compact (at most 400 characters).`);
+      if (item?.type !== undefined && !['Web App', 'Desktop App', 'Game', 'Creator Project', 'Developer Tool', 'Website'].includes(item.type)) fail(`${label}.type must be a supported project category.`);
+      if (item?.highlight !== undefined) {
+        text(item.highlight, `${label}.highlight`);
+        if (typeof item.highlight === 'string' && item.highlight.length > 160) fail(`${label}.highlight must stay compact (at most 160 characters).`);
+      }
       strings(item?.technologies, `${label}.technologies`);
       if (typeof item?.href === 'string' && item.href.startsWith('https://')) https(item.href, `${label}.href`);
       else if (typeof item?.href !== 'string' || !/^\/projects\/[a-z][a-z0-9-]*\/$/.test(item.href)) {

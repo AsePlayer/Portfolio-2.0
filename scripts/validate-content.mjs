@@ -173,7 +173,7 @@ export function validateContent(data, root) {
     if (!targets.has(item?.href) && item?.href !== data.person?.resume) fail(`Hero action ${item?.href} must target a section or the configured résumé.`);
   });
   const publicCopy = JSON.stringify(data);
-  if (/tel:|"(?:phone|telephone|mobile)"\s*:|(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/i.test(publicCopy)) fail('Public content must not contain a phone number. Keep it only in the résumé PDF.');
+  if (/tel:|"(?:phone|telephone|mobile)"\s*:|(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/i.test(publicCopy)) fail('Public content must not contain a phone number. The public résumé PDF must also omit it.');
   if (/\b(?:data\s+(?:(?:and|&)\s+operations\s+)?analyst|(?:solutions?|data|salesforce)\s+architect|business\s+systems\s+analyst|expert|thought[ -]leader|enterprise\s+leader|owner\s+of\s+enterprise\s+architecture)\b/i.test(publicCopy)) fail('Public content must avoid inflated titles and unsupported seniority claims.');
   if (data.person?.currentRole !== 'Data Operations Coordinator') fail('person.currentRole must remain Data Operations Coordinator.');
   if (data.seo?.jobTitle !== data.person?.currentRole) fail('seo.jobTitle must match the actual current role.');

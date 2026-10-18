@@ -18,7 +18,7 @@ The workflow uses Node.js 24, runs tests, prerenders the full portfolio from JSO
 - Disable JavaScript and confirm Hero, all three capability areas and nine proof examples, Experience, Credentials, Toolkit, and Contact remain readable; mobile navigation stays visible. The main page contains no disclosures.
 - Test keyboard navigation, Escape in the mobile menu, the skip link, and direct section links.
 - Confirm LinkedIn, GitHub, Trailhead, email, and direct résumé destinations.
-- Open the deployed résumé and confirm its content and current version. Keep its phone number; public HTML, JSON, and metadata must not include it.
+- Open the deployed résumé and confirm its content and current version. Its visible and extracted text, metadata, and links must not contain a phone number; the same applies to public HTML and JSON.
 - Confirm browser console and network requests have no errors.
 - Confirm page, Open Graph, Twitter, and JSON-LD metadata reflect data operations / business systems and the actual coordinator role. Confirm the social preview PNG is published at `/assets/social-preview.png` and matches its 1200 × 630 dimensions.
 

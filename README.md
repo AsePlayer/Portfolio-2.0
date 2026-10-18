@@ -29,7 +29,7 @@ All sections, navigation, professional links, and the configured resume PDF are 
 - Edit copy, experience, credentials, skills, contact settings, and professional links in `data/site.json`.
 - Edit `seo` for the page title, descriptions, canonical URL, JSON-LD job title, and `knowsAbout`. Social metadata and structured data use the same source.
 - Keep unavailable professional URLs as empty strings. Placeholder URLs fail validation.
-- Keep phone numbers out of public JSON and HTML; the downloadable résumé can retain its phone number.
+- Keep phone numbers out of all public content, including JSON, HTML, metadata, and the downloadable résumé PDF.
 - `templates/index.html` holds the document shell; `scripts/render-site.mjs` holds section markup. Content is escaped before rendering. The existing `<i>` emphasis in organization names is supported.
 - Presentation lives in `css/styles.css`; interactions live in `js/script.js`.
 - The theme follows system preferences and saves manual selections in local storage.
@@ -88,7 +88,7 @@ See the implementation report for exact commands and evidence boundaries. Extern
 
 The supplied professional-alignment résumé (Data Operations | Business Systems | SQL & Salesforce) is bundled at `data/Ryan Scott Resume.pdf`, configured by `person.resume`. For future replacements:
 
-1. Replace that PDF, preserving its phone number, or update `person.resume` to the new relative PDF path.
+1. Replace that PDF with a public version that omits the phone number, or update `person.resume` to the new relative PDF path. Check the PDF's visible and extracted text, metadata, and links before publishing.
 2. If the path changes, update its direct navigation link and the action in `hero.actions` too.
 3. Run the tests, build, and validation; open the PDF locally and again after deployment.
 

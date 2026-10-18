@@ -157,9 +157,9 @@ Tools and methods: SQL · Excel · Power Query · Data Analysis · Financial Ana
 
 ## Résumé and professional accuracy
 
-The provided finalized PDF was read as a one-page document and visually inspected. It replaces `data/Ryan Scott Resume.pdf` exactly; all three existing download links retain their paths and safe new-tab behavior. The phone number stays inside the PDF and is not copied into public JSON/HTML.
+The provided finalized PDF was read as a one-page document and visually inspected. It replaces `data/Ryan Scott Resume.pdf` exactly; all three existing download links retain their paths and safe new-tab behavior. The public PDF was subsequently updated on October 18, 2026 to omit the phone number. Future public versions must also omit it from visible and extracted text, metadata, and links, as well as public JSON/HTML.
 
-SHA-256: `47656e774d9fad3d2ae62c3f3aa55ce38c2ed72fff37da552b70ca92fa392db1`.
+Current public PDF SHA-256 (verified against the live download on October 18, 2026): `f79edb3082a41033a7a656aeac372657160b2b3de07c67a438e801b3a2b3324e`.
 
 Corrections from older content:
 
